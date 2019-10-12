@@ -2,6 +2,17 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "TracerProtoCompile",
+            "command": "tools/protoc.exe",
+            "type": "process",
+            "args": [
+                "--proto_path=${workspaceFolder}/Tracer/proto",
+                "--csharp_opt=file_extension=.g.cs",
+                "--csharp_out=${workspaceFolder}/Tracer/models",
+                "Tracer.proto",
+            ]
+        },
+        {
             "label": "build",
             "command": "dotnet",
             "type": "process",

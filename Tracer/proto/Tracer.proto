@@ -2,8 +2,9 @@ syntax = "proto3";
 
 package google.protobuf;
 
-option csharp_namespace = "Google.Protobuf.WellKnownTypes";
+option csharp_namespace = "Tracer";
 
+//Data
 message CreateFileData {
     string file_path =  1;
 }
@@ -25,6 +26,7 @@ message EraseFileData {
     uint64 offset_start = 3;
     uint64 offset_end = 4;
 }
+//End Data
 
 message TraceTransaction {
     enum TraceTransactionType {
@@ -33,9 +35,9 @@ message TraceTransaction {
         InsertFile = 2;
         EraseFile = 3;
     }
-    
-  required TraceTransactionType type = 1;
-  required uint64 time_offset_ms = 2;
+
+  TraceTransactionType type = 1;
+  uint64 time_offset_ms = 2;
 
   oneof data {
     CreateFileData create_file = 3;
@@ -43,4 +45,15 @@ message TraceTransaction {
     InsertFileData insert_file = 5;
     EraseFileData erase_file = 6;
   }
+}
+
+message TraceTransactionLog {
+    uint64 partition = 1;
+    repeated TraceTransaction transactions = 2;
+}
+
+message TraceProject {
+    string id = 1;
+    uint64 duration = 2;
+    uint64 partition_size = 3;
 }
