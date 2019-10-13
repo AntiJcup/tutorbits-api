@@ -6,9 +6,9 @@
             "command": "tools/protoc.exe",
             "type": "process",
             "args": [
-                "--proto_path=${workspaceFolder}/Tracer/proto",
+                "--proto_path=${workspaceFolder}/shared/Tracer/proto",
                 "--csharp_opt=file_extension=.g.cs",
-                "--csharp_out=${workspaceFolder}/Tracer/models",
+                "--csharp_out=${workspaceFolder}/shared/Tracer/models",
                 "Tracer.proto",
             ]
         },
@@ -18,7 +18,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/api/tutorbits-api.csproj",
+                "${workspaceFolder}/sites/api/tutorbits-api.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -42,7 +42,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/api/tutorbits-api.csproj",
+                "${workspaceFolder}/sites/api/tutorbits-api.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -55,7 +55,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/api/tutorbits-api.csproj",
+                "${workspaceFolder}/sites/api/tutorbits-api.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],

@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tutorbits-api", "api\tutorbits-api.csproj", "{10444CA3-5F42-4D32-92F5-533C0E017526}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tutorbits-api", "sites\api\tutorbits-api.csproj", "{10444CA3-5F42-4D32-92F5-533C0E017526}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracer", "Tracer\Tracer.csproj", "{D8B3827B-CE6E-424D-A4F6-C0435218E98A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracer", "shared\Tracer\Tracer.csproj", "{D8B3827B-CE6E-424D-A4F6-C0435218E98A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
