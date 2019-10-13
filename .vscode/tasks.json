@@ -18,7 +18,19 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/tutorbits-api.csproj",
+                "${workspaceFolder}/api/tutorbits-api.csproj",
+                "/property:GenerateFullPaths=true",
+                "/consoleloggerparameters:NoSummary"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "build all",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -30,7 +42,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/tutorbits-api.csproj",
+                "${workspaceFolder}/api/tutorbits-api.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -43,7 +55,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/tutorbits-api.csproj",
+                "${workspaceFolder}/api/tutorbits-api.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
