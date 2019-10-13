@@ -3,7 +3,7 @@
     "tasks": [
         {
             "label": "TracerProtoCompile",
-            "command": "tools/protoc.exe",
+            "command": "shared/Tracer/tools/protoc.exe",
             "type": "process",
             "args": [
                 "--proto_path=${workspaceFolder}/shared/Tracer/proto",

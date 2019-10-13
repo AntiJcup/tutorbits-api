@@ -27,12 +27,12 @@ namespace Tracer {
             "CgxUcmFjZXIucHJvdG8SD2dvb2dsZS5wcm90b2J1ZiIjCg5DcmVhdGVGaWxl",
             "RGF0YRIRCglmaWxlX3BhdGgYASABKAkiIwoORGVsZXRlRmlsZURhdGESEQoJ",
             "ZmlsZV9wYXRoGAEgASgJIk8KDkluc2VydEZpbGVEYXRhEhEKCWZpbGVfcGF0",
-            "aBgBIAEoCRIMCgRsaW5lGAIgASgEEg4KBm9mZnNldBgDIAEoBBIMCgRkYXRh",
+            "aBgBIAEoCRIMCgRsaW5lGAIgASgNEg4KBm9mZnNldBgDIAEoDRIMCgRkYXRh",
             "GAQgASgJIloKDUVyYXNlRmlsZURhdGESEQoJZmlsZV9wYXRoGAEgASgJEgwK",
-            "BGxpbmUYAiABKAQSFAoMb2Zmc2V0X3N0YXJ0GAMgASgEEhIKCm9mZnNldF9l",
-            "bmQYBCABKAQirQMKEFRyYWNlVHJhbnNhY3Rpb24SRAoEdHlwZRgBIAEoDjI2",
+            "BGxpbmUYAiABKA0SFAoMb2Zmc2V0X3N0YXJ0GAMgASgNEhIKCm9mZnNldF9l",
+            "bmQYBCABKA0irQMKEFRyYWNlVHJhbnNhY3Rpb24SRAoEdHlwZRgBIAEoDjI2",
             "Lmdvb2dsZS5wcm90b2J1Zi5UcmFjZVRyYW5zYWN0aW9uLlRyYWNlVHJhbnNh",
-            "Y3Rpb25UeXBlEhYKDnRpbWVfb2Zmc2V0X21zGAIgASgEEjYKC2NyZWF0ZV9m",
+            "Y3Rpb25UeXBlEhYKDnRpbWVfb2Zmc2V0X21zGAIgASgNEjYKC2NyZWF0ZV9m",
             "aWxlGAMgASgLMh8uZ29vZ2xlLnByb3RvYnVmLkNyZWF0ZUZpbGVEYXRhSAAS",
             "NgoLZGVsZXRlX2ZpbGUYBCABKAsyHy5nb29nbGUucHJvdG9idWYuRGVsZXRl",
             "RmlsZURhdGFIABI2CgtpbnNlcnRfZmlsZRgFIAEoCzIfLmdvb2dsZS5wcm90",
@@ -40,10 +40,10 @@ namespace Tracer {
             "b29nbGUucHJvdG9idWYuRXJhc2VGaWxlRGF0YUgAIlUKFFRyYWNlVHJhbnNh",
             "Y3Rpb25UeXBlEg4KCkNyZWF0ZUZpbGUQABIOCgpEZWxldGVGaWxlEAESDgoK",
             "SW5zZXJ0RmlsZRACEg0KCUVyYXNlRmlsZRADQgYKBGRhdGEiYQoTVHJhY2VU",
-            "cmFuc2FjdGlvbkxvZxIRCglwYXJ0aXRpb24YASABKAQSNwoMdHJhbnNhY3Rp",
+            "cmFuc2FjdGlvbkxvZxIRCglwYXJ0aXRpb24YASABKA0SNwoMdHJhbnNhY3Rp",
             "b25zGAIgAygLMiEuZ29vZ2xlLnByb3RvYnVmLlRyYWNlVHJhbnNhY3Rpb24i",
-            "RAoMVHJhY2VQcm9qZWN0EgoKAmlkGAEgASgJEhAKCGR1cmF0aW9uGAIgASgE",
-            "EhYKDnBhcnRpdGlvbl9zaXplGAMgASgEQgmqAgZUcmFjZXJiBnByb3RvMw=="));
+            "RAoMVHJhY2VQcm9qZWN0EgoKAmlkGAEgASgJEhAKCGR1cmF0aW9uGAIgASgN",
+            "EhYKDnBhcnRpdGlvbl9zaXplGAMgASgNQgmqAgZUcmFjZXJiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -371,9 +371,9 @@ namespace Tracer {
 
     /// <summary>Field number for the "line" field.</summary>
     public const int LineFieldNumber = 2;
-    private ulong line_;
+    private uint line_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong Line {
+    public uint Line {
       get { return line_; }
       set {
         line_ = value;
@@ -382,9 +382,9 @@ namespace Tracer {
 
     /// <summary>Field number for the "offset" field.</summary>
     public const int OffsetFieldNumber = 3;
-    private ulong offset_;
+    private uint offset_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong Offset {
+    public uint Offset {
       get { return offset_; }
       set {
         offset_ = value;
@@ -426,8 +426,8 @@ namespace Tracer {
     public override int GetHashCode() {
       int hash = 1;
       if (FilePath.Length != 0) hash ^= FilePath.GetHashCode();
-      if (Line != 0UL) hash ^= Line.GetHashCode();
-      if (Offset != 0UL) hash ^= Offset.GetHashCode();
+      if (Line != 0) hash ^= Line.GetHashCode();
+      if (Offset != 0) hash ^= Offset.GetHashCode();
       if (Data.Length != 0) hash ^= Data.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -446,13 +446,13 @@ namespace Tracer {
         output.WriteRawTag(10);
         output.WriteString(FilePath);
       }
-      if (Line != 0UL) {
+      if (Line != 0) {
         output.WriteRawTag(16);
-        output.WriteUInt64(Line);
+        output.WriteUInt32(Line);
       }
-      if (Offset != 0UL) {
+      if (Offset != 0) {
         output.WriteRawTag(24);
-        output.WriteUInt64(Offset);
+        output.WriteUInt32(Offset);
       }
       if (Data.Length != 0) {
         output.WriteRawTag(34);
@@ -469,11 +469,11 @@ namespace Tracer {
       if (FilePath.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(FilePath);
       }
-      if (Line != 0UL) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Line);
+      if (Line != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Line);
       }
-      if (Offset != 0UL) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Offset);
+      if (Offset != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Offset);
       }
       if (Data.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Data);
@@ -492,10 +492,10 @@ namespace Tracer {
       if (other.FilePath.Length != 0) {
         FilePath = other.FilePath;
       }
-      if (other.Line != 0UL) {
+      if (other.Line != 0) {
         Line = other.Line;
       }
-      if (other.Offset != 0UL) {
+      if (other.Offset != 0) {
         Offset = other.Offset;
       }
       if (other.Data.Length != 0) {
@@ -517,11 +517,11 @@ namespace Tracer {
             break;
           }
           case 16: {
-            Line = input.ReadUInt64();
+            Line = input.ReadUInt32();
             break;
           }
           case 24: {
-            Offset = input.ReadUInt64();
+            Offset = input.ReadUInt32();
             break;
           }
           case 34: {
@@ -584,9 +584,9 @@ namespace Tracer {
 
     /// <summary>Field number for the "line" field.</summary>
     public const int LineFieldNumber = 2;
-    private ulong line_;
+    private uint line_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong Line {
+    public uint Line {
       get { return line_; }
       set {
         line_ = value;
@@ -595,9 +595,9 @@ namespace Tracer {
 
     /// <summary>Field number for the "offset_start" field.</summary>
     public const int OffsetStartFieldNumber = 3;
-    private ulong offsetStart_;
+    private uint offsetStart_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong OffsetStart {
+    public uint OffsetStart {
       get { return offsetStart_; }
       set {
         offsetStart_ = value;
@@ -606,9 +606,9 @@ namespace Tracer {
 
     /// <summary>Field number for the "offset_end" field.</summary>
     public const int OffsetEndFieldNumber = 4;
-    private ulong offsetEnd_;
+    private uint offsetEnd_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong OffsetEnd {
+    public uint OffsetEnd {
       get { return offsetEnd_; }
       set {
         offsetEnd_ = value;
@@ -639,9 +639,9 @@ namespace Tracer {
     public override int GetHashCode() {
       int hash = 1;
       if (FilePath.Length != 0) hash ^= FilePath.GetHashCode();
-      if (Line != 0UL) hash ^= Line.GetHashCode();
-      if (OffsetStart != 0UL) hash ^= OffsetStart.GetHashCode();
-      if (OffsetEnd != 0UL) hash ^= OffsetEnd.GetHashCode();
+      if (Line != 0) hash ^= Line.GetHashCode();
+      if (OffsetStart != 0) hash ^= OffsetStart.GetHashCode();
+      if (OffsetEnd != 0) hash ^= OffsetEnd.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -659,17 +659,17 @@ namespace Tracer {
         output.WriteRawTag(10);
         output.WriteString(FilePath);
       }
-      if (Line != 0UL) {
+      if (Line != 0) {
         output.WriteRawTag(16);
-        output.WriteUInt64(Line);
+        output.WriteUInt32(Line);
       }
-      if (OffsetStart != 0UL) {
+      if (OffsetStart != 0) {
         output.WriteRawTag(24);
-        output.WriteUInt64(OffsetStart);
+        output.WriteUInt32(OffsetStart);
       }
-      if (OffsetEnd != 0UL) {
+      if (OffsetEnd != 0) {
         output.WriteRawTag(32);
-        output.WriteUInt64(OffsetEnd);
+        output.WriteUInt32(OffsetEnd);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -682,14 +682,14 @@ namespace Tracer {
       if (FilePath.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(FilePath);
       }
-      if (Line != 0UL) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Line);
+      if (Line != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Line);
       }
-      if (OffsetStart != 0UL) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(OffsetStart);
+      if (OffsetStart != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(OffsetStart);
       }
-      if (OffsetEnd != 0UL) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(OffsetEnd);
+      if (OffsetEnd != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(OffsetEnd);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -705,13 +705,13 @@ namespace Tracer {
       if (other.FilePath.Length != 0) {
         FilePath = other.FilePath;
       }
-      if (other.Line != 0UL) {
+      if (other.Line != 0) {
         Line = other.Line;
       }
-      if (other.OffsetStart != 0UL) {
+      if (other.OffsetStart != 0) {
         OffsetStart = other.OffsetStart;
       }
-      if (other.OffsetEnd != 0UL) {
+      if (other.OffsetEnd != 0) {
         OffsetEnd = other.OffsetEnd;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -730,15 +730,15 @@ namespace Tracer {
             break;
           }
           case 16: {
-            Line = input.ReadUInt64();
+            Line = input.ReadUInt32();
             break;
           }
           case 24: {
-            OffsetStart = input.ReadUInt64();
+            OffsetStart = input.ReadUInt32();
             break;
           }
           case 32: {
-            OffsetEnd = input.ReadUInt64();
+            OffsetEnd = input.ReadUInt32();
             break;
           }
         }
@@ -810,9 +810,9 @@ namespace Tracer {
 
     /// <summary>Field number for the "time_offset_ms" field.</summary>
     public const int TimeOffsetMsFieldNumber = 2;
-    private ulong timeOffsetMs_;
+    private uint timeOffsetMs_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong TimeOffsetMs {
+    public uint TimeOffsetMs {
       get { return timeOffsetMs_; }
       set {
         timeOffsetMs_ = value;
@@ -911,7 +911,7 @@ namespace Tracer {
     public override int GetHashCode() {
       int hash = 1;
       if (Type != global::Tracer.TraceTransaction.Types.TraceTransactionType.CreateFile) hash ^= Type.GetHashCode();
-      if (TimeOffsetMs != 0UL) hash ^= TimeOffsetMs.GetHashCode();
+      if (TimeOffsetMs != 0) hash ^= TimeOffsetMs.GetHashCode();
       if (dataCase_ == DataOneofCase.CreateFile) hash ^= CreateFile.GetHashCode();
       if (dataCase_ == DataOneofCase.DeleteFile) hash ^= DeleteFile.GetHashCode();
       if (dataCase_ == DataOneofCase.InsertFile) hash ^= InsertFile.GetHashCode();
@@ -934,9 +934,9 @@ namespace Tracer {
         output.WriteRawTag(8);
         output.WriteEnum((int) Type);
       }
-      if (TimeOffsetMs != 0UL) {
+      if (TimeOffsetMs != 0) {
         output.WriteRawTag(16);
-        output.WriteUInt64(TimeOffsetMs);
+        output.WriteUInt32(TimeOffsetMs);
       }
       if (dataCase_ == DataOneofCase.CreateFile) {
         output.WriteRawTag(26);
@@ -965,8 +965,8 @@ namespace Tracer {
       if (Type != global::Tracer.TraceTransaction.Types.TraceTransactionType.CreateFile) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Type);
       }
-      if (TimeOffsetMs != 0UL) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(TimeOffsetMs);
+      if (TimeOffsetMs != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(TimeOffsetMs);
       }
       if (dataCase_ == DataOneofCase.CreateFile) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(CreateFile);
@@ -994,7 +994,7 @@ namespace Tracer {
       if (other.Type != global::Tracer.TraceTransaction.Types.TraceTransactionType.CreateFile) {
         Type = other.Type;
       }
-      if (other.TimeOffsetMs != 0UL) {
+      if (other.TimeOffsetMs != 0) {
         TimeOffsetMs = other.TimeOffsetMs;
       }
       switch (other.DataCase) {
@@ -1040,7 +1040,7 @@ namespace Tracer {
             break;
           }
           case 16: {
-            TimeOffsetMs = input.ReadUInt64();
+            TimeOffsetMs = input.ReadUInt32();
             break;
           }
           case 26: {
@@ -1136,9 +1136,9 @@ namespace Tracer {
 
     /// <summary>Field number for the "partition" field.</summary>
     public const int PartitionFieldNumber = 1;
-    private ulong partition_;
+    private uint partition_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong Partition {
+    public uint Partition {
       get { return partition_; }
       set {
         partition_ = value;
@@ -1176,7 +1176,7 @@ namespace Tracer {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (Partition != 0UL) hash ^= Partition.GetHashCode();
+      if (Partition != 0) hash ^= Partition.GetHashCode();
       hash ^= transactions_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -1191,9 +1191,9 @@ namespace Tracer {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (Partition != 0UL) {
+      if (Partition != 0) {
         output.WriteRawTag(8);
-        output.WriteUInt64(Partition);
+        output.WriteUInt32(Partition);
       }
       transactions_.WriteTo(output, _repeated_transactions_codec);
       if (_unknownFields != null) {
@@ -1204,8 +1204,8 @@ namespace Tracer {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (Partition != 0UL) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Partition);
+      if (Partition != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Partition);
       }
       size += transactions_.CalculateSize(_repeated_transactions_codec);
       if (_unknownFields != null) {
@@ -1219,7 +1219,7 @@ namespace Tracer {
       if (other == null) {
         return;
       }
-      if (other.Partition != 0UL) {
+      if (other.Partition != 0) {
         Partition = other.Partition;
       }
       transactions_.Add(other.transactions_);
@@ -1235,7 +1235,7 @@ namespace Tracer {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            Partition = input.ReadUInt64();
+            Partition = input.ReadUInt32();
             break;
           }
           case 18: {
@@ -1297,9 +1297,9 @@ namespace Tracer {
 
     /// <summary>Field number for the "duration" field.</summary>
     public const int DurationFieldNumber = 2;
-    private ulong duration_;
+    private uint duration_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong Duration {
+    public uint Duration {
       get { return duration_; }
       set {
         duration_ = value;
@@ -1308,9 +1308,9 @@ namespace Tracer {
 
     /// <summary>Field number for the "partition_size" field.</summary>
     public const int PartitionSizeFieldNumber = 3;
-    private ulong partitionSize_;
+    private uint partitionSize_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public ulong PartitionSize {
+    public uint PartitionSize {
       get { return partitionSize_; }
       set {
         partitionSize_ = value;
@@ -1340,8 +1340,8 @@ namespace Tracer {
     public override int GetHashCode() {
       int hash = 1;
       if (Id.Length != 0) hash ^= Id.GetHashCode();
-      if (Duration != 0UL) hash ^= Duration.GetHashCode();
-      if (PartitionSize != 0UL) hash ^= PartitionSize.GetHashCode();
+      if (Duration != 0) hash ^= Duration.GetHashCode();
+      if (PartitionSize != 0) hash ^= PartitionSize.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1359,13 +1359,13 @@ namespace Tracer {
         output.WriteRawTag(10);
         output.WriteString(Id);
       }
-      if (Duration != 0UL) {
+      if (Duration != 0) {
         output.WriteRawTag(16);
-        output.WriteUInt64(Duration);
+        output.WriteUInt32(Duration);
       }
-      if (PartitionSize != 0UL) {
+      if (PartitionSize != 0) {
         output.WriteRawTag(24);
-        output.WriteUInt64(PartitionSize);
+        output.WriteUInt32(PartitionSize);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -1378,11 +1378,11 @@ namespace Tracer {
       if (Id.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Id);
       }
-      if (Duration != 0UL) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(Duration);
+      if (Duration != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Duration);
       }
-      if (PartitionSize != 0UL) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(PartitionSize);
+      if (PartitionSize != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(PartitionSize);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1398,10 +1398,10 @@ namespace Tracer {
       if (other.Id.Length != 0) {
         Id = other.Id;
       }
-      if (other.Duration != 0UL) {
+      if (other.Duration != 0) {
         Duration = other.Duration;
       }
-      if (other.PartitionSize != 0UL) {
+      if (other.PartitionSize != 0) {
         PartitionSize = other.PartitionSize;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -1420,11 +1420,11 @@ namespace Tracer {
             break;
           }
           case 16: {
-            Duration = input.ReadUInt64();
+            Duration = input.ReadUInt32();
             break;
           }
           case 24: {
-            PartitionSize = input.ReadUInt64();
+            PartitionSize = input.ReadUInt32();
             break;
           }
         }

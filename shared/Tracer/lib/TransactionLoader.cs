@@ -15,7 +15,7 @@ namespace Tracer
             Project = project;
         }
 
-        public TraceTransactionLog LoadTraceTransactionLog(UInt64 partition)
+        public TraceTransactionLog LoadTraceTransactionLog(UInt32 partition)
         {
             TraceTransactionLog traceTransactionLog = null;
             using (var inputStream = GetTransactionLogStream(partition))
@@ -25,6 +25,6 @@ namespace Tracer
             return traceTransactionLog;
         }
 
-        protected abstract Stream GetTransactionLogStream(UInt64 partition);
+        protected abstract Stream GetTransactionLogStream(UInt32 partition);
     }
 }

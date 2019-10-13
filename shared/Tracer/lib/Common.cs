@@ -7,12 +7,12 @@ namespace Tracer
 {
     public static class TraceProjectExtensions
     {
-        public static UInt64 PartitionFromOffsetBottom(this TraceProject project, UInt64 offset)
+        public static UInt32 PartitionFromOffsetBottom(this TraceProject project, UInt32 offset)
         {
             return (offset - (offset % project.PartitionSize)) / project.PartitionSize;
         }
 
-        public static UInt64 PartitionFromOffsetTop(this TraceProject project, UInt64 offset)
+        public static UInt32 PartitionFromOffsetTop(this TraceProject project, UInt32 offset)
         {
             return (offset + (offset % project.PartitionSize)) / project.PartitionSize;
         }

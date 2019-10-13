@@ -15,7 +15,7 @@ namespace Tracer
             Project = project;
         }
 
-        public List<TraceTransactionLog> GetTransactionLogs(UInt64 start, UInt64 end)
+        public List<TraceTransactionLog> GetTransactionLogs(UInt32 start, UInt32 end)
         {
             List<TraceTransactionLog> transactionLogs = new List<TraceTransactionLog>();
             var partitionStart = Project.PartitionFromOffsetBottom(start);
