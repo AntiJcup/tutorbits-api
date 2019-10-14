@@ -8,23 +8,31 @@ namespace Tracer
 
     public abstract class TransactionLoader
     {
-        public TraceProject Project { get; set; }
-
-        public TransactionLoader(TraceProject project)
+        public TransactionLoader()
         {
-            Project = project;
         }
 
-        public TraceTransactionLog LoadTraceTransactionLog(UInt32 partition)
+        public TraceTransactionLog LoadTraceTransactionLog(TraceProject project, UInt32 partition)
         {
             TraceTransactionLog traceTransactionLog = null;
-            using (var inputStream = GetTransactionLogStream(partition))
+            using (var inputStream = GetTransactionLogStream(project, partition))
             {
                 TraceTransactionLog.Parser.ParseFrom(inputStream);
             }
             return traceTransactionLog;
         }
 
-        protected abstract Stream GetTransactionLogStream(UInt32 partition);
+        public TraceProject LoadProject(Guid id)
+        {
+            TraceProject traceProject = null;
+            using (var inputStream = GetProjectStream(id))
+            {
+                TraceProject.Parser.ParseFrom(inputStream);
+            }
+            return traceProject;
+        }
+
+        protected abstract Stream GetTransactionLogStream(TraceProject project, UInt32 partition);
+        protected abstract Stream GetProjectStream(Guid id);
     }
 }

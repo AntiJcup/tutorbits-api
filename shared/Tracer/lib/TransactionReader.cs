@@ -24,7 +24,7 @@ namespace Tracer
             var loader = Activator.CreateInstance(typeof(TLoader), new object[] { Project }) as TLoader;
             for (var partition = partitionStart; partition < partitionEnd; partition += Project.PartitionSize)
             {
-                var transactionLog = loader.LoadTraceTransactionLog(partition);
+                var transactionLog = loader.LoadTraceTransactionLog(Project, partition);
                 transactionLogs.Add(transactionLog);
             }
 

@@ -6,13 +6,14 @@ using Google.Protobuf;
 namespace Tracer
 {
 
-    public class TransactionTracker
+    public class TransactionTracker<TWriter> where TWriter : TransactionWriter, new()
     {
-        public TraceProject Project { get; set; }
+        public TraceProject Project { get; private set; }
 
-        //Todo change partion back to uint32
         protected UInt32 partitionOffset_ { get; set; } = 0;
         protected List<TraceTransactionLog> logs_ { get; set; }
+
+        protected bool changed_ { get; set; }
 
         public TransactionTracker(UInt32 partitionSize)
         {
@@ -35,7 +36,7 @@ namespace Tracer
             logs_ = transactionLogs;
         }
 
-        public TraceTransactionLog GetTransactionLogByTimeOffset(UInt32 timeOffset)
+        protected TraceTransactionLog GetTransactionLogByTimeOffset(UInt32 timeOffset)
         {
             TraceTransactionLog transactionLog = null;
             var partition = Project.PartitionFromOffsetBottom(timeOffset);
@@ -74,7 +75,7 @@ namespace Tracer
         public void DeleteFile(UInt32 timeOffset, string file_path)
         {
             var transaction = new TraceTransaction();
-            transaction.Type = TraceTransaction.Types.TraceTransactionType.CreateFile;
+            transaction.Type = TraceTransaction.Types.TraceTransactionType.DeleteFile;
             transaction.TimeOffsetMs = timeOffset;
             var data = new DeleteFileData();
             data.FilePath = file_path;
@@ -84,7 +85,7 @@ namespace Tracer
         public void InsertFile(UInt32 timeOffset, string file_path, UInt32 line, UInt32 offset, string insertData)
         {
             var transaction = new TraceTransaction();
-            transaction.Type = TraceTransaction.Types.TraceTransactionType.CreateFile;
+            transaction.Type = TraceTransaction.Types.TraceTransactionType.InsertFile;
             transaction.TimeOffsetMs = timeOffset;
             var data = new InsertFileData();
             data.FilePath = file_path;
@@ -97,7 +98,7 @@ namespace Tracer
         public void EraseFile(UInt32 timeOffset, string file_path, UInt32 line, UInt32 offsetStart, UInt32 offsetEnd)
         {
             var transaction = new TraceTransaction();
-            transaction.Type = TraceTransaction.Types.TraceTransactionType.CreateFile;
+            transaction.Type = TraceTransaction.Types.TraceTransactionType.EraseFile;
             transaction.TimeOffsetMs = timeOffset;
             var data = new EraseFileData();
             data.FilePath = file_path;
@@ -105,6 +106,12 @@ namespace Tracer
             data.OffsetStart = offsetStart;
             data.OffsetEnd = offsetEnd;
             transaction.EraseFile = data;
+        }
+
+        public void SaveChanges()
+        {
+            var writer = Activator.CreateInstance(typeof(TWriter), new object[] { Project }) as TWriter;
+            writer.SaveTransactionLogs(logs_);
         }
     }
 }
