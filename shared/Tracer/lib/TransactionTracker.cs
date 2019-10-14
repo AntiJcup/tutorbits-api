@@ -1,16 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Google.Protobuf;
 
 namespace Tracer
 {
 
-    public class TransactionTracker<TWriter> where TWriter : TransactionWriter, new()
+    public class TransactionTracker<TWriter> where TWriter : TransactionWriter
     {
         public TraceProject Project { get; private set; }
 
         protected UInt32 partitionOffset_ { get; set; } = 0;
+
         protected List<TraceTransactionLog> logs_ { get; set; }
 
         protected bool changed_ { get; set; }
@@ -40,10 +42,10 @@ namespace Tracer
         {
             TraceTransactionLog transactionLog = null;
             var partition = Project.PartitionFromOffsetBottom(timeOffset);
-            while (partition > (logs_.Count))
+            while (partition >= (logs_.Count))
             {
                 transactionLog = new TraceTransactionLog();
-                transactionLog.Partition = partitionOffset_ + (UInt32)(logs_.Count - 1);
+                transactionLog.Partition = partitionOffset_ + (UInt32)(logs_.Count);
                 logs_.Add(transactionLog);
             }
 
@@ -70,6 +72,8 @@ namespace Tracer
             var data = new CreateFileData();
             data.FilePath = file_path;
             transaction.CreateFile = data;
+
+            AddTransaction(transaction);
         }
 
         public void DeleteFile(UInt32 timeOffset, string file_path)
@@ -80,6 +84,8 @@ namespace Tracer
             var data = new DeleteFileData();
             data.FilePath = file_path;
             transaction.DeleteFile = data;
+
+            AddTransaction(transaction);
         }
 
         public void InsertFile(UInt32 timeOffset, string file_path, UInt32 line, UInt32 offset, string insertData)
@@ -93,6 +99,8 @@ namespace Tracer
             data.Offset = offset;
             data.Data = insertData;
             transaction.InsertFile = data;
+
+            AddTransaction(transaction);
         }
 
         public void EraseFile(UInt32 timeOffset, string file_path, UInt32 line, UInt32 offsetStart, UInt32 offsetEnd)
@@ -106,12 +114,20 @@ namespace Tracer
             data.OffsetStart = offsetStart;
             data.OffsetEnd = offsetEnd;
             transaction.EraseFile = data;
+
+            AddTransaction(transaction);
         }
 
         public void SaveChanges()
         {
-            var writer = Activator.CreateInstance(typeof(TWriter), new object[] { Project }) as TWriter;
+            var writer = Activator.CreateInstance(typeof(TWriter), GetWriterArgs()) as TWriter;
+            writer.SaveProject();
             writer.SaveTransactionLogs(logs_);
+        }
+
+        protected virtual object[] GetWriterArgs()
+        {
+            return new object[] { Project };
         }
     }
 }

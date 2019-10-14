@@ -6,7 +6,7 @@ using Google.Protobuf;
 namespace Tracer
 {
 
-    public class TransactionReader<TLoader> where TLoader : TransactionLoader, new()
+    public class TransactionReader<TLoader> where TLoader : TransactionLoader
     {
         public TraceProject Project { get; set; }
 
@@ -21,7 +21,7 @@ namespace Tracer
             var partitionStart = Project.PartitionFromOffsetBottom(start);
             var partitionEnd = Project.PartitionFromOffsetTop(end);
 
-            var loader = Activator.CreateInstance(typeof(TLoader), new object[] { Project }) as TLoader;
+            var loader = Activator.CreateInstance(typeof(TLoader), GetReaderArgs()) as TLoader;
             for (var partition = partitionStart; partition < partitionEnd; partition += Project.PartitionSize)
             {
                 var transactionLog = loader.LoadTraceTransactionLog(Project, partition);
@@ -29,6 +29,11 @@ namespace Tracer
             }
 
             return transactionLogs;
+        }
+
+        protected virtual object[] GetReaderArgs()
+        {
+            return new object[] { Project };
         }
     }
 }

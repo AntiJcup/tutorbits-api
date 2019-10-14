@@ -17,7 +17,7 @@ namespace Tracer
             TraceTransactionLog traceTransactionLog = null;
             using (var inputStream = GetTransactionLogStream(project, partition))
             {
-                TraceTransactionLog.Parser.ParseFrom(inputStream);
+                traceTransactionLog = TraceTransactionLog.Parser.ParseFrom(inputStream);
             }
             return traceTransactionLog;
         }
@@ -27,7 +27,7 @@ namespace Tracer
             TraceProject traceProject = null;
             using (var inputStream = GetProjectStream(id))
             {
-                TraceProject.Parser.ParseFrom(inputStream);
+                traceProject = TraceProject.Parser.ParseFrom(inputStream);
             }
             return traceProject;
         }
