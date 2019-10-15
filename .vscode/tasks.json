@@ -2,13 +2,25 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "TracerProtoCompile",
+            "label": "TracerProtoCompileCS",
             "command": "shared/Tracer/tools/protoc.exe",
             "type": "process",
             "args": [
                 "--proto_path=${workspaceFolder}/shared/Tracer/proto",
                 "--csharp_opt=file_extension=.g.cs",
-                "--csharp_out=${workspaceFolder}/shared/Tracer/models",
+                "--csharp_out=${workspaceFolder}/shared/Tracer/models/cs",
+                "Tracer.proto",
+            ]
+        },
+        {
+            "label": "TracerProtoCompileTS",
+            "command": "shared/Tracer/tools/protoc.exe",
+            "type": "process",
+            "args": [
+                "--plugin=protoc-gen-ts=C:/Users/Jacob/AppData/Roaming/npm/node_modules/ts-protoc-gen/bin/protoc-gen-ts.cmd",
+                "--proto_path=${workspaceFolder}/shared/Tracer/proto",
+                "--js_out=import_style=commonjs,binary:${workspaceFolder}/shared/Tracer/models/ts",
+                "--ts_out=${workspaceFolder}/shared/Tracer/models/ts",
                 "Tracer.proto",
             ]
         },
