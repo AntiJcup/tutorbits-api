@@ -11,7 +11,7 @@ namespace Tracer
         public static readonly string LocalProjectFolder = "{0}_proj";
         public static readonly string LocalPartitionsFolder = "partitions";
         public static readonly string LocalTransactionLogNameFormat = "{0}.tlc";
-        public static readonly string LocalProjectNameFormat = "{0}.tpc";
+        public static readonly string LocalProjectNameFormat = "proj.tpc";
     }
 
     public class LocalTransactionLoader : TransactionLoader
@@ -27,6 +27,10 @@ namespace Tracer
         {
             var filePath = Path.Combine(ProjectDir, string.Format(LocalConstants.LocalProjectFolder, project.Id), LocalConstants.LocalPartitionsFolder,
                 string.Format(LocalConstants.LocalTransactionLogNameFormat, partition.ToString()));
+            if (!File.Exists(filePath))
+            {
+                return null;
+            }
             return File.OpenRead(filePath);
         }
 
@@ -96,21 +100,6 @@ namespace Tracer
         }
 
         override protected object[] GetWriterArgs()
-        {
-            return new object[] { Project, ProjectDir };
-        }
-    }
-
-    public class LocalTransactionReader : TransactionReader<LocalTransactionLoader>
-    {
-        public string ProjectDir { get; private set; }
-
-        public LocalTransactionReader(TraceProject project, string projectDir) : base(project)
-        {
-            ProjectDir = projectDir;
-        }
-
-        override protected object[] GetReaderArgs()
         {
             return new object[] { Project, ProjectDir };
         }
