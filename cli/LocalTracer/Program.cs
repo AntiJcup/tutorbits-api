@@ -11,8 +11,8 @@ namespace LocalTracer
         {
             var tracker = new LocalTransactionTracker(30, Directory.GetCurrentDirectory());
             tracker.CreateFile(0, "test");
-            tracker.InsertFile(5, "test", 0, 0, "Wwow");
-            tracker.InsertFile(35, "test", 0, 0, "NOICE");
+            tracker.ModifyFile(5, "test", 0, 0, "Wwow");
+            tracker.ModifyFile(35, "test", 0, 0, "NOICE");
             tracker.SaveChanges();
 
             var projectId = tracker.Project.Id;
