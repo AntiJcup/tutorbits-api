@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "buildAPI",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}sites/api/bin/Debug/netcoreapp2.2/tutorbits-api.dll",
+            "program": "${workspaceFolder}/sites/api/bin/Debug/netcoreapp2.2/tutorbits-api.dll",
             "args": [],
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
@@ -20,7 +20,8 @@
                 "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"                
             },
             "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development"
+                "ASPNETCORE_ENVIRONMENT": "Development",
+                "ASPNETCORE_URLS": "http://api.tutorbits.com:5000"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
