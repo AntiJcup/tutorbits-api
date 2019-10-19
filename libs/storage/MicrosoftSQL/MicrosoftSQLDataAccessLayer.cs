@@ -36,6 +36,12 @@ namespace TutorBits
                     await dbContext_.AddAsync(entity);
                 }
 
+                public async Task Delete<T>(T entity) where T : class
+                {
+                    dbContext_.Remove(entity);
+                    await dbContext_.SaveChangesAsync();
+                }
+
                 public async Task<T> Get<T>(params object[] keys) where T : class
                 {
                     return await dbContext_.FindAsync<T>(keys);
