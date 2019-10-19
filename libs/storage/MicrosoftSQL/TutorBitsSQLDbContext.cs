@@ -15,7 +15,7 @@ namespace TutorBits
                     
                 }
 
-                DbSet<Tutorial> Tutorials { get; set; }  
+                public DbSet<Tutorial> Tutorials { get; set; }  
             }
         }
     }

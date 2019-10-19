@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\models\Common\Common.csproj" />
+    <ProjectReference Include="..\..\service\DataAccess\DataAccess.csproj" />
   </ItemGroup>
 
 </Project>

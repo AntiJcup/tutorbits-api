@@ -46,11 +46,12 @@ namespace tutorbits_api
                     });
             });
 
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<TutorBitsSQLDbContext>(item => item.UseSqlServer(
-                Configuration.GetConnectionString("DefaultConnection"),
+                connectionString,
                 b => b.MigrationsAssembly("MicrosoftSQL")));
 
-            services.GenericServicesSimpleSetup<TutorBitsSQLDbContext>();
+            services.AddMicrosoftSQLDataAccessLayer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

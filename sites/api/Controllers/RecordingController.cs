@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GenericServices;
 using Microsoft.AspNetCore.Mvc;
 using Tracer;
+using TutorBits.DataAccess;
 using TutorBits.Models.Common;
 
 namespace tutorbits_api.Controllers
@@ -14,21 +15,22 @@ namespace tutorbits_api.Controllers
     [ApiController]
     public class RecordingController : ControllerBase
     {
-        private readonly ICrudServices _crudService;
+        private readonly DataAccessService dataAccessService_;
 
-        public RecordingController(ICrudServices crudService)
+        public RecordingController(DataAccessService dataAccessService)
         {
-            _crudService = crudService;
+            dataAccessService_ = dataAccessService;
         }
         // POST api/values
         [HttpPost]
-        public void AddTransaction()
+        public async Task AddTransaction()
         {
             try
             {
+                var tutorial = await dataAccessService_.GetTutorial(Guid.NewGuid());
                 var transaction = TraceTransaction.Parser.ParseFrom(Request.Body);
                 Console.WriteLine(transaction.ToString());
-                _crudService.ReadManyNoTracked<Tutorial>();
+                
             }
             catch (Exception e)
             {
