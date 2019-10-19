@@ -13,6 +13,9 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.OpenApi.Models;
+using TutorBits.Storage.MicrosoftSQL;
+using Microsoft.EntityFrameworkCore;
+using GenericServices.Setup;
 
 namespace tutorbits_api
 {
@@ -42,6 +45,12 @@ namespace tutorbits_api
                         builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
                     });
             });
+
+            services.AddDbContext<TutorBitsSQLDbContext>(item => item.UseSqlServer(
+                Configuration.GetConnectionString("DefaultConnection"),
+                b => b.MigrationsAssembly("MicrosoftSQL")));
+
+            services.GenericServicesSimpleSetup<TutorBitsSQLDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

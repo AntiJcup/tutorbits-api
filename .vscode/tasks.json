@@ -84,6 +84,32 @@
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Create SQL Migration",
+            "type": "shell",
+            "command": "dotnet ef migrations add ${input:MigrationName}",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}/libs/storage/MicrosoftSQL"
+            }
+        },
+        {
+            "label": "Apply Latest SQL Migration",
+            "type": "shell",
+            "command": "dotnet ef database update",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}/libs/storage/MicrosoftSQL"
+            }
         }
+    ],
+    "inputs": [
+        {
+            "id": "MigrationName",
+            "description": "MigrationName:",
+            "default": "MigrationName",
+            "type": "promptString"
+        },
     ]
 }
