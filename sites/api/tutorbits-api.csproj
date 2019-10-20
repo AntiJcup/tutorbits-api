@@ -27,6 +27,7 @@
     <ProjectReference Include="..\..\shared\Tracer\Tracer.csproj" />
     <ProjectReference Include="..\..\libs\storage\MicrosoftSQL\MicrosoftSQL.csproj" />
     <ProjectReference Include="..\..\libs\service\DBDataAccess\DBDataAccess.csproj" />
+    <ProjectReference Include="..\..\libs\service\FileDataAccess\FileDataAccess.csproj" />
   </ItemGroup>
 
 </Project>
