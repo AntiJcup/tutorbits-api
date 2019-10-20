@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace TutorBits
 {
-    namespace DataAccess
+    namespace DBDataAccess
     {
-        public interface DataLayerInterface
+        public interface DBDataLayerInterface
         {
             Task Create<T>(T entity) where T : class;
 

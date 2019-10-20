@@ -51,7 +51,7 @@ namespace tutorbits_api
                 connectionString,
                 b => b.MigrationsAssembly("MicrosoftSQL")));
 
-            services.AddMicrosoftSQLDataAccessLayer();
+            services.AddMicrosoftSQLDBDataAccessLayer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using TutorBits.DataAccess;
+using TutorBits.DBDataAccess;
 
 namespace TutorBits
 {
@@ -15,18 +15,18 @@ namespace TutorBits
         {
             public static class ServiceExtensions
             {
-                public static IServiceCollection AddMicrosoftSQLDataAccessLayer(this IServiceCollection services)
+                public static IServiceCollection AddMicrosoftSQLDBDataAccessLayer(this IServiceCollection services)
                 {
-                    services.AddTransient<DataLayerInterface, MicrosoftSQLDataAccessLayer>();
-                    return services.AddTransient<DataAccessService>();
+                    services.AddTransient<DBDataLayerInterface, MicrosoftSQLDBDataAccessLayer>();
+                    return services.AddTransient<DBDataAccessService>();
                 }
             }
 
-            public class MicrosoftSQLDataAccessLayer : DataLayerInterface
+            public class MicrosoftSQLDBDataAccessLayer : DBDataLayerInterface
             {
                 private readonly TutorBitsSQLDbContext dbContext_;
 
-                public MicrosoftSQLDataAccessLayer(TutorBitsSQLDbContext dbContext)
+                public MicrosoftSQLDBDataAccessLayer(TutorBitsSQLDbContext dbContext)
                 {
                     dbContext_ = dbContext;
                 }

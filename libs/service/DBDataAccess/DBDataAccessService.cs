@@ -4,13 +4,13 @@ using TutorBits.Models.Common;
 
 namespace TutorBits
 {
-    namespace DataAccess
+    namespace DBDataAccess
     {
-        public class DataAccessService
+        public class DBDataAccessService
         {
-            private readonly DataLayerInterface dataLayer_;
+            private readonly DBDataLayerInterface dataLayer_;
 
-            public DataAccessService(DataLayerInterface dataLayer)
+            public DBDataAccessService(DBDataLayerInterface dataLayer)
             {
                 dataLayer_ = dataLayer;
             }

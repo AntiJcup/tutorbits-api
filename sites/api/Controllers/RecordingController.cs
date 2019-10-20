@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using GenericServices;
 using Microsoft.AspNetCore.Mvc;
 using Tracer;
-using TutorBits.DataAccess;
+using TutorBits.DBDataAccess;
 using TutorBits.Models.Common;
 
 namespace tutorbits_api.Controllers
@@ -15,9 +15,9 @@ namespace tutorbits_api.Controllers
     [ApiController]
     public class RecordingController : ControllerBase
     {
-        private readonly DataAccessService dataAccessService_;
+        private readonly DBDataAccessService dataAccessService_;
 
-        public RecordingController(DataAccessService dataAccessService)
+        public RecordingController(DBDataAccessService dataAccessService)
         {
             dataAccessService_ = dataAccessService;
         }
