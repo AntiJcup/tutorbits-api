@@ -30,10 +30,17 @@ namespace tutorbits_api.Controllers
         {
             try
             {
-                var tutorial = await dbDataAccessService_.GetTutorial(Guid.NewGuid());
-                var project = await fileDataAccessService_.GetProject(Guid.NewGuid());
+                var guid = Guid.NewGuid();
+                var tutorial = await dbDataAccessService_.GetTutorial(guid);
+                await fileDataAccessService_.CreateTraceProject(new TraceProject()
+                {
+                    Id = guid.ToString()
+                });
+                var project = await fileDataAccessService_.GetProject(guid);
+                Console.WriteLine(project.ToString());
                 var transaction = TraceTransaction.Parser.ParseFrom(Request.Body);
                 Console.WriteLine(transaction.ToString());
+                
 
             }
             catch (Exception e)

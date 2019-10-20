@@ -12,8 +12,6 @@ namespace TutorBits
         {
             public readonly string ProjectsDir = "projects";
 
-            public readonly string ProjectDirectoryFormat = "{0}/{1}";
-
             public readonly string ProjectFileName = "proj.tpc";
 
             private readonly FileDataLayerInterface dataLayer_;
@@ -21,6 +19,11 @@ namespace TutorBits
             public FileDataAccessService(FileDataLayerInterface dataLayer)
             {
                 dataLayer_ = dataLayer;
+            }
+
+            public string GetProjectPath(string id)
+            {
+                return Path.Combine(ProjectsDir, id);
             }
 
             public async Task CreateTraceProject(TraceProject project)
@@ -31,7 +34,7 @@ namespace TutorBits
                     await dataLayer_.CreateDirectory(ProjectsDir);
                 }
 
-                var projectDirectoryPath = string.Format(ProjectDirectoryFormat, ProjectsDir, project.Id);
+                var projectDirectoryPath = GetProjectPath(project.Id);
                 var projectFilePath = Path.Combine(projectDirectoryPath, ProjectFileName);
 
                 await dataLayer_.CreateDirectory(projectDirectoryPath);
@@ -45,7 +48,7 @@ namespace TutorBits
 
             public async Task<TraceProject> GetProject(Guid id)
             {
-                var projectDirectoryPath = string.Format(ProjectDirectoryFormat, ProjectsDir, id);
+                var projectDirectoryPath = GetProjectPath(id.ToString());
                 var projectFilePath = Path.Combine(projectDirectoryPath, ProjectFileName);
                 using (var fileStream = await dataLayer_.ReadFile(projectFilePath))
                 {
@@ -55,7 +58,7 @@ namespace TutorBits
 
             public async Task UpdateProject(TraceProject project)
             {
-                var projectDirectoryPath = string.Format(ProjectDirectoryFormat, ProjectsDir, project.Id);
+                var projectDirectoryPath = GetProjectPath(project.Id);
                 var projectFilePath = Path.Combine(projectDirectoryPath, ProjectFileName);
 
                 using (var memoryStream = new MemoryStream())
@@ -68,7 +71,7 @@ namespace TutorBits
 
             public async Task DeleteProject(Guid id)
             {
-                var projectDirectoryPath = string.Format(ProjectDirectoryFormat, ProjectsDir, id);
+                var projectDirectoryPath = GetProjectPath(id.ToString());
 
                 await dataLayer_.DeleteDirectory(projectDirectoryPath);
             }
