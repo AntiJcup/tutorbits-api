@@ -17,6 +17,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileDataAccess", "libs\serv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DBDataAccess", "libs\service\DBDataAccess\DBDataAccess.csproj", "{236A51EE-94EC-4624-9806-3089D26F73F6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{32081FBD-84A2-4E5C-B03C-94E2C7CEC9A6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "storage", "storage", "{9C3BCC91-8E2D-42D8-B758-F29882315BB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WindowsFileSystem", "libs\storage\WindowsFileSystem\WindowsFileSystem.csproj", "{A0D0EE77-DE09-4A79-9701-05F8A50520AF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -114,5 +120,21 @@ Global
 		{236A51EE-94EC-4624-9806-3089D26F73F6}.Release|x64.Build.0 = Release|Any CPU
 		{236A51EE-94EC-4624-9806-3089D26F73F6}.Release|x86.ActiveCfg = Release|Any CPU
 		{236A51EE-94EC-4624-9806-3089D26F73F6}.Release|x86.Build.0 = Release|Any CPU
+		{A0D0EE77-DE09-4A79-9701-05F8A50520AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0D0EE77-DE09-4A79-9701-05F8A50520AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0D0EE77-DE09-4A79-9701-05F8A50520AF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A0D0EE77-DE09-4A79-9701-05F8A50520AF}.Debug|x64.Build.0 = Debug|Any CPU
+		{A0D0EE77-DE09-4A79-9701-05F8A50520AF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A0D0EE77-DE09-4A79-9701-05F8A50520AF}.Debug|x86.Build.0 = Debug|Any CPU
+		{A0D0EE77-DE09-4A79-9701-05F8A50520AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0D0EE77-DE09-4A79-9701-05F8A50520AF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0D0EE77-DE09-4A79-9701-05F8A50520AF}.Release|x64.ActiveCfg = Release|Any CPU
+		{A0D0EE77-DE09-4A79-9701-05F8A50520AF}.Release|x64.Build.0 = Release|Any CPU
+		{A0D0EE77-DE09-4A79-9701-05F8A50520AF}.Release|x86.ActiveCfg = Release|Any CPU
+		{A0D0EE77-DE09-4A79-9701-05F8A50520AF}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9C3BCC91-8E2D-42D8-B758-F29882315BB1} = {32081FBD-84A2-4E5C-B03C-94E2C7CEC9A6}
+		{A0D0EE77-DE09-4A79-9701-05F8A50520AF} = {9C3BCC91-8E2D-42D8-B758-F29882315BB1}
 	EndGlobalSection
 EndGlobal

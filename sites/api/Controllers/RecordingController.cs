@@ -7,6 +7,7 @@ using GenericServices;
 using Microsoft.AspNetCore.Mvc;
 using Tracer;
 using TutorBits.DBDataAccess;
+using TutorBits.FileDataAccess;
 using TutorBits.Models.Common;
 
 namespace tutorbits_api.Controllers
@@ -15,11 +16,13 @@ namespace tutorbits_api.Controllers
     [ApiController]
     public class RecordingController : ControllerBase
     {
-        private readonly DBDataAccessService dataAccessService_;
+        private readonly DBDataAccessService dbDataAccessService_;
+        private readonly FileDataAccessService fileDataAccessService_;
 
-        public RecordingController(DBDataAccessService dataAccessService)
+        public RecordingController(DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
         {
-            dataAccessService_ = dataAccessService;
+            dbDataAccessService_ = dbDataAccessService;
+            fileDataAccessService_ = fileDataAccessService;
         }
         // POST api/values
         [HttpPost]
@@ -27,10 +30,11 @@ namespace tutorbits_api.Controllers
         {
             try
             {
-                var tutorial = await dataAccessService_.GetTutorial(Guid.NewGuid());
+                var tutorial = await dbDataAccessService_.GetTutorial(Guid.NewGuid());
+                var project = await fileDataAccessService_.GetProject(Guid.NewGuid());
                 var transaction = TraceTransaction.Parser.ParseFrom(Request.Body);
                 Console.WriteLine(transaction.ToString());
-                
+
             }
             catch (Exception e)
             {

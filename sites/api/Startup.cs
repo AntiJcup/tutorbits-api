@@ -16,6 +16,7 @@ using Microsoft.OpenApi.Models;
 using TutorBits.Storage.MicrosoftSQL;
 using Microsoft.EntityFrameworkCore;
 using GenericServices.Setup;
+using TutorBits.WindowsFileSystem;
 
 namespace tutorbits_api
 {
@@ -52,6 +53,7 @@ namespace tutorbits_api
                 b => b.MigrationsAssembly("MicrosoftSQL")));
 
             services.AddMicrosoftSQLDBDataAccessLayer();
+            services.AddWindowsFileDataAccessLayer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

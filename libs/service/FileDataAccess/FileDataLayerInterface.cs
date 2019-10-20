@@ -2,6 +2,7 @@ using Tracer;
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TutorBits
 {
@@ -9,23 +10,23 @@ namespace TutorBits
     {
         public interface FileDataLayerInterface
         {
-            void CreateFile(string path, Stream stream);
+            Task CreateFile(string path, Stream stream);
 
-            Stream ReadFile(string path);
+            Task<Stream> ReadFile(string path);
 
-            void UpdateFile(string path, Stream stream);
+            Task UpdateFile(string path, Stream stream);
 
-            void DeleteFile(string path);
+            Task DeleteFile(string path);
 
-            bool FileExists(string path);
+            Task<bool> FileExists(string path);
 
-            ICollection<string> GetAllFiles(string parentPath);
+            Task<ICollection<string>> GetAllFiles(string parentPath);
 
-            void CreateDirectory(string path);
+            Task CreateDirectory(string path);
 
-            void DeleteDirectory(string path);
+            Task DeleteDirectory(string path);
 
-            bool DirectoryExists(string path);
+            Task<bool> DirectoryExists(string path);
         }
     }
 }

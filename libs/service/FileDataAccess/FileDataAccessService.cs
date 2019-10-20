@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using Google.Protobuf;
 using Tracer;
 
@@ -22,36 +23,37 @@ namespace TutorBits
                 dataLayer_ = dataLayer;
             }
 
-            public void CreateTraceProject(TraceProject project)
+            public async Task CreateTraceProject(TraceProject project)
             {
-                if (!dataLayer_.DirectoryExists(ProjectsDir))
+                var projDirectoryExists = await dataLayer_.DirectoryExists(ProjectsDir);
+                if (!projDirectoryExists)
                 {
-                    dataLayer_.CreateDirectory(ProjectsDir);
+                    await dataLayer_.CreateDirectory(ProjectsDir);
                 }
-                
+
                 var projectDirectoryPath = string.Format(ProjectDirectoryFormat, ProjectsDir, project.Id);
                 var projectFilePath = Path.Combine(projectDirectoryPath, ProjectFileName);
 
-                dataLayer_.CreateDirectory(projectDirectoryPath);
+                await dataLayer_.CreateDirectory(projectDirectoryPath);
                 using (var memoryStream = new MemoryStream())
                 {
                     project.WriteTo(memoryStream);
                     memoryStream.Position = 0;
-                    dataLayer_.CreateFile(projectFilePath, memoryStream);
+                    await dataLayer_.CreateFile(projectFilePath, memoryStream);
                 }
             }
 
-            TraceProject GetProject(Guid id)
+            public async Task<TraceProject> GetProject(Guid id)
             {
                 var projectDirectoryPath = string.Format(ProjectDirectoryFormat, ProjectsDir, id);
                 var projectFilePath = Path.Combine(projectDirectoryPath, ProjectFileName);
-                using (var fileStream = dataLayer_.ReadFile(projectFilePath))
+                using (var fileStream = await dataLayer_.ReadFile(projectFilePath))
                 {
                     return TraceProject.Parser.ParseFrom(fileStream);
                 }
             }
 
-            void UpdateProject(TraceProject project)
+            public async Task UpdateProject(TraceProject project)
             {
                 var projectDirectoryPath = string.Format(ProjectDirectoryFormat, ProjectsDir, project.Id);
                 var projectFilePath = Path.Combine(projectDirectoryPath, ProjectFileName);
@@ -60,15 +62,15 @@ namespace TutorBits
                 {
                     project.WriteTo(memoryStream);
                     memoryStream.Position = 0;
-                    dataLayer_.UpdateFile(projectFilePath, memoryStream);
+                    await dataLayer_.UpdateFile(projectFilePath, memoryStream);
                 }
             }
 
-            void DeleteProject(Guid id)
+            public async Task DeleteProject(Guid id)
             {
                 var projectDirectoryPath = string.Format(ProjectDirectoryFormat, ProjectsDir, id);
 
-                dataLayer_.DeleteDirectory(projectDirectoryPath);
+                await dataLayer_.DeleteDirectory(projectDirectoryPath);
             }
         }
     }
