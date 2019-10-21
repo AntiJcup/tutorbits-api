@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TutorBits
 {
@@ -7,10 +8,11 @@ namespace TutorBits
     {
         namespace Common
         {
-            public class Tutorial
+            [Table("Tutorials")]
+            public class Tutorial : Base
             {
-                [Key]
-                public Guid Id { get; set; }
+                public Guid? UserId { get; set; }
+
                 public string Name { get; set; }
             }
         }

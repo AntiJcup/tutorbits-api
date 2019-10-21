@@ -24,7 +24,22 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime>("DateCreated")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime>("DateModified")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
                     b.Property<string>("Name");
+
+                    b.Property<string>("Notes");
+
+                    b.Property<string>("Status")
+                        .IsRequired();
+
+                    b.Property<Guid?>("UserId");
 
                     b.HasKey("Id");
 

@@ -31,9 +31,12 @@ namespace TutorBits
                     dbContext_ = dbContext;
                 }
 
-                public async Task Create<T>(T entity) where T : class
+                public async Task<T> Create<T>(T entity) where T : class
                 {
-                    await dbContext_.AddAsync(entity);
+                    var dbEntity = (await dbContext_.AddAsync(entity)).Entity;
+                    await dbContext_.SaveChangesAsync();
+                    dbContext_.Entry(dbEntity).State = EntityState.Detached;
+                    return dbEntity;
                 }
 
                 public async Task Delete<T>(T entity) where T : class
@@ -51,10 +54,12 @@ namespace TutorBits
                 {
                     var dbSet = dbContext_.Set<T>();
 
+                    dbSet.AsNoTracking();
                     foreach (var include in includes)
                     {
                         dbSet.Include(include);
                     }
+
 
                     return await dbSet.FindAsync(keys);
                 }
@@ -78,7 +83,7 @@ namespace TutorBits
                         dbSet.Take(take.Value);
                     }
 
-                    return await dbSet.ToListAsync();
+                    return await dbSet.AsNoTracking().ToListAsync();
                 }
 
                 public async Task<ICollection<T>> GetAll<T, TProperty>(ICollection<Expression<Func<T, TProperty>>> includes, Expression<Func<T, bool>> where, int? skip, int? take) where T : class
@@ -112,6 +117,7 @@ namespace TutorBits
                 {
                     dbContext_.Update(entity);
                     await dbContext_.SaveChangesAsync();
+                    dbContext_.Entry(entity).State = EntityState.Detached;
                 }
             }
         }

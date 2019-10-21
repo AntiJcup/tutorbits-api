@@ -17,6 +17,7 @@ using TutorBits.Storage.MicrosoftSQL;
 using Microsoft.EntityFrameworkCore;
 using GenericServices.Setup;
 using TutorBits.WindowsFileSystem;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace tutorbits_api
 {
@@ -50,7 +51,9 @@ namespace tutorbits_api
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             services.AddDbContext<TutorBitsSQLDbContext>(item => item.UseSqlServer(
                 connectionString,
-                b => b.MigrationsAssembly("MicrosoftSQL")));
+                b => b.MigrationsAssembly("MicrosoftSQL"))
+                );
+            //.ReplaceService<IMigrationsSqlGenerator, MyMigrationsSqlGenerator>()
 
             services.AddMicrosoftSQLDBDataAccessLayer();
             services.AddWindowsFileDataAccessLayer();

@@ -29,6 +29,7 @@
     <ProjectReference Include="..\..\libs\service\DBDataAccess\DBDataAccess.csproj" />
     <ProjectReference Include="..\..\libs\service\FileDataAccess\FileDataAccess.csproj" />
     <ProjectReference Include="..\..\libs\storage\WindowsFileSystem\WindowsFileSystem.csproj" />
+    <ProjectReference Include="..\..\libs\constants\constants.csproj" />
   </ItemGroup>
 
 </Project>

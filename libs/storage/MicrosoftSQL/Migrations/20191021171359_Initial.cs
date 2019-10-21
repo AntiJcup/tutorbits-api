@@ -12,6 +12,11 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    DateModified = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    Notes = table.Column<string>(nullable: true),
+                    Status = table.Column<string>(nullable: false),
+                    UserId = table.Column<Guid>(nullable: true),
                     Name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>

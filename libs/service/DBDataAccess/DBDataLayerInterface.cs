@@ -9,7 +9,7 @@ namespace TutorBits
     {
         public interface DBDataLayerInterface
         {
-            Task Create<T>(T entity) where T : class;
+            Task<T> Create<T>(T entity) where T : class;
 
             Task<T> Get<T>(params object[] keys) where T : class;
 

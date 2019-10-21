@@ -1,5 +1,11 @@
 ﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TutorBits.Models.Common;
 
 namespace TutorBits
@@ -12,10 +18,35 @@ namespace TutorBits
             {
                 public TutorBitsSQLDbContext(DbContextOptions options) : base(options)
                 {
-                    
+
                 }
 
-                public DbSet<Tutorial> Tutorials { get; set; }  
+                public DbSet<Tutorial> Tutorials { get; set; }
+
+                protected override void OnModelCreating(ModelBuilder modelBuilder)
+                {
+                    var publicPropertieBaseTypes = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                                .Where(p => p.PropertyType.IsGenericType &&
+                                            p.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>) &&
+                                            p.PropertyType.GetGenericArguments()[0].IsSubclassOf(typeof(Base)))
+                                .Select(p => p.PropertyType.GetGenericArguments()[0]);
+
+                    //Setup default values for base class while maintaining individual tables
+                    //modelBuilder.Entity(typeof(Base)).Property("Status").HasConversion(converter); 
+                    //Creates the base table ignoring other tables including attr and totable
+                    var converter = new EnumToStringConverter<BaseState>();
+                    foreach (var publicPropertieBaseType in publicPropertieBaseTypes)
+                    {
+                        modelBuilder.Entity(publicPropertieBaseType)
+                                                .Property("Status")
+                                                .HasConversion(converter);
+                        modelBuilder.Entity(publicPropertieBaseType, c =>
+                        {
+                            c.Property("DateCreated").HasDefaultValueSql("GETUTCDATE()").ValueGeneratedOnAdd();
+                            c.Property("DateModified").HasDefaultValueSql("GETUTCDATE()").ValueGeneratedOnAddOrUpdate();
+                        });
+                    }
+                }
             }
         }
     }
