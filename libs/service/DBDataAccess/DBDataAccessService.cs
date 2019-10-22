@@ -16,6 +16,7 @@ namespace TutorBits
                 dataLayer_ = dataLayer;
             }
 
+            #region Tutorials
             public async Task<Tutorial> CreateTutorial(Tutorial tutorial)
             {
                 return await dataLayer_.Create(tutorial);
@@ -40,6 +41,7 @@ namespace TutorBits
             {
                 await dataLayer_.Delete(tutorial);
             }
+            #endregion
         }
     }
 }

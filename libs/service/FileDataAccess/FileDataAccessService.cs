@@ -14,6 +14,10 @@ namespace TutorBits
 
             public readonly string ProjectFileName = "proj.tpc";
 
+            public readonly string TransactionsDir = "partitions";
+
+            public readonly string TransactionLogFileName = "{0}.tlc";
+
             private readonly FileDataLayerInterface dataLayer_;
 
             public FileDataAccessService(FileDataLayerInterface dataLayer)
@@ -21,11 +25,31 @@ namespace TutorBits
                 dataLayer_ = dataLayer;
             }
 
+            #region Paths
             public string GetProjectPath(string id)
             {
                 return Path.Combine(ProjectsDir, id);
             }
 
+            public string GetProjectFilePath(string directory)
+            {
+                return Path.Combine(directory, ProjectFileName);
+            }
+
+            public string GetTransactionLogPath(string projectDirectoryPath)
+            {
+                return Path.Combine(projectDirectoryPath, TransactionsDir);
+            }
+
+            public string GetTransactionLogFilePath(string transactionLogPath, UInt32 partition)
+            {
+                return Path.Combine(transactionLogPath, string.Format(TransactionLogFileName, partition));
+            }
+            #endregion
+
+
+
+            #region Project
             public async Task CreateTraceProject(TraceProject project)
             {
                 var projDirectoryExists = await dataLayer_.DirectoryExists(ProjectsDir);
@@ -35,7 +59,7 @@ namespace TutorBits
                 }
 
                 var projectDirectoryPath = GetProjectPath(project.Id);
-                var projectFilePath = Path.Combine(projectDirectoryPath, ProjectFileName);
+                var projectFilePath = GetProjectFilePath(projectDirectoryPath);
 
                 await dataLayer_.CreateDirectory(projectDirectoryPath);
                 using (var memoryStream = new MemoryStream())
@@ -49,7 +73,7 @@ namespace TutorBits
             public async Task<TraceProject> GetProject(Guid id)
             {
                 var projectDirectoryPath = GetProjectPath(id.ToString());
-                var projectFilePath = Path.Combine(projectDirectoryPath, ProjectFileName);
+                var projectFilePath = GetProjectFilePath(projectDirectoryPath);
                 using (var fileStream = await dataLayer_.ReadFile(projectFilePath))
                 {
                     return TraceProject.Parser.ParseFrom(fileStream);
@@ -59,7 +83,7 @@ namespace TutorBits
             public async Task UpdateProject(TraceProject project)
             {
                 var projectDirectoryPath = GetProjectPath(project.Id);
-                var projectFilePath = Path.Combine(projectDirectoryPath, ProjectFileName);
+                var projectFilePath = GetProjectFilePath(projectDirectoryPath);
 
                 using (var memoryStream = new MemoryStream())
                 {
@@ -75,6 +99,37 @@ namespace TutorBits
 
                 await dataLayer_.DeleteDirectory(projectDirectoryPath);
             }
+            #endregion
+
+            #region TransactionLog
+            public async Task AddTraceTransactionLog(Guid projectId, TraceTransactionLog transactionLog)
+            {
+                var project = await GetProject(projectId);
+                var newProjectLength = transactionLog.Partition * project.PartitionSize;
+                if (project.Duration < newProjectLength)
+                {
+                    project.Duration = newProjectLength;
+                    await UpdateProject(project);
+                }
+
+                var projectDirectoryPath = GetProjectPath(projectId.ToString());
+                var transactionLogPath = GetTransactionLogPath(projectDirectoryPath);
+                var transactionLogFilePath = GetTransactionLogFilePath(transactionLogPath, transactionLog.Partition);
+
+                var transactionLogPathExists = await dataLayer_.DirectoryExists(transactionLogPath);
+                if (!transactionLogPathExists)
+                {
+                    await dataLayer_.CreateDirectory(transactionLogPath);
+                }
+
+                using (var memoryStream = new MemoryStream())
+                {
+                    transactionLog.WriteTo(memoryStream);
+                    memoryStream.Position = 0;
+                    await dataLayer_.CreateFile(transactionLogFilePath, memoryStream);
+                }
+            }
+            #endregion
         }
     }
 }

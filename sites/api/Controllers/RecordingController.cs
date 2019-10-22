@@ -64,18 +64,37 @@ namespace tutorbits_api.Controllers
         }
 
         [HttpPost]
-        public async Task AddTransactionLog([FromQuery]Guid projectId)
+        public async Task<IActionResult> AddTransactionLog([FromQuery]Guid projectId)
         {
             try
             {
+                if (Request.Body == null || Request.ContentLength <= 0)
+                {
+                    return BadRequest();
+                }
+
                 var tutorial = await dbDataAccessService_.GetTutorial(projectId);
+                if (tutorial == null)
+                {
+                    return BadRequest();
+                }
+
                 var transactionLog = TraceTransactionLog.Parser.ParseFrom(Request.Body);
+                if (transactionLog == null || transactionLog.CalculateSize() == 0)
+                {
+                    return BadRequest();
+                }
                 Console.WriteLine(transactionLog.ToString());
+                await fileDataAccessService_.AddTraceTransactionLog(projectId, transactionLog);
+
+                return Ok();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
+
+            return BadRequest();
         }
     }
 }
