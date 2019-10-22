@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Google.Protobuf;
@@ -76,7 +77,8 @@ namespace TutorBits
                 var projectFilePath = GetProjectFilePath(projectDirectoryPath);
                 using (var fileStream = await dataLayer_.ReadFile(projectFilePath))
                 {
-                    return TraceProject.Parser.ParseFrom(fileStream);
+                    var project = TraceProject.Parser.ParseFrom(fileStream);
+                    return project.CalculateSize() > 0 ? project : null;
                 }
             }
 
@@ -105,6 +107,11 @@ namespace TutorBits
             public async Task AddTraceTransactionLog(Guid projectId, TraceTransactionLog transactionLog)
             {
                 var project = await GetProject(projectId);
+                if (project == null)
+                {
+                    return;
+                }
+
                 var newProjectLength = transactionLog.Partition * project.PartitionSize;
                 if (project.Duration < newProjectLength)
                 {
@@ -128,6 +135,24 @@ namespace TutorBits
                     memoryStream.Position = 0;
                     await dataLayer_.CreateFile(transactionLogFilePath, memoryStream);
                 }
+            }
+
+            public async Task<ICollection<string>> GetTransactionLogsForRange(Guid projectId, uint offsetStart, uint offsetEnd)
+            {
+                var project = await GetProject(projectId);
+                if (project == null)
+                {
+                    return null;
+                }
+
+                if (offsetStart > project.Duration || offsetEnd > project.Duration || offsetStart >= offsetEnd)
+                {
+                    return null;
+                }
+
+                var projectDirectoryPath = GetProjectPath(projectId.ToString());
+                var transactionLogPath = GetTransactionLogPath(projectDirectoryPath);
+                return await dataLayer_.GetAllFiles(transactionLogPath);
             }
             #endregion
         }

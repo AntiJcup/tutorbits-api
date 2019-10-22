@@ -116,6 +116,7 @@ namespace TutorBits
                 public async Task Update<T>(T entity) where T : class
                 {
                     dbContext_.Update(entity);
+                    dbContext_.Entry(entity).State = EntityState.Modified;
                     await dbContext_.SaveChangesAsync();
                     dbContext_.Entry(entity).State = EntityState.Detached;
                 }

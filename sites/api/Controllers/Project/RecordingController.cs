@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Models;
-using constants;
 using GenericServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -32,15 +31,16 @@ namespace tutorbits_api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProject([FromQuery]string name)
+        public async Task<IActionResult> CreateProject([FromQuery]string name, [FromQuery]Guid tutorialId)
         {
             try
             {
-                var tutorial = new Tutorial()
+                //TODO guard this with auth and per account limits
+                var tutorial = await dbDataAccessService_.GetTutorial(tutorialId);
+                if (tutorial == null)
                 {
-                    Name = name
-                };
-                tutorial = await dbDataAccessService_.CreateTutorial(tutorial);
+                    return BadRequest();
+                }
 
                 var project = new TraceProject()
                 {
@@ -50,9 +50,10 @@ namespace tutorbits_api.Controllers
                 };
                 await fileDataAccessService_.CreateTraceProject(project);
 
-                return new JsonResult(new CreateProjectResponse()
+                return new JsonResult(new ProjectResponse()
                 {
-                    Id = project.Id
+                    Id = project.Id,
+                    ParitionSize = project.PartitionSize
                 });
             }
             catch (Exception e)
