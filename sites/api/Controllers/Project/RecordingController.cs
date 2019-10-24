@@ -31,7 +31,7 @@ namespace tutorbits_api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateProject([FromQuery]string name, [FromQuery]Guid tutorialId)
+        public async Task<IActionResult> CreateProject([FromQuery]Guid tutorialId)
         {
             try
             {

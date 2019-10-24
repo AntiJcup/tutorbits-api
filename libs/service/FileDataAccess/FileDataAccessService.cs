@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Tracer;
+using System.Linq;
 
 namespace TutorBits
 {
@@ -61,6 +62,12 @@ namespace TutorBits
 
                 var projectDirectoryPath = GetProjectPath(project.Id);
                 var projectFilePath = GetProjectFilePath(projectDirectoryPath);
+
+                var projExists = await dataLayer_.FileExists(projectFilePath);
+                if (projExists)
+                {
+                    throw new Exception("Project already exists");
+                }
 
                 await dataLayer_.CreateDirectory(projectDirectoryPath);
                 using (var memoryStream = new MemoryStream())
@@ -137,7 +144,7 @@ namespace TutorBits
                 }
             }
 
-            public async Task<ICollection<string>> GetTransactionLogsForRange(Guid projectId, uint offsetStart, uint offsetEnd)
+            public async Task<IDictionary<string, string>> GetTransactionLogsForRange(Guid projectId, uint offsetStart, uint offsetEnd)
             {
                 var project = await GetProject(projectId);
                 if (project == null)
@@ -145,14 +152,36 @@ namespace TutorBits
                     return null;
                 }
 
-                if (offsetStart > project.Duration || offsetEnd > project.Duration || offsetStart >= offsetEnd)
+                if (offsetStart >= project.Duration || offsetEnd > project.Duration || offsetStart >= offsetEnd)
                 {
                     return null;
                 }
 
                 var projectDirectoryPath = GetProjectPath(projectId.ToString());
                 var transactionLogPath = GetTransactionLogPath(projectDirectoryPath);
-                return await dataLayer_.GetAllFiles(transactionLogPath);
+
+                var bottomPartition = project.PartitionFromOffsetBottom(offsetStart);
+                var topPartition = project.PartitionFromOffsetTop(offsetEnd);
+                List<string> partitionRange = new List<string>();
+                for (var i = bottomPartition; i < topPartition; i++)
+                {
+                    partitionRange.Add(i.ToString());
+                }
+
+                var partitionFiles = await dataLayer_.GetAllFiles(transactionLogPath);
+
+                var partitionDictionary = new Dictionary<string, string>();
+                foreach (var partitionFile in partitionFiles)
+                {
+                    var partitionNumber = Path.GetFileName(partitionFile).Split('.')[0];
+                    if (!partitionRange.Contains(partitionNumber))
+                    {
+                        continue;
+                    }
+                    partitionDictionary[partitionNumber] = partitionFile;
+                }
+
+                return partitionDictionary;
             }
             #endregion
         }

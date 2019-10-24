@@ -62,9 +62,15 @@ namespace tutorbits_api.Controllers
             try
             {
                 var transactionLogFullPaths = await fileDataAccessService_.GetTransactionLogsForRange(projectId, offsetStart, offsetEnd);
-                var transactionLogUrls = transactionLogFullPaths.Select(p => Utils.ProjectUrlGenerator.GenerateTransactionLogUrl(Path.GetFileName(p), projectId, configuration_));
 
-                return new JsonResult(transactionLogUrls);
+                var transactionUrls = new Dictionary<string, string>();
+                foreach (var transactionLogFullPath in transactionLogFullPaths)
+                {
+                    transactionUrls[transactionLogFullPath.Key] =
+                        Utils.ProjectUrlGenerator.GenerateTransactionLogUrl(Path.GetFileName(transactionLogFullPath.Value), projectId, configuration_);
+                }
+
+                return new JsonResult(transactionUrls);
             }
             catch (Exception e)
             {
