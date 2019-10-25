@@ -38,6 +38,11 @@ namespace TutorBits
                 return Path.Combine(directory, ProjectFileName);
             }
 
+            public string GetFullProjectFilePath(string id)
+            {
+                return GetProjectFilePath(GetProjectPath(id));
+            }
+
             public string GetTransactionLogPath(string projectDirectoryPath)
             {
                 return Path.Combine(projectDirectoryPath, TransactionsDir);

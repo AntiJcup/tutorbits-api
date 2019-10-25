@@ -18,6 +18,8 @@ public static class Constants
             {
                 public static readonly string ProjectHostKey = "ProjectHost";
 
+                public static readonly string ProjectPathKey = "ProjectPath";
+
                 public static readonly string ProjectTransactionPathKey = "ProjectTransactionPath";
             }
         }

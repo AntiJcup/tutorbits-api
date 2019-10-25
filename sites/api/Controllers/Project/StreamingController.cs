@@ -31,22 +31,11 @@ namespace tutorbits_api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProject([FromQuery]Guid projectId)
+        public async Task<IActionResult> GetProjectUrl([FromQuery]Guid projectId)
         {
             try
             {
-                var project = await fileDataAccessService_.GetProject(projectId);
-                if (project == null || project.CalculateSize() == 0)
-                {
-                    return BadRequest();
-                }
-
-                return new JsonResult(new ProjectResponse()
-                {
-                    Id = project.Id,
-                    ParitionSize = project.PartitionSize,
-                    Duration = project.Duration
-                });
+                return new JsonResult(Utils.ProjectUrlGenerator.GenerateProjectUrl(projectId, configuration_));
             }
             catch (Exception e)
             {
@@ -57,7 +46,7 @@ namespace tutorbits_api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTransactionLogs([FromQuery]Guid projectId, [FromQuery]uint offsetStart, [FromQuery]uint offsetEnd)
+        public async Task<IActionResult> GetTransactionLogUrls([FromQuery]Guid projectId, [FromQuery]uint offsetStart, [FromQuery]uint offsetEnd)
         {
             try
             {
