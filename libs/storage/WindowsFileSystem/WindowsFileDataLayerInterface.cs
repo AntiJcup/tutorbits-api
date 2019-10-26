@@ -40,7 +40,7 @@ namespace TutorBits
             public async Task DeleteDirectory(string path)
             {
                 path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
-                Directory.Delete(path);
+                Directory.Delete(path, true);
             }
 
             public async Task DeleteFile(string path)

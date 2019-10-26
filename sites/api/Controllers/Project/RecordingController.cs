@@ -64,6 +64,30 @@ namespace tutorbits_api.Controllers
             return BadRequest();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> DeleteProject([FromQuery]Guid tutorialId)
+        {
+            try
+            {
+                //TODO guard this with auth and per account limits
+                var tutorial = await dbDataAccessService_.GetTutorial(tutorialId);
+                if (tutorial == null)
+                {
+                    return BadRequest();
+                }
+
+                await fileDataAccessService_.DeleteProject(tutorial.Id);
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+            return BadRequest();
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddTransactionLog([FromQuery]Guid projectId)
         {
