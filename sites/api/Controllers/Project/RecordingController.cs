@@ -50,11 +50,7 @@ namespace tutorbits_api.Controllers
                 };
                 await fileDataAccessService_.CreateTraceProject(project);
 
-                return new JsonResult(new ProjectResponse()
-                {
-                    Id = project.Id,
-                    ParitionSize = project.PartitionSize
-                });
+                return new JsonResult(Utils.ProjectUrlGenerator.GenerateProjectUrl(tutorial.Id, configuration_));
             }
             catch (Exception e)
             {
@@ -64,7 +60,7 @@ namespace tutorbits_api.Controllers
             return BadRequest();
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> DeleteProject([FromQuery]Guid tutorialId)
         {
             try
@@ -110,9 +106,9 @@ namespace tutorbits_api.Controllers
                     return BadRequest();
                 }
                 Console.WriteLine(transactionLog.ToString());
-                await fileDataAccessService_.AddTraceTransactionLog(projectId, transactionLog);
+                var transactionLogFullPath = await fileDataAccessService_.AddTraceTransactionLog(projectId, transactionLog);
 
-                return Ok();
+                return new JsonResult(Utils.ProjectUrlGenerator.GenerateTransactionLogUrl(Path.GetFileName(transactionLogFullPath), projectId, configuration_));
             }
             catch (Exception e)
             {

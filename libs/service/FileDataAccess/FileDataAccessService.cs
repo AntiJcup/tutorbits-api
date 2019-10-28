@@ -116,15 +116,15 @@ namespace TutorBits
             #endregion
 
             #region TransactionLog
-            public async Task AddTraceTransactionLog(Guid projectId, TraceTransactionLog transactionLog)
+            public async Task<string> AddTraceTransactionLog(Guid projectId, TraceTransactionLog transactionLog)
             {
                 var project = await GetProject(projectId);
                 if (project == null)
                 {
-                    return;
+                    return null;
                 }
 
-                var newProjectLength = transactionLog.Partition * project.PartitionSize;
+                var newProjectLength = (transactionLog.Partition + 1) * project.PartitionSize;
                 if (project.Duration < newProjectLength)
                 {
                     project.Duration = newProjectLength;
@@ -147,6 +147,8 @@ namespace TutorBits
                     memoryStream.Position = 0;
                     await dataLayer_.CreateFile(transactionLogFilePath, memoryStream);
                 }
+
+                return transactionLogFilePath;
             }
 
             public async Task<IDictionary<string, string>> GetTransactionLogsForRange(Guid projectId, uint offsetStart, uint offsetEnd)
