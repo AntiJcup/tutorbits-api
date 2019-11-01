@@ -14,7 +14,7 @@ namespace TutorBits
 
             Task<Stream> ReadFile(string path);
 
-            Task UpdateFile(string path, Stream stream);
+            Task UpdateFile(string path, Stream stream, bool append = false);
 
             Task DeleteFile(string path);
 
@@ -27,6 +27,12 @@ namespace TutorBits
             Task DeleteDirectory(string path);
 
             Task<bool> DirectoryExists(string path);
+
+            Task<string> StartMultipartUpload(string path);
+
+            Task UploadPart(string path, string multipartUploadId, int part, Stream stream);
+
+            Task<string> StopMultipartUpload(string path, string multipartUploadId, string destinationPath);
         }
     }
 }

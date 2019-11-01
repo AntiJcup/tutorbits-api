@@ -21,6 +21,8 @@ namespace TutorBits
         {
             public readonly string WorkingDirectory = Path.GetTempPath();
 
+            public readonly string PartsSubDirectory = "parts";
+
             public async Task CreateDirectory(string path)
             {
                 path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
@@ -79,13 +81,79 @@ namespace TutorBits
                 }
             }
 
-            public async Task UpdateFile(string path, Stream stream)
+            public async Task<string> StartMultipartUpload(string path)
+            {
+                var uploadId = Guid.NewGuid().ToString();
+                path = Path.Combine(path, uploadId);
+                path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
+
+                var uploadFolderExists = await DirectoryExists(path);
+                if (uploadFolderExists)
+                {
+                    throw new Exception($"multipart upload directory already exists {path}");
+                }
+
+                await CreateDirectory(path);
+
+                var partsPath = Path.Combine(path, PartsSubDirectory);
+                await CreateDirectory(partsPath);
+
+                return uploadId;
+            }
+
+            public async Task<string> StopMultipartUpload(string path, string destinationPath, string multipartUploadId)
+            {
+                path = Path.Combine(path, multipartUploadId);
+                path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
+
+                var partsPath = Path.Combine(path, PartsSubDirectory);
+
+                var uploadFolderExists = await DirectoryExists(partsPath);
+                if (!uploadFolderExists)
+                {
+                    throw new Exception($"multipart upload directory doesnt exist {partsPath}");
+                }
+
+                var allParts = await GetAllFiles(partsPath);
+                foreach (var part in allParts)
+                {
+                    await UpdateFile(destinationPath, await ReadFile(part), true);
+                }
+
+                await DeleteDirectory(partsPath);
+
+                return destinationPath;
+            }
+
+            public async Task UpdateFile(string path, Stream stream, bool append = false)
             {
                 path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
+                if (!append)
+                {
+                    await CreateFile(path, stream);
+                    return;
+                }
+
                 using (var writeStream = File.OpenWrite(path))
                 {
+                    writeStream.Seek(0, SeekOrigin.End);
                     await stream.CopyToAsync(writeStream);
                 }
+            }
+
+            public async Task UploadPart(string path, string multipartUploadId, int part, Stream stream)
+            {
+                path = Path.Combine(path, multipartUploadId, PartsSubDirectory);
+                path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
+
+                var uploadFolderExists = await DirectoryExists(path);
+                if (!uploadFolderExists)
+                {
+                    throw new Exception($"multipart upload directory doesnt exist {path}");
+                }
+
+                var partPath = Path.Combine(path, part.ToString());
+                await CreateFile(partPath, stream);
             }
         }
     }

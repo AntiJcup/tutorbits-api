@@ -14,22 +14,23 @@ using TutorBits.Models.Common;
 
 namespace tutorbits_api.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/project/recording/[action]")]
     [ApiController]
-    public class RecordingController : ControllerBase
+    public class ProjectRecordingController : ControllerBase
     {
         private readonly DBDataAccessService dbDataAccessService_;
         private readonly FileDataAccessService fileDataAccessService_;
 
         private readonly IConfiguration configuration_;
 
-        public RecordingController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
+        public ProjectRecordingController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
         {
             dbDataAccessService_ = dbDataAccessService;
             fileDataAccessService_ = fileDataAccessService;
             configuration_ = configuration;
         }
 
+        [ActionName("create")]
         [HttpPost]
         public async Task<IActionResult> CreateProject([FromQuery]Guid tutorialId)
         {
@@ -60,6 +61,7 @@ namespace tutorbits_api.Controllers
             return BadRequest();
         }
 
+        [ActionName("delete")]
         [HttpPost]
         public async Task<IActionResult> DeleteProject([FromQuery]Guid tutorialId)
         {
@@ -84,6 +86,7 @@ namespace tutorbits_api.Controllers
             return BadRequest();
         }
 
+        [ActionName("add")]
         [HttpPost]
         public async Task<IActionResult> AddTransactionLog([FromQuery]Guid projectId)
         {

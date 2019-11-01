@@ -14,22 +14,23 @@ using TutorBits.Models.Common;
 
 namespace tutorbits_api.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/project/streaming/[action]")]
     [ApiController]
-    public class StreamingController : ControllerBase
+    public class ProjectStreamingController : ControllerBase
     {
         private readonly DBDataAccessService dbDataAccessService_;
         private readonly FileDataAccessService fileDataAccessService_;
 
         private readonly IConfiguration configuration_;
 
-        public StreamingController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
+        public ProjectStreamingController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
         {
             dbDataAccessService_ = dbDataAccessService;
             fileDataAccessService_ = fileDataAccessService;
             configuration_ = configuration;
         }
 
+        [ActionName("project")]
         [HttpGet]
         public async Task<IActionResult> GetProjectUrl([FromQuery]Guid projectId)
         {
@@ -45,6 +46,7 @@ namespace tutorbits_api.Controllers
             return BadRequest();
         }
 
+        [ActionName("transactions")]
         [HttpGet]
         public async Task<IActionResult> GetTransactionLogUrls([FromQuery]Guid projectId, [FromQuery]uint offsetStart, [FromQuery]uint offsetEnd)
         {

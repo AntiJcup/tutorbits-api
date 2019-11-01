@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Google.Protobuf;
 using Tracer;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace TutorBits
 {
@@ -12,25 +13,45 @@ namespace TutorBits
     {
         public class FileDataAccessService
         {
-            public readonly string ProjectsDir = "projects";
-
-            public readonly string ProjectFileName = "proj.tpc";
-
-            public readonly string TransactionsDir = "partitions";
-
-            public readonly string TransactionLogFileName = "{0}.tlc";
+            public readonly string ProjectsDir;
+            public readonly string ProjectFileName;
+            public readonly string TransactionsDir;
+            public readonly string TransactionLogFileName;
+            public readonly string VideosDir;
+            public readonly string VideoFileName;
 
             private readonly FileDataLayerInterface dataLayer_;
 
-            public FileDataAccessService(FileDataLayerInterface dataLayer)
+            private readonly IConfiguration configuration_;
+
+            public FileDataAccessService(IConfiguration configuration, FileDataLayerInterface dataLayer)
             {
+                configuration_ = configuration;
                 dataLayer_ = dataLayer;
+
+                ProjectsDir = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                    .GetValue<string>(Constants.Configuration.Sections.Paths.ProjectsDirKey);
+
+                ProjectFileName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                    .GetValue<string>(Constants.Configuration.Sections.Paths.ProjectFileNameKey);
+
+                TransactionsDir = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                    .GetValue<string>(Constants.Configuration.Sections.Paths.TransactionsDirKey);
+
+                TransactionLogFileName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                    .GetValue<string>(Constants.Configuration.Sections.Paths.TransactionLogFileNameKey);
+
+                VideosDir = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                    .GetValue<string>(Constants.Configuration.Sections.Paths.VideosDirKey);
+
+                VideoFileName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                    .GetValue<string>(Constants.Configuration.Sections.Paths.VideoFileNameKey);
             }
 
             #region Paths
-            public string GetProjectPath(string id)
+            public string GetProjectPath(string projectId)
             {
-                return Path.Combine(ProjectsDir, id);
+                return Path.Combine(ProjectsDir, projectId);
             }
 
             public string GetProjectFilePath(string directory)
@@ -38,9 +59,9 @@ namespace TutorBits
                 return Path.Combine(directory, ProjectFileName);
             }
 
-            public string GetFullProjectFilePath(string id)
+            public string GetFullProjectFilePath(string projectId)
             {
-                return GetProjectFilePath(GetProjectPath(id));
+                return GetProjectFilePath(GetProjectPath(projectId));
             }
 
             public string GetTransactionLogPath(string projectDirectoryPath)
@@ -52,9 +73,17 @@ namespace TutorBits
             {
                 return Path.Combine(transactionLogPath, string.Format(TransactionLogFileName, partition));
             }
+
+            public string GetVideoPath(string projectId)
+            {
+                return Path.Combine(VideosDir, projectId);
+            }
+
+            public string GetVideoFilePath(string directory)
+            {
+                return Path.Combine(directory, VideoFileName);
+            }
             #endregion
-
-
 
             #region Project
             public async Task CreateTraceProject(TraceProject project)
@@ -189,6 +218,28 @@ namespace TutorBits
                 }
 
                 return partitionDictionary;
+            }
+            #endregion
+
+            #region Video
+            public async Task<string> StartVideoRecording(string projectId)
+            {
+                var videoPath = GetVideoPath(projectId);
+                var uploadId = await dataLayer_.StartMultipartUpload(videoPath);
+                return uploadId;
+            }
+
+            public async Task ContinueVideoRecording(string projectId, string uploadId, int part, Stream videoPart)
+            {
+                var videoPath = GetVideoPath(projectId);
+                await dataLayer_.UploadPart(videoPath, uploadId, part, videoPart);
+            }
+
+            public async Task<string> FinishVideoRecording(string projectId, string uploadId)
+            {
+                var videoPath = GetVideoPath(projectId);
+                var videoFilePath = GetVideoFilePath(videoPath);
+                return await dataLayer_.StopMultipartUpload(videoPath, uploadId, videoFilePath);
             }
             #endregion
         }
