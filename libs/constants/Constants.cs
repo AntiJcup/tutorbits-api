@@ -27,7 +27,7 @@ public static class Constants
 
                 public static readonly string TransactionLogFileNameKey = "TransactionLogFileName";
 
-                public static readonly string VideosDirKey = "VideosDir";
+                public static readonly string VideoDirKey = "VideoDir";
 
                 public static readonly string VideoFileNameKey = "VideoFileName";
             }

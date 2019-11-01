@@ -17,7 +17,7 @@ namespace TutorBits
             public readonly string ProjectFileName;
             public readonly string TransactionsDir;
             public readonly string TransactionLogFileName;
-            public readonly string VideosDir;
+            public readonly string VideoDir;
             public readonly string VideoFileName;
 
             private readonly FileDataLayerInterface dataLayer_;
@@ -41,8 +41,8 @@ namespace TutorBits
                 TransactionLogFileName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                     .GetValue<string>(Constants.Configuration.Sections.Paths.TransactionLogFileNameKey);
 
-                VideosDir = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
-                    .GetValue<string>(Constants.Configuration.Sections.Paths.VideosDirKey);
+                VideoDir = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                    .GetValue<string>(Constants.Configuration.Sections.Paths.VideoDirKey);
 
                 VideoFileName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                     .GetValue<string>(Constants.Configuration.Sections.Paths.VideoFileNameKey);
@@ -76,7 +76,7 @@ namespace TutorBits
 
             public string GetVideoPath(string projectId)
             {
-                return Path.Combine(VideosDir, projectId);
+                return Path.Combine(GetProjectPath(projectId), VideoDir);
             }
 
             public string GetVideoFilePath(string directory)
