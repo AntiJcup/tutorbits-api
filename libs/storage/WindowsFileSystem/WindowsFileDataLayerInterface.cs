@@ -101,7 +101,7 @@ namespace TutorBits
                 return uploadId;
             }
 
-            public async Task<string> StopMultipartUpload(string path, string destinationPath, string multipartUploadId)
+            public async Task<string> StopMultipartUpload(string path, string multipartUploadId, string destinationPath)
             {
                 path = Path.Combine(path, multipartUploadId);
                 path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
