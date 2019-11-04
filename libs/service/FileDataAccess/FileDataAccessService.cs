@@ -255,7 +255,7 @@ namespace TutorBits
 
                 var transactionLogPaths = await GetTransactionLogsForRange(projectId, 0, (uint)end);
                 var files = new Dictionary<string, StringBuilder>();
-                foreach (var transactionLogPath in transactionLogPaths)
+                foreach (var transactionLogPath in transactionLogPaths.OrderBy(p => int.Parse(p.Key)))
                 {
                     using (var transactionLogStream = await dataLayer_.ReadFile(transactionLogPath.Value))
                     {
@@ -293,7 +293,8 @@ namespace TutorBits
                                     if (modifyFileData.OffsetStart < file.Length &&
                                     (modifyFileData.OffsetEnd != modifyFileData.OffsetStart))
                                     {
-                                        files[transaction.FilePath] = file = file.Remove((int)modifyFileData.OffsetStart, (int)(modifyFileData.OffsetEnd - modifyFileData.OffsetStart));
+                                        var length = (int)(modifyFileData.OffsetEnd - modifyFileData.OffsetStart);
+                                        files[transaction.FilePath] = file = file.Remove((int)modifyFileData.OffsetStart, length);
                                     }
 
                                     if (!string.IsNullOrEmpty(modifyFileData.Data))
