@@ -50,7 +50,7 @@ namespace TutorBits
                     .GetValue<string>(Constants.Configuration.Sections.Paths.VideoFileNameKey);
 
                 PreviewsDir = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
-                    .GetValue<string>(Constants.Configuration.Sections.Paths.ProjectsDirKey);
+                    .GetValue<string>(Constants.Configuration.Sections.Paths.PreviewsDirKey);
             }
 
             #region Paths
@@ -98,12 +98,6 @@ namespace TutorBits
             #region Project
             public async Task CreateTraceProject(TraceProject project)
             {
-                var projDirectoryExists = await dataLayer_.DirectoryExists(ProjectsDir);
-                if (!projDirectoryExists)
-                {
-                    await dataLayer_.CreateDirectory(ProjectsDir);
-                }
-
                 var projectDirectoryPath = GetProjectPath(project.Id);
                 var projectFilePath = GetProjectFilePath(projectDirectoryPath);
 
@@ -254,17 +248,11 @@ namespace TutorBits
             #endregion
 
             #region Preview
-            public async Task<string> GeneratePreview(TraceProject project, int end)
+            public async Task GeneratePreview(TraceProject project, int end, string previewId)
             {
-                var previewDirectoryExists = await dataLayer_.DirectoryExists(PreviewsDir);
-                if (!previewDirectoryExists)
-                {
-                    await dataLayer_.CreateDirectory(PreviewsDir);
-                }
-
                 var projectId = Guid.Parse(project.Id);
-                var previewId = Guid.NewGuid().ToString();
                 var previewPath = GetPreviewPath(project.Id, previewId);
+
                 var transactionLogPaths = await GetTransactionLogsForRange(projectId, 0, (uint)end);
                 var files = new Dictionary<string, StringBuilder>();
                 foreach (var transactionLogPath in transactionLogPaths)
@@ -274,7 +262,7 @@ namespace TutorBits
                         var transactionLog = TraceTransactionLog.Parser.ParseFrom(transactionLogStream);
                         foreach (var transaction in transactionLog.Transactions)
                         {
-                            if (transaction.TimeOffsetMs > end)
+                            if (transaction.TimeOffsetMs > end || string.IsNullOrWhiteSpace(transaction.FilePath))
                             {
                                 continue;
                             }
@@ -292,8 +280,6 @@ namespace TutorBits
 
                             switch (transaction.Type)
                             {
-                                case TraceTransaction.Types.TraceTransactionType.CreateFile:
-                                    break;
                                 case TraceTransaction.Types.TraceTransactionType.DeleteFile:
                                     files.Remove(transaction.FilePath);
                                     break;
@@ -304,14 +290,15 @@ namespace TutorBits
                                     break;
                                 case TraceTransaction.Types.TraceTransactionType.ModifyFile:
                                     var modifyFileData = transaction.ModifyFile;
-                                    if (modifyFileData.OffsetStart < file.Length && (modifyFileData.OffsetEnd != modifyFileData.OffsetStart))
+                                    if (modifyFileData.OffsetStart < file.Length &&
+                                    (modifyFileData.OffsetEnd != modifyFileData.OffsetStart))
                                     {
-                                        file.Remove((int)modifyFileData.OffsetStart, (int)modifyFileData.OffsetEnd);
+                                        files[transaction.FilePath] = file = file.Remove((int)modifyFileData.OffsetStart, (int)(modifyFileData.OffsetEnd - modifyFileData.OffsetStart));
                                     }
 
                                     if (!string.IsNullOrEmpty(modifyFileData.Data))
                                     {
-                                        file.Insert((int)modifyFileData.OffsetStart, modifyFileData.Data);
+                                        files[transaction.FilePath] = file = file.Insert((int)modifyFileData.OffsetStart, modifyFileData.Data);
                                     }
                                     break;
                             }
@@ -321,16 +308,15 @@ namespace TutorBits
 
                 foreach (var file in files)
                 {
-                    var path = file.Key;
-                    await dataLayer_.CreatePathForFile(path);
-                    var fileBytes = Encoding.UTF8.GetBytes(file.ToString());
+                    var path = (await dataLayer_.ConvertToNativePath(file.Key)).Substring(1);
+                    var fullPath = Path.Combine(previewPath, path);
+                    await dataLayer_.CreatePathForFile(fullPath);
+                    var fileBytes = Encoding.UTF8.GetBytes(file.Value.ToString());
                     using (var stream = new MemoryStream(fileBytes))
                     {
-                        await dataLayer_.CreateFile(path, stream);
+                        await dataLayer_.CreateFile(fullPath, stream);
                     }
                 }
-
-                return previewPath;
             }
             #endregion
         }

@@ -32,7 +32,7 @@ namespace tutorbits_api.Controllers
 
         [ActionName("start")]
         [HttpPost]
-        public async Task<IActionResult> StartRecordingVideo([FromQuery]string projectId)
+        public async Task<IActionResult> StartRecordingVideo([FromQuery]Guid projectId)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace tutorbits_api.Controllers
 
         [ActionName("continue")]
         [HttpPost]
-        public async Task<IActionResult> ContinueRecordingVideo([FromQuery]string projectId, [FromQuery]string recordingId, [FromQuery]int part)
+        public async Task<IActionResult> ContinueRecordingVideo([FromQuery]Guid projectId, [FromQuery]string recordingId, [FromQuery]int part)
         {
             try
             {
@@ -71,7 +71,7 @@ namespace tutorbits_api.Controllers
 
         [ActionName("stop")]
         [HttpPost]
-        public async Task<IActionResult> FinishRecordingVideo([FromQuery]string projectId, [FromQuery]string recordingId)
+        public async Task<IActionResult> FinishRecordingVideo([FromQuery]Guid projectId, [FromQuery]string recordingId)
         {
             try
             {

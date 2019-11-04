@@ -35,6 +35,8 @@ namespace TutorBits
             Task<string> StopMultipartUpload(string path, string multipartUploadId, string destinationPath);
 
             Task CreatePathForFile(string filePath);
+
+            Task<string> ConvertToNativePath(string path);
         }
     }
 }

@@ -156,11 +156,16 @@ namespace TutorBits
                 await CreateFile(partPath, stream);
             }
 
-            async Task CreatePathForFile(string filePath)
+            public async Task CreatePathForFile(string filePath)
             {
                 filePath = Path.IsPathRooted(filePath) ? filePath : Path.Combine(WorkingDirectory, filePath);
                 var parentPath = Directory.GetParent(filePath).FullName;
                 await CreateDirectory(parentPath);
+            }
+
+            public async Task<string> ConvertToNativePath(string path)
+            {
+                return path.Replace('/', '\\');
             }
         }
     }

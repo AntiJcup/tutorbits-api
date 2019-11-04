@@ -43,6 +43,8 @@ public static class Constants
                 public static readonly string ProjectTransactionPathKey = "ProjectTransactionPath";
 
                 public static readonly string ProjectVideoPathKey = "ProjectVideoPath";
+
+                public static readonly string ProjectPreviewPathKey = "ProjectPreviewPath";
             }
         }
     }

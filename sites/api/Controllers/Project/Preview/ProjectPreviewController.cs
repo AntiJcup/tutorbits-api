@@ -36,32 +36,14 @@ namespace tutorbits_api.Controllers
         {
             try
             {
-                return new JsonResult(Utils.ProjectUrlGenerator.GenerateProjectUrl(projectId, configuration_));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-
-            return BadRequest();
-        }
-
-        [ActionName("transactions")]
-        [HttpGet]
-        public async Task<IActionResult> GetTransactionLogUrls([FromQuery]Guid projectId, [FromQuery]uint offsetStart, [FromQuery]uint offsetEnd)
-        {
-            try
-            {
-                var transactionLogFullPaths = await fileDataAccessService_.GetTransactionLogsForRange(projectId, offsetStart, offsetEnd);
-
-                var transactionUrls = new Dictionary<string, string>();
-                foreach (var transactionLogFullPath in transactionLogFullPaths)
+                var previewId = Guid.NewGuid().ToString();
+                var project = await fileDataAccessService_.GetProject(projectId);
+                if (project == null)
                 {
-                    transactionUrls[transactionLogFullPath.Key] =
-                        Utils.ProjectUrlGenerator.GenerateTransactionLogUrl(Path.GetFileName(transactionLogFullPath.Value), projectId, configuration_);
+                    return BadRequest();
                 }
-
-                return new JsonResult(transactionUrls);
+                await fileDataAccessService_.GeneratePreview(project, (int)offsetEnd, previewId);
+                return new JsonResult(Utils.ProjectUrlGenerator.GenerateProjectPreviewUrl(previewId, projectId, configuration_));
             }
             catch (Exception e)
             {
