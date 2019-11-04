@@ -196,8 +196,8 @@ namespace TutorBits
                 var projectDirectoryPath = GetProjectPath(projectId.ToString());
                 var transactionLogPath = GetTransactionLogPath(projectDirectoryPath);
 
-                var bottomPartition = project.PartitionFromOffsetBottom(offsetStart);
-                var topPartition = project.PartitionFromOffsetTop(offsetEnd);
+                var bottomPartition = project.PartitionFromOffsetBottom((int)offsetStart);
+                var topPartition = project.PartitionFromOffsetTop((int)offsetEnd);
                 List<string> partitionRange = new List<string>();
                 for (var i = bottomPartition; i < topPartition; i++)
                 {
@@ -241,6 +241,10 @@ namespace TutorBits
                 var videoFilePath = GetVideoFilePath(videoPath);
                 return await dataLayer_.StopMultipartUpload(videoPath, uploadId, videoFilePath);
             }
+            #endregion
+
+            #region Preview
+                
             #endregion
         }
     }
