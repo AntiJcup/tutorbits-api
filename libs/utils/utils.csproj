@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\constants\constants.csproj" />
+    <ProjectReference Include="..\..\shared\Tracer\Tracer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -6,6 +6,7 @@ using Google.Protobuf;
 using Tracer;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using System.Text;
 
 namespace TutorBits
 {
@@ -19,6 +20,7 @@ namespace TutorBits
             public readonly string TransactionLogFileName;
             public readonly string VideoDir;
             public readonly string VideoFileName;
+            public readonly string PreviewsDir;
 
             private readonly FileDataLayerInterface dataLayer_;
 
@@ -46,6 +48,9 @@ namespace TutorBits
 
                 VideoFileName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                     .GetValue<string>(Constants.Configuration.Sections.Paths.VideoFileNameKey);
+
+                PreviewsDir = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                    .GetValue<string>(Constants.Configuration.Sections.Paths.ProjectsDirKey);
             }
 
             #region Paths
@@ -82,6 +87,11 @@ namespace TutorBits
             public string GetVideoFilePath(string directory)
             {
                 return Path.Combine(directory, VideoFileName);
+            }
+
+            public string GetPreviewPath(string projectId, string previewId)
+            {
+                return Path.Combine(PreviewsDir, projectId, previewId);
             }
             #endregion
 
@@ -222,29 +232,106 @@ namespace TutorBits
             #endregion
 
             #region Video
-            public async Task<string> StartVideoRecording(string projectId)
+            public async Task<string> StartVideoRecording(Guid projectId)
             {
-                var videoPath = GetVideoPath(projectId);
+                var videoPath = GetVideoPath(projectId.ToString());
                 var uploadId = await dataLayer_.StartMultipartUpload(videoPath);
                 return uploadId;
             }
 
-            public async Task ContinueVideoRecording(string projectId, string uploadId, int part, Stream videoPart)
+            public async Task ContinueVideoRecording(Guid projectId, string uploadId, int part, Stream videoPart)
             {
-                var videoPath = GetVideoPath(projectId);
+                var videoPath = GetVideoPath(projectId.ToString());
                 await dataLayer_.UploadPart(videoPath, uploadId, part, videoPart);
             }
 
-            public async Task<string> FinishVideoRecording(string projectId, string uploadId)
+            public async Task<string> FinishVideoRecording(Guid projectId, string uploadId)
             {
-                var videoPath = GetVideoPath(projectId);
+                var videoPath = GetVideoPath(projectId.ToString());
                 var videoFilePath = GetVideoFilePath(videoPath);
                 return await dataLayer_.StopMultipartUpload(videoPath, uploadId, videoFilePath);
             }
             #endregion
 
             #region Preview
-                
+            public async Task<string> GeneratePreview(TraceProject project, int end)
+            {
+                var previewDirectoryExists = await dataLayer_.DirectoryExists(PreviewsDir);
+                if (!previewDirectoryExists)
+                {
+                    await dataLayer_.CreateDirectory(PreviewsDir);
+                }
+
+                var projectId = Guid.Parse(project.Id);
+                var previewId = Guid.NewGuid().ToString();
+                var previewPath = GetPreviewPath(project.Id, previewId);
+                var transactionLogPaths = await GetTransactionLogsForRange(projectId, 0, (uint)end);
+                var files = new Dictionary<string, StringBuilder>();
+                foreach (var transactionLogPath in transactionLogPaths)
+                {
+                    using (var transactionLogStream = await dataLayer_.ReadFile(transactionLogPath.Value))
+                    {
+                        var transactionLog = TraceTransactionLog.Parser.ParseFrom(transactionLogStream);
+                        foreach (var transaction in transactionLog.Transactions)
+                        {
+                            if (transaction.TimeOffsetMs > end)
+                            {
+                                continue;
+                            }
+
+                            StringBuilder file = null;
+                            if (files.ContainsKey(transaction.FilePath))
+                            {
+                                file = files[transaction.FilePath];
+                            }
+                            else
+                            {
+                                file = new StringBuilder();
+                                files[transaction.FilePath] = file;
+                            }
+
+                            switch (transaction.Type)
+                            {
+                                case TraceTransaction.Types.TraceTransactionType.CreateFile:
+                                    break;
+                                case TraceTransaction.Types.TraceTransactionType.DeleteFile:
+                                    files.Remove(transaction.FilePath);
+                                    break;
+                                case TraceTransaction.Types.TraceTransactionType.RenameFile:
+                                    var renameFileData = transaction.RenameFile;
+                                    files[renameFileData.NewFilePath] = file;
+                                    files.Remove(transaction.FilePath);
+                                    break;
+                                case TraceTransaction.Types.TraceTransactionType.ModifyFile:
+                                    var modifyFileData = transaction.ModifyFile;
+                                    if (modifyFileData.OffsetStart < file.Length && (modifyFileData.OffsetEnd != modifyFileData.OffsetStart))
+                                    {
+                                        file.Remove((int)modifyFileData.OffsetStart, (int)modifyFileData.OffsetEnd);
+                                    }
+
+                                    if (!string.IsNullOrEmpty(modifyFileData.Data))
+                                    {
+                                        file.Insert((int)modifyFileData.OffsetStart, modifyFileData.Data);
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                }
+
+                foreach (var file in files)
+                {
+                    var path = file.Key;
+                    await dataLayer_.CreatePathForFile(path);
+                    var fileBytes = Encoding.UTF8.GetBytes(file.ToString());
+                    using (var stream = new MemoryStream(fileBytes))
+                    {
+                        await dataLayer_.CreateFile(path, stream);
+                    }
+                }
+
+                return previewPath;
+            }
             #endregion
         }
     }

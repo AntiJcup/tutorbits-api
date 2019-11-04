@@ -30,6 +30,8 @@ public static class Constants
                 public static readonly string VideoDirKey = "VideoDir";
 
                 public static readonly string VideoFileNameKey = "VideoFileName";
+
+                public static readonly string PreviewsDirKey = "PreviewsDir";
             }
 
             public static class Urls

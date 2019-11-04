@@ -33,6 +33,8 @@ namespace TutorBits
             Task UploadPart(string path, string multipartUploadId, int part, Stream stream);
 
             Task<string> StopMultipartUpload(string path, string multipartUploadId, string destinationPath);
+
+            Task CreatePathForFile(string filePath);
         }
     }
 }
