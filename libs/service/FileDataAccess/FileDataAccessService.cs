@@ -192,10 +192,6 @@ namespace TutorBits
                     return null;
                 }
 
-                if (offsetStart >= project.Duration || offsetEnd > project.Duration || offsetStart >= offsetEnd)
-                {
-                    return null;
-                }
 
                 var projectDirectoryPath = GetProjectPath(projectId.ToString());
                 var transactionLogPath = GetTransactionLogPath(projectDirectoryPath);
