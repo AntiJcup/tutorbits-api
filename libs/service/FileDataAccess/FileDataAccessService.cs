@@ -248,6 +248,69 @@ namespace TutorBits.FileDataAccess
         #endregion
 
         #region Preview
+        public void GeneratePreviewForTransactionLog(TraceTransactionLog transactionLog, int end, Dictionary<string, StringBuilder> files)
+        {
+            foreach (var transaction in transactionLog.Transactions)
+            {
+                if (transaction.TimeOffsetMs > end || string.IsNullOrWhiteSpace(transaction.FilePath))
+                {
+                    continue;
+                }
+
+                StringBuilder file = null;
+                if (files.ContainsKey(transaction.FilePath))
+                {
+                    file = files[transaction.FilePath];
+                }
+                else
+                {
+                    file = new StringBuilder();
+                    files[transaction.FilePath] = file;
+                }
+
+                switch (transaction.Type)
+                {
+                    case TraceTransaction.Types.TraceTransactionType.DeleteFile:
+                        files.Remove(transaction.FilePath);
+                        break;
+                    case TraceTransaction.Types.TraceTransactionType.RenameFile:
+                        var renameFileData = transaction.RenameFile;
+                        files[renameFileData.NewFilePath] = file;
+                        files.Remove(transaction.FilePath);
+                        break;
+                    case TraceTransaction.Types.TraceTransactionType.ModifyFile:
+                        var modifyFileData = transaction.ModifyFile;
+                        if (modifyFileData.OffsetStart < file.Length &&
+                        (modifyFileData.OffsetEnd != modifyFileData.OffsetStart))
+                        {
+                            var length = (int)(modifyFileData.OffsetEnd - modifyFileData.OffsetStart);
+                            files[transaction.FilePath] = file = file.Remove((int)modifyFileData.OffsetStart, length);
+                        }
+
+                        if (!string.IsNullOrEmpty(modifyFileData.Data))
+                        {
+                            files[transaction.FilePath] = file = file.Insert((int)modifyFileData.OffsetStart, modifyFileData.Data);
+                        }
+                        break;
+                }
+            }
+        }
+
+        public async Task SavePreviewCache(Dictionary<string, StringBuilder> files, string previewFolder)
+        {
+            foreach (var file in files)
+            {
+                var path = (await dataLayer_.ConvertToNativePath(file.Key)).Substring(1);
+                var fullPath = Path.Combine(previewFolder, path);
+                await dataLayer_.CreatePathForFile(fullPath);
+                var fileBytes = Encoding.UTF8.GetBytes(file.Value.ToString());
+                using (var stream = new MemoryStream(fileBytes))
+                {
+                    await dataLayer_.CreateFile(fullPath, stream);
+                }
+            }
+        }
+
         public async Task GeneratePreview(TraceProject project, int end, string previewId)
         {
             var projectId = Guid.Parse(project.Id);
@@ -260,64 +323,24 @@ namespace TutorBits.FileDataAccess
                 using (var transactionLogStream = await dataLayer_.ReadFile(transactionLogPath.Value))
                 {
                     var transactionLog = TraceTransactionLog.Parser.ParseFrom(transactionLogStream);
-                    foreach (var transaction in transactionLog.Transactions)
-                    {
-                        if (transaction.TimeOffsetMs > end || string.IsNullOrWhiteSpace(transaction.FilePath))
-                        {
-                            continue;
-                        }
-
-                        StringBuilder file = null;
-                        if (files.ContainsKey(transaction.FilePath))
-                        {
-                            file = files[transaction.FilePath];
-                        }
-                        else
-                        {
-                            file = new StringBuilder();
-                            files[transaction.FilePath] = file;
-                        }
-
-                        switch (transaction.Type)
-                        {
-                            case TraceTransaction.Types.TraceTransactionType.DeleteFile:
-                                files.Remove(transaction.FilePath);
-                                break;
-                            case TraceTransaction.Types.TraceTransactionType.RenameFile:
-                                var renameFileData = transaction.RenameFile;
-                                files[renameFileData.NewFilePath] = file;
-                                files.Remove(transaction.FilePath);
-                                break;
-                            case TraceTransaction.Types.TraceTransactionType.ModifyFile:
-                                var modifyFileData = transaction.ModifyFile;
-                                if (modifyFileData.OffsetStart < file.Length &&
-                                (modifyFileData.OffsetEnd != modifyFileData.OffsetStart))
-                                {
-                                    var length = (int)(modifyFileData.OffsetEnd - modifyFileData.OffsetStart);
-                                    files[transaction.FilePath] = file = file.Remove((int)modifyFileData.OffsetStart, length);
-                                }
-
-                                if (!string.IsNullOrEmpty(modifyFileData.Data))
-                                {
-                                    files[transaction.FilePath] = file = file.Insert((int)modifyFileData.OffsetStart, modifyFileData.Data);
-                                }
-                                break;
-                        }
-                    }
+                    GeneratePreviewForTransactionLog(transactionLog, end, files);
                 }
             }
 
-            foreach (var file in files)
+            await SavePreviewCache(files, previewPath);
+        }
+
+        public async Task GeneratePreview(TraceProject project, int end, string previewId, TraceTransactionLogs traceTransactionLogs)
+        {
+            var projectId = Guid.Parse(project.Id);
+            var previewPath = GetPreviewPath(project.Id, previewId);
+            var files = new Dictionary<string, StringBuilder>();
+            foreach (var transactionLog in traceTransactionLogs.Logs)
             {
-                var path = (await dataLayer_.ConvertToNativePath(file.Key)).Substring(1);
-                var fullPath = Path.Combine(previewPath, path);
-                await dataLayer_.CreatePathForFile(fullPath);
-                var fileBytes = Encoding.UTF8.GetBytes(file.Value.ToString());
-                using (var stream = new MemoryStream(fileBytes))
-                {
-                    await dataLayer_.CreateFile(fullPath, stream);
-                }
+                GeneratePreviewForTransactionLog(transactionLog, end, files);
             }
+
+            await SavePreviewCache(files, previewPath);
         }
         #endregion
     }

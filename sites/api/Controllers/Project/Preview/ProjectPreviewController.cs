@@ -30,9 +30,9 @@ namespace tutorbits_api.Controllers
             configuration_ = configuration;
         }
 
-        [ActionName("create")]
+        [ActionName("load")]
         [HttpGet]
-        public async Task<IActionResult> CreatePreview([FromQuery]Guid projectId, [FromQuery]uint offsetEnd)
+        public async Task<IActionResult> LoadPreview([FromQuery]Guid projectId, [FromQuery]uint offsetEnd)
         {
             try
             {
@@ -43,6 +43,41 @@ namespace tutorbits_api.Controllers
                     return BadRequest();
                 }
                 await fileDataAccessService_.GeneratePreview(project, (int)offsetEnd, previewId);
+                return new JsonResult(Utils.ProjectUrlGenerator.GenerateProjectPreviewUrl(previewId, projectId, configuration_));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+            return BadRequest();
+        }
+
+        [ActionName("generate")]
+        [HttpPost]
+        public async Task<IActionResult> GeneratePreview([FromQuery]Guid projectId, [FromQuery]uint offsetEnd)
+        {
+            try
+            {
+                if (Request.Body == null || Request.ContentLength <= 0)
+                {
+                    return BadRequest();
+                }
+
+                var previewId = Guid.NewGuid().ToString();
+                var project = await fileDataAccessService_.GetProject(projectId);
+                if (project == null)
+                {
+                    return BadRequest();
+                }
+
+                var transactionLogs = TraceTransactionLogs.Parser.ParseFrom(Request.Body);
+                if (transactionLogs == null || transactionLogs.CalculateSize() == 0)
+                {
+                    return BadRequest();
+                }
+
+                await fileDataAccessService_.GeneratePreview(project, (int)offsetEnd, previewId, transactionLogs);
                 return new JsonResult(Utils.ProjectUrlGenerator.GenerateProjectPreviewUrl(previewId, projectId, configuration_));
             }
             catch (Exception e)
