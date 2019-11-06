@@ -18,6 +18,7 @@ using Microsoft.EntityFrameworkCore;
 using GenericServices.Setup;
 using TutorBits.WindowsFileSystem;
 using Microsoft.EntityFrameworkCore.Migrations;
+using TutorBits.Lambda.Local;
 
 namespace tutorbits_api
 {
@@ -57,6 +58,7 @@ namespace tutorbits_api
 
             services.AddMicrosoftSQLDBDataAccessLayer();
             services.AddWindowsFileDataAccessLayer();
+            services.AddLocalLambdaAccessLayer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

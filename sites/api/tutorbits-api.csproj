@@ -31,6 +31,7 @@
     <ProjectReference Include="..\..\libs\storage\WindowsFileSystem\WindowsFileSystem.csproj" />
     <ProjectReference Include="..\..\libs\constants\constants.csproj" />
     <ProjectReference Include="..\..\libs\utils\utils.csproj" />
+    <ProjectReference Include="..\..\libs\lambda\Local\Local.csproj" />
   </ItemGroup>
 
 </Project>
