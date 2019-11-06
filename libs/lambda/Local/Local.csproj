@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\service\LambdaAccess\LambdaAccess.csproj" />
+    <ProjectReference Include="..\..\utils\utils.csproj" />
   </ItemGroup>
 
   <ItemGroup>

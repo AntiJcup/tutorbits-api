@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Tracer;
 using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
+using TutorBits.LambdaAccess;
 using TutorBits.Models.Common;
 
 namespace tutorbits_api.Controllers
@@ -20,13 +21,18 @@ namespace tutorbits_api.Controllers
     {
         private readonly DBDataAccessService dbDataAccessService_;
         private readonly FileDataAccessService fileDataAccessService_;
+        private readonly LambdaAccessService lambdaAccessService_;
 
         private readonly IConfiguration configuration_;
 
-        public VideoRecordingController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
+        public VideoRecordingController(IConfiguration configuration,
+        DBDataAccessService dbDataAccessService,
+        FileDataAccessService fileDataAccessService,
+        LambdaAccessService lambdaAccessService)
         {
             dbDataAccessService_ = dbDataAccessService;
             fileDataAccessService_ = fileDataAccessService;
+            lambdaAccessService_ = lambdaAccessService;
             configuration_ = configuration;
         }
 
@@ -76,6 +82,7 @@ namespace tutorbits_api.Controllers
             try
             {
                 var fullVideoUrl = await fileDataAccessService_.FinishVideoRecording(projectId, recordingId);
+                await lambdaAccessService_.ConvertProjectVideo(projectId);
                 return new JsonResult(fullVideoUrl);
             }
             catch (Exception e)

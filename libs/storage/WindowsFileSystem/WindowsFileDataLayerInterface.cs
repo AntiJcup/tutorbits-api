@@ -19,19 +19,29 @@ namespace TutorBits
         }
         public class WindowsFileDataLayerInterface : FileDataLayerInterface
         {
-            public readonly string WorkingDirectory = Path.GetTempPath();
+            public static readonly string WorkingDirectory = Path.GetTempPath();
 
             public readonly string PartsSubDirectory = "parts";
 
+            public static string RootPath(string path)
+            {
+                return Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
+            }
+
+            public string GetWorkingDirectory()
+            {
+                return WorkingDirectory;
+            }
+
             public async Task CreateDirectory(string path)
             {
-                path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
+                path = RootPath(path);
                 Directory.CreateDirectory(path);
             }
 
             public async Task CreateFile(string path, Stream stream)
             {
-                path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
+                path = RootPath(path);
 
                 using (var writeStream = File.Create(path))
                 {
@@ -41,37 +51,37 @@ namespace TutorBits
 
             public async Task DeleteDirectory(string path)
             {
-                path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
+                path = RootPath(path);
                 Directory.Delete(path, true);
             }
 
             public async Task DeleteFile(string path)
             {
-                path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
+                path = RootPath(path);
                 File.Delete(path);
             }
 
             public async Task<bool> DirectoryExists(string path)
             {
-                path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
+                path = RootPath(path);
                 return Directory.Exists(path);
             }
 
             public async Task<bool> FileExists(string path)
             {
-                path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
+                path = RootPath(path);
                 return File.Exists(path);
             }
 
             public async Task<ICollection<string>> GetAllFiles(string parentPath)
             {
-                parentPath = Path.IsPathRooted(parentPath) ? parentPath : Path.Combine(WorkingDirectory, parentPath);
+                parentPath = RootPath(parentPath);
                 return Directory.GetFiles(parentPath);
             }
 
             public async Task<Stream> ReadFile(string path)
             {
-                path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
+                path = RootPath(path);
                 using (var fileStream = File.OpenRead(path))
                 {
                     var outMemoryStream = new MemoryStream();
@@ -85,7 +95,7 @@ namespace TutorBits
             {
                 var uploadId = Guid.NewGuid().ToString();
                 path = Path.Combine(path, uploadId);
-                path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
+                path = RootPath(path);
 
                 var uploadFolderExists = await DirectoryExists(path);
                 if (uploadFolderExists)
@@ -104,7 +114,7 @@ namespace TutorBits
             public async Task<string> StopMultipartUpload(string path, string multipartUploadId, string destinationPath)
             {
                 path = Path.Combine(path, multipartUploadId);
-                path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
+                path = RootPath(path);
 
                 var partsPath = Path.Combine(path, PartsSubDirectory);
 
@@ -127,7 +137,7 @@ namespace TutorBits
 
             public async Task UpdateFile(string path, Stream stream, bool append = false)
             {
-                path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
+                path = RootPath(path);
                 if (!append)
                 {
                     await CreateFile(path, stream);
@@ -144,7 +154,7 @@ namespace TutorBits
             public async Task UploadPart(string path, string multipartUploadId, int part, Stream stream)
             {
                 path = Path.Combine(path, multipartUploadId, PartsSubDirectory);
-                path = Path.IsPathRooted(path) ? path : Path.Combine(WorkingDirectory, path);
+                path = RootPath(path);
 
                 var uploadFolderExists = await DirectoryExists(path);
                 if (!uploadFolderExists)
@@ -158,7 +168,7 @@ namespace TutorBits
 
             public async Task CreatePathForFile(string filePath)
             {
-                filePath = Path.IsPathRooted(filePath) ? filePath : Path.Combine(WorkingDirectory, filePath);
+                filePath = RootPath(filePath);
                 var parentPath = Directory.GetParent(filePath).FullName;
                 await CreateDirectory(parentPath);
             }

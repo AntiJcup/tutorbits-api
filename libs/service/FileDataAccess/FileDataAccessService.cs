@@ -52,9 +52,15 @@ namespace TutorBits.FileDataAccess
         }
 
         #region Paths
+        public string GetWorkingDirectory()
+        {
+            return dataLayer_.GetWorkingDirectory();
+        }
+
         public string GetProjectPath(string projectId)
         {
-            return Path.Combine(ProjectsDir, projectId);
+            var workingDirectory = GetWorkingDirectory();
+            return string.IsNullOrWhiteSpace(workingDirectory) ? Path.Combine(ProjectsDir, projectId) : Path.Combine(workingDirectory, ProjectsDir, projectId);
         }
 
         public string GetProjectFilePath(string directory)

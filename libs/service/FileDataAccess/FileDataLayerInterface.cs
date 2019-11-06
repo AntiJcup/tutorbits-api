@@ -8,6 +8,8 @@ namespace TutorBits.FileDataAccess
 {
     public interface FileDataLayerInterface
     {
+        string GetWorkingDirectory();
+        
         Task CreateFile(string path, Stream stream);
 
         Task<Stream> ReadFile(string path);
