@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using TutorBits.Models.Common;
 
@@ -12,6 +13,11 @@ namespace TutorBits.DBDataAccess
         public DBDataAccessService(DBDataLayerInterface dataLayer)
         {
             dataLayer_ = dataLayer;
+        }
+
+        public async Task<ICollection<TModel>> GetAllBaseModel<TModel>(Expression<Func<TModel, Boolean>> where = null) where TModel : BaseModel, new()
+        {
+            return await dataLayer_.GetAll<TModel>(where);
         }
 
         public async Task<TModel> GetBaseModel<TModel>(params object[] keys) where TModel : BaseModel, new()

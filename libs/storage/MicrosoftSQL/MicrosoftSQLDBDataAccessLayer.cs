@@ -55,7 +55,7 @@ namespace TutorBits
                     {
                         keyProperty.SetValue(model, keys[keyOffset++]);
                     }
-                    dbContext_.Remove(model);
+                    await Delete(model);
                 }
 
                 public async Task<T> Get<T>(params object[] keys) where T : class, new()
@@ -77,7 +77,7 @@ namespace TutorBits
                     return await dbSet.FindAsync(keys);
                 }
 
-                public async Task<ICollection<T>> GetAll<T>(Expression<Func<T, bool>> where, int? skip = null, int? take = null) where T : class, new()
+                public async Task<ICollection<T>> GetAll<T>(Expression<Func<T, bool>> where = null, int? skip = null, int? take = null) where T : class, new()
                 {
                     var dbSet = dbContext_.Set<T>();
 
@@ -99,7 +99,7 @@ namespace TutorBits
                     return await dbSet.AsNoTracking().ToListAsync();
                 }
 
-                public async Task<ICollection<T>> GetAll<T, TProperty>(ICollection<Expression<Func<T, TProperty>>> includes, Expression<Func<T, bool>> where, int? skip, int? take) where T : class, new()
+                public async Task<ICollection<T>> GetAll<T, TProperty>(ICollection<Expression<Func<T, TProperty>>> includes, Expression<Func<T, bool>> where = null, int? skip = null, int? take = null) where T : class, new()
                 {
                     var dbSet = dbContext_.Set<T>();
 
