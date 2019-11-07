@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Tracer;
 using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
+using TutorBits.Models.Common;
 using Utils.Common;
 
 namespace tutorbits_api.Controllers
@@ -36,7 +37,7 @@ namespace tutorbits_api.Controllers
             try
             {
                 //TODO guard this with auth and per account limits
-                var tutorial = await dbDataAccessService_.GetTutorial(tutorialId);
+                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(tutorialId);
                 if (tutorial == null)
                 {
                     return BadRequest();
@@ -67,7 +68,7 @@ namespace tutorbits_api.Controllers
             try
             {
                 //TODO guard this with auth and per account limits
-                var tutorial = await dbDataAccessService_.GetTutorial(tutorialId);
+                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(tutorialId);
                 if (tutorial == null)
                 {
                     return BadRequest();
@@ -96,7 +97,7 @@ namespace tutorbits_api.Controllers
                     return BadRequest();
                 }
 
-                var tutorial = await dbDataAccessService_.GetTutorial(projectId);
+                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(projectId);
                 if (tutorial == null)
                 {
                     return BadRequest();

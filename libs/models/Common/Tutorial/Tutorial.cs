@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace TutorBits.Models.Common
 {
     [Table("Tutorials")]
-    public class Tutorial : Base
+    public class Tutorial : BaseModel
     {
         public Guid? UserId { get; set; }
 

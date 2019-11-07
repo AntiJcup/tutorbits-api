@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace TutorBits.Models.Common
 {
     [Table("Users")]
-    public class User : Base
+    public class User : BaseModel
     {
         public string Name;
 

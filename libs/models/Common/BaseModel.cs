@@ -11,7 +11,7 @@ namespace TutorBits.Models.Common
         Deleted,
     }
 
-    public abstract class Base
+    public abstract class BaseModel
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

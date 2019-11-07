@@ -32,7 +32,7 @@ namespace tutorbits_api.Controllers
 
         [ActionName("project")]
         [HttpGet]
-        public async Task<IActionResult> GetProjectUrl([FromQuery]Guid projectId)
+        public IActionResult GetProjectUrl([FromQuery]Guid projectId)
         {
             try
             {

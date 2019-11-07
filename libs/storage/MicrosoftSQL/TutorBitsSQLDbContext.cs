@@ -25,10 +25,11 @@ namespace TutorBits
 
                 protected override void OnModelCreating(ModelBuilder modelBuilder)
                 {
+                    //Auto generates tables that are of base type
                     var publicPropertieBaseTypes = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
                                 .Where(p => p.PropertyType.IsGenericType &&
                                             p.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>) &&
-                                            p.PropertyType.GetGenericArguments()[0].IsSubclassOf(typeof(Base)))
+                                            p.PropertyType.GetGenericArguments()[0].IsSubclassOf(typeof(BaseModel)))
                                 .Select(p => p.PropertyType.GetGenericArguments()[0]);
 
                     //Setup default values for base class while maintaining individual tables

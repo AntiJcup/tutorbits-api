@@ -14,16 +14,32 @@ namespace TutorBits.DBDataAccess
             dataLayer_ = dataLayer;
         }
 
-        #region Tutorials
-        public async Task<Tutorial> CreateTutorial(Tutorial tutorial)
+        public async Task<TModel> GetBaseModel<TModel>(params object[] keys) where TModel : BaseModel, new()
         {
-            return await dataLayer_.Create(tutorial);
+            return await dataLayer_.Get<TModel>(keys);
         }
 
-        public async Task<Tutorial> GetTutorial(Guid id)
+        public async Task<TModel> CreateBaseModel<TModel>(TModel model) where TModel : BaseModel, new()
         {
-            return await dataLayer_.Get<Tutorial>(id);
+            return await dataLayer_.Create(model);
         }
+
+        public async Task UpdateBaseModel<TModel>(TModel model) where TModel : BaseModel, new()
+        {
+            await dataLayer_.Update(model);
+        }
+
+        public async Task DeleteBaseModel<TModel>(TModel model) where TModel : BaseModel, new()
+        {
+            await dataLayer_.Delete(model);
+        }
+
+        public async Task DeleteBaseModel<TModel>(params object[] keys) where TModel : BaseModel, new()
+        {
+            await dataLayer_.Delete<TModel>(keys);
+        }
+
+        #region Tutorials
 
         public async Task<ICollection<Tutorial>> GetAllTutorialsForUser(Guid userId)
         {

@@ -32,7 +32,7 @@ namespace tutorbits_api.Controllers
 
         [ActionName("video")]
         [HttpGet]
-        public async Task<IActionResult> GetVideoUrl([FromQuery]Guid projectId)
+        public IActionResult GetVideoUrl([FromQuery]Guid projectId)
         {
             try
             {
