@@ -1,8 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\constants\constants.csproj" />
-    <ProjectReference Include="..\..\shared\Tracer\Tracer.csproj" />
+    <ProjectReference Include="..\..\constants\constants.csproj" />
+    <ProjectReference Include="..\..\..\shared\Tracer\Tracer.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Tracer;
 using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
-using TutorBits.Models.Common;
+using Utils.Common;
 
 namespace tutorbits_api.Controllers
 {
@@ -43,7 +43,7 @@ namespace tutorbits_api.Controllers
                     return BadRequest();
                 }
                 await fileDataAccessService_.GeneratePreview(project, (int)offsetEnd, previewId);
-                return new JsonResult(Utils.ProjectUrlGenerator.GenerateProjectPreviewUrl(previewId, projectId, configuration_));
+                return new JsonResult(ProjectUrlGenerator.GenerateProjectPreviewUrl(previewId, projectId, configuration_));
             }
             catch (Exception e)
             {
@@ -77,7 +77,7 @@ namespace tutorbits_api.Controllers
                     Id = tempID.ToString()
                 };
                 await fileDataAccessService_.GeneratePreview(tempProject, (int)offsetEnd, previewId, transactionLogs);
-                return new JsonResult(Utils.ProjectUrlGenerator.GenerateProjectPreviewUrl(previewId, tempID, configuration_));
+                return new JsonResult(ProjectUrlGenerator.GenerateProjectPreviewUrl(previewId, tempID, configuration_));
             }
             catch (Exception e)
             {

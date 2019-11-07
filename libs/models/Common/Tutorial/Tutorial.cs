@@ -2,19 +2,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TutorBits
+namespace TutorBits.Models.Common
 {
-    namespace Models
+    [Table("Tutorials")]
+    public class Tutorial : Base
     {
-        namespace Common
-        {
-            [Table("Tutorials")]
-            public class Tutorial : Base
-            {
-                public Guid? UserId { get; set; }
+        public Guid? UserId { get; set; }
 
-                public string Name { get; set; }
-            }
-        }
+        public string Name { get; set; }
     }
 }

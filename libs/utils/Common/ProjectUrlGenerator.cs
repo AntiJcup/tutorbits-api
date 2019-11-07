@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 
-namespace Utils
+namespace Utils.Common
 {
     //Generates urls for project related resources
     public static class ProjectUrlGenerator

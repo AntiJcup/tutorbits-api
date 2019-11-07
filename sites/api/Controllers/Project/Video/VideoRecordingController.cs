@@ -11,7 +11,6 @@ using Tracer;
 using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
 using TutorBits.LambdaAccess;
-using TutorBits.Models.Common;
 
 namespace tutorbits_api.Controllers
 {

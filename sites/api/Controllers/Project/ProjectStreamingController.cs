@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Tracer;
 using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
-using TutorBits.Models.Common;
+using Utils.Common;
 
 namespace tutorbits_api.Controllers
 {
@@ -36,7 +36,7 @@ namespace tutorbits_api.Controllers
         {
             try
             {
-                return new JsonResult(Utils.ProjectUrlGenerator.GenerateProjectUrl(projectId, configuration_));
+                return new JsonResult(ProjectUrlGenerator.GenerateProjectUrl(projectId, configuration_));
             }
             catch (Exception e)
             {
@@ -58,7 +58,7 @@ namespace tutorbits_api.Controllers
                 foreach (var transactionLogFullPath in transactionLogFullPaths)
                 {
                     transactionUrls[transactionLogFullPath.Key] =
-                        Utils.ProjectUrlGenerator.GenerateTransactionLogUrl(Path.GetFileName(transactionLogFullPath.Value), projectId, configuration_);
+                        ProjectUrlGenerator.GenerateTransactionLogUrl(Path.GetFileName(transactionLogFullPath.Value), projectId, configuration_);
                 }
 
                 return new JsonResult(transactionUrls);

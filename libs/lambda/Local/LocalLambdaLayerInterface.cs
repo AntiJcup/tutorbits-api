@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using TutorBits.LambdaAccess;
-using Utils;
+using Utils.Common;
 
 namespace TutorBits.Lambda.Local
 {

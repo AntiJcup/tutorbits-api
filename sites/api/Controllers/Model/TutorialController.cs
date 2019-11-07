@@ -4,39 +4,42 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using api.Models;
+using api.Models.Requests;
 using GenericServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Tracer;
 using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
-using Utils.Common;
 
 namespace tutorbits_api.Controllers
 {
-    [Route("api/project/video/streaming/[action]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
-    public class VideoStreamingController : ControllerBase
+    public class TutorialController : ControllerBase
     {
         private readonly DBDataAccessService dbDataAccessService_;
         private readonly FileDataAccessService fileDataAccessService_;
 
         private readonly IConfiguration configuration_;
 
-        public VideoStreamingController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
+        public TutorialController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
         {
             dbDataAccessService_ = dbDataAccessService;
             fileDataAccessService_ = fileDataAccessService;
             configuration_ = configuration;
         }
 
-        [ActionName("video")]
-        [HttpGet]
-        public async Task<IActionResult> GetVideoUrl([FromQuery]Guid projectId)
+        [HttpPost]
+        public async Task<IActionResult> Create([FromQuery]CreateTutorial createTutorialRequest)
         {
             try
             {
-                return new JsonResult(ProjectUrlGenerator.GenerateProjectVideoUrl(projectId, configuration_));
+                if (!ModelState.IsValid)
+                {
+                    // return ;
+                }
+                // return new JsonResult(Utils.ProjectUrlGenerator.GenerateProjectUrl(projectId, configuration_));
             }
             catch (Exception e)
             {

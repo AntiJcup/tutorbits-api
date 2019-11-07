@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
-    <ProjectReference Include="..\..\models\Common\Common.csproj" />
+    <ProjectReference Include="..\..\models\Common\CommonModels.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

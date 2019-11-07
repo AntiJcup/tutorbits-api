@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using api.Models;
 using GenericServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Tracer;
 using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
-using TutorBits.Models.Common;
+using Utils.Common;
 
 namespace tutorbits_api.Controllers
 {
@@ -51,7 +50,7 @@ namespace tutorbits_api.Controllers
                 };
                 await fileDataAccessService_.CreateTraceProject(project);
 
-                return new JsonResult(Utils.ProjectUrlGenerator.GenerateProjectUrl(tutorial.Id, configuration_));
+                return new JsonResult(ProjectUrlGenerator.GenerateProjectUrl(tutorial.Id, configuration_));
             }
             catch (Exception e)
             {
@@ -111,7 +110,7 @@ namespace tutorbits_api.Controllers
                 Console.WriteLine(transactionLog.ToString());
                 var transactionLogFullPath = await fileDataAccessService_.AddTraceTransactionLog(projectId, transactionLog);
 
-                return new JsonResult(Utils.ProjectUrlGenerator.GenerateTransactionLogUrl(Path.GetFileName(transactionLogFullPath), projectId, configuration_));
+                return new JsonResult(ProjectUrlGenerator.GenerateTransactionLogUrl(Path.GetFileName(transactionLogFullPath), projectId, configuration_));
             }
             catch (Exception e)
             {

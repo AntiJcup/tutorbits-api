@@ -2,36 +2,30 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TutorBits
+namespace TutorBits.Models.Common
 {
-    namespace Models
+    public enum BaseState
     {
-        namespace Common
-        {
-            public enum BaseState
-            {
-                Active,
-                Inactive,
-                Deleted,
-            }
+        Active,
+        Inactive,
+        Deleted,
+    }
 
-            public abstract class Base
-            {
-                [Key]
-                [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-                public Guid Id { get; set; }
+    public abstract class Base
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public Guid Id { get; set; }
 
 
-                [Required, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-                public DateTime DateCreated { get; set; }
+        [Required, DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public DateTime DateCreated { get; set; }
 
-                [Required, DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-                public DateTime DateModified { get; set; }
+        [Required, DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime DateModified { get; set; }
 
-                public string Notes { get; set; }
+        public string Notes { get; set; }
 
-                public BaseState Status { get; set; }
-            }
-        }
+        public BaseState Status { get; set; }
     }
 }
