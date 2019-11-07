@@ -55,7 +55,7 @@ namespace tutorbits_api.Controllers
 
         [ActionName("generate")]
         [HttpPost]
-        public async Task<IActionResult> GeneratePreview([FromQuery]Guid projectId, [FromQuery]uint offsetEnd)
+        public async Task<IActionResult> GeneratePreview([FromQuery]uint offsetEnd)
         {
             try
             {
@@ -65,11 +65,6 @@ namespace tutorbits_api.Controllers
                 }
 
                 var previewId = Guid.NewGuid().ToString();
-                var project = await fileDataAccessService_.GetProject(projectId);
-                if (project == null)
-                {
-                    return BadRequest();
-                }
 
                 var transactionLogs = TraceTransactionLogs.Parser.ParseFrom(Request.Body);
                 if (transactionLogs == null || transactionLogs.CalculateSize() == 0)
@@ -77,8 +72,12 @@ namespace tutorbits_api.Controllers
                     return BadRequest();
                 }
 
-                await fileDataAccessService_.GeneratePreview(project, (int)offsetEnd, previewId, transactionLogs);
-                return new JsonResult(Utils.ProjectUrlGenerator.GenerateProjectPreviewUrl(previewId, projectId, configuration_));
+                var tempID = Guid.NewGuid();
+                var tempProject = new TraceProject() {
+                    Id = tempID.ToString()
+                };
+                await fileDataAccessService_.GeneratePreview(tempProject, (int)offsetEnd, previewId, transactionLogs);
+                return new JsonResult(Utils.ProjectUrlGenerator.GenerateProjectPreviewUrl(previewId, tempID, configuration_));
             }
             catch (Exception e)
             {
