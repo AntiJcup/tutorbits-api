@@ -3,50 +3,33 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Controllers.Model;
 using api.Models;
 using api.Models.Requests;
+using api.Models.Views;
 using GenericServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Tracer;
 using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
+using TutorBits.Models.Common;
 
-namespace tutorbits_api.Controllers
+namespace api.Controllers.Model
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class TutorialController : ControllerBase
+    public class TutorialController : BaseModelController<Tutorial, CreateUpdateTutorialModel, CreateUpdateTutorialModel, TutorialViewModel>
     {
-        private readonly DBDataAccessService dbDataAccessService_;
-        private readonly FileDataAccessService fileDataAccessService_;
-
-        private readonly IConfiguration configuration_;
-
         public TutorialController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
+            : base(configuration, dbDataAccessService, fileDataAccessService)
         {
-            dbDataAccessService_ = dbDataAccessService;
-            fileDataAccessService_ = fileDataAccessService;
-            configuration_ = configuration;
+
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create([FromQuery]CreateTutorial createTutorialRequest)
+        protected override async Task EnrichViewModel(TutorialViewModel viewModel)
         {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    // return ;
-                }
-                // return new JsonResult(Utils.ProjectUrlGenerator.GenerateProjectUrl(projectId, configuration_));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.ToString());
-            }
-
-            return BadRequest();
+            viewModel.UserName = "Jacob";
         }
     }
 }

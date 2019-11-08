@@ -11,6 +11,8 @@ namespace TutorBits.DBDataAccess
 
         Task<T> Get<T>(params object[] keys) where T : class, new();
 
+        Task<T> Get<T>(ICollection<object> keys) where T : class, new();
+
         Task<T> Get<T, TProperty>(ICollection<Expression<Func<T, TProperty>>> includes, params object[] keys) where T : class, new();
 
         Task<ICollection<T>> GetAll<T>(Expression<Func<T, Boolean>> where = null, int? skip = null, int? take = null) where T : class, new();
@@ -22,5 +24,7 @@ namespace TutorBits.DBDataAccess
         Task Delete<T>(T entity) where T : class, new();
 
         Task Delete<T>(params object[] keys) where T : class, new();
+
+        Task Delete<T>(ICollection<object> keys) where T : class, new();
     }
 }

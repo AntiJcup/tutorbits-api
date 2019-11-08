@@ -9,6 +9,10 @@ namespace TutorBits.Models.Common
     {
         public Guid? UserId { get; set; }
 
-        public string Name { get; set; }
+        public string Title { get; set; }
+
+        public string Language { get; set; }
+
+        public string Description { get; set; }
     }
 }

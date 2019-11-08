@@ -25,6 +25,11 @@ namespace TutorBits.DBDataAccess
             return await dataLayer_.Get<TModel>(keys);
         }
 
+        public async Task<TModel> GetBaseModel<TModel>(ICollection<object> keys) where TModel : BaseModel, new()
+        {
+            return await dataLayer_.Get<TModel>(keys);
+        }
+
         public async Task<TModel> CreateBaseModel<TModel>(TModel model) where TModel : BaseModel, new()
         {
             return await dataLayer_.Create(model);

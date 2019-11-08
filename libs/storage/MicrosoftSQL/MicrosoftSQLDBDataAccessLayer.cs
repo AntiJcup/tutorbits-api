@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -48,12 +49,17 @@ namespace TutorBits
 
                 public async Task Delete<T>(params object[] keys) where T : class, new()
                 {
-                    var keyProperties = typeof(T).GetProperties().Where(p => Attribute.IsDefined(p, typeof(Key)));
+                    await Delete<T>(keys.ToArray());
+                }
+
+                public async Task Delete<T>(ICollection<object> keys) where T : class, new()
+                {
+                    var keyProperties = typeof(T).GetProperties().Where(p => Attribute.IsDefined(p, typeof(KeyAttribute)));
                     var model = new T();
                     var keyOffset = 0;
                     foreach (var keyProperty in keyProperties)
                     {
-                        keyProperty.SetValue(model, keys[keyOffset++]);
+                        keyProperty.SetValue(model, keys.ElementAt(keyOffset++));
                     }
                     await Delete(model);
                 }
@@ -61,6 +67,11 @@ namespace TutorBits
                 public async Task<T> Get<T>(params object[] keys) where T : class, new()
                 {
                     return await dbContext_.FindAsync<T>(keys);
+                }
+
+                public async Task<T> Get<T>(ICollection<object> keys) where T : class, new()
+                {
+                    return await dbContext_.FindAsync<T>(keys.ToArray(), null);
                 }
 
                 public async Task<T> Get<T, TProperty>(ICollection<Expression<Func<T, TProperty>>> includes, params object[] keys) where T : class, new()
