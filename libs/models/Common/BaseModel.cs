@@ -1,11 +1,15 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace TutorBits.Models.Common
 {
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum BaseState
     {
+        Undefined,
         Active,
         Inactive,
         Deleted,
@@ -26,6 +30,6 @@ namespace TutorBits.Models.Common
 
         public string Notes { get; set; }
 
-        public BaseState Status { get; set; }
+        public BaseState Status { get; set; } = BaseState.Inactive;
     }
 }

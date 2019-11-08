@@ -12,6 +12,7 @@ using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
 using TutorBits.Models.Common;
 using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 
 namespace api.Controllers.Model
 {
@@ -57,11 +58,41 @@ namespace api.Controllers.Model
             {
                 return BadRequest("Error: Object has more than one key use Get");
             }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var entity = await dbDataAccessService_.GetBaseModel<TModel>(id);
             var viewModel = new TViewModel();
             viewModel.Convert(entity);
             await EnrichViewModel(viewModel);
             return new JsonResult(viewModel);
+        }
+
+        [HttpGet]
+        public virtual async Task<IActionResult> GetAll([FromQuery] BaseState state, [FromQuery] int? skip = null, [FromQuery] int? take = null)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var entities = await dbDataAccessService_.GetAllBaseModel(
+                state == BaseState.Undefined ? (Expression<Func<TModel, Boolean>>)null : (Expression<Func<TModel, Boolean>>)(m => m.Status == state),
+                skip,
+                take);
+            var viewModels = new List<TViewModel>();
+
+            foreach (var entity in entities)
+            {
+                var viewModel = new TViewModel();
+                viewModel.Convert(entity);
+                await EnrichViewModel(viewModel);
+                viewModels.Add(viewModel);
+            }
+            return new JsonResult(viewModels);
         }
 
 
@@ -94,6 +125,21 @@ namespace api.Controllers.Model
         }
 
         [HttpGet]
+        public virtual async Task<IActionResult> UpdateStatusById([FromQuery] Guid id, [FromQuery] BaseState status)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var model = await dbDataAccessService_.GetBaseModel<TModel>(id);
+            model.Status = status;
+            await dbDataAccessService_.UpdateBaseModel(model);
+
+            return Ok();
+        }
+
+        [HttpGet]
         public virtual async Task<IActionResult> Delete()
         {
             var keys = await GetKeysFromRequest();
@@ -109,6 +155,12 @@ namespace api.Controllers.Model
             {
                 return BadRequest("Error: Object has more than one key use Delete");
             }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
             await dbDataAccessService_.DeleteBaseModel<TModel>(id);
             return Ok();
         }

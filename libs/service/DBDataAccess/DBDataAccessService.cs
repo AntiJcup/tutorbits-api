@@ -15,9 +15,9 @@ namespace TutorBits.DBDataAccess
             dataLayer_ = dataLayer;
         }
 
-        public async Task<ICollection<TModel>> GetAllBaseModel<TModel>(Expression<Func<TModel, Boolean>> where = null) where TModel : BaseModel, new()
+        public async Task<ICollection<TModel>> GetAllBaseModel<TModel>(Expression<Func<TModel, Boolean>> where = null, int? skip = null, int? take = null) where TModel : BaseModel, new()
         {
-            return await dataLayer_.GetAll<TModel>(where);
+            return await dataLayer_.GetAll<TModel>(where, skip, take);
         }
 
         public async Task<TModel> GetBaseModel<TModel>(params object[] keys) where TModel : BaseModel, new()
