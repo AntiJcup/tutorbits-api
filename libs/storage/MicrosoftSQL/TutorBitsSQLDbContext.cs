@@ -40,7 +40,8 @@ namespace TutorBits
                     {
                         modelBuilder.Entity(publicPropertieBaseType)
                                                 .Property("Status")
-                                                .HasConversion(converter);
+                                                .HasConversion(converter)
+                                                .HasMaxLength(64);
                         modelBuilder.Entity(publicPropertieBaseType, c =>
                         {
                             c.Property("DateCreated").HasDefaultValueSql("GETUTCDATE()").ValueGeneratedOnAdd();

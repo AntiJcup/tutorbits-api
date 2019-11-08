@@ -14,10 +14,12 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
                     DateModified = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
-                    Notes = table.Column<string>(nullable: true),
-                    Status = table.Column<string>(nullable: false),
+                    Notes = table.Column<string>(maxLength: 1028, nullable: true),
+                    Status = table.Column<string>(maxLength: 64, nullable: false),
                     UserId = table.Column<Guid>(nullable: true),
-                    Name = table.Column<string>(nullable: true)
+                    Title = table.Column<string>(maxLength: 64, nullable: true),
+                    Language = table.Column<string>(maxLength: 64, nullable: true),
+                    Description = table.Column<string>(maxLength: 1028, nullable: true)
                 },
                 constraints: table =>
                 {

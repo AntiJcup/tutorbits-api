@@ -106,8 +106,11 @@ namespace api.Controllers.Model
 
             var model = createModel.Convert();
             await EnrichModel(model, Action.Create);
-            await dbDataAccessService_.CreateBaseModel(model);
-            return Ok();
+            var entity = await dbDataAccessService_.CreateBaseModel(model);
+            var viewModel = new TViewModel();
+            viewModel.Convert(entity);
+            await EnrichViewModel(viewModel);
+            return new JsonResult(viewModel);
         }
 
         [HttpPost]
@@ -124,7 +127,7 @@ namespace api.Controllers.Model
             return Ok();
         }
 
-        [HttpGet]
+        [HttpPost]
         public virtual async Task<IActionResult> UpdateStatusById([FromQuery] Guid id, [FromQuery] BaseState status)
         {
             if (!ModelState.IsValid)
@@ -139,7 +142,7 @@ namespace api.Controllers.Model
             return Ok();
         }
 
-        [HttpGet]
+        [HttpPost]
         public virtual async Task<IActionResult> Delete()
         {
             var keys = await GetKeysFromRequest();
@@ -147,7 +150,7 @@ namespace api.Controllers.Model
             return Ok();
         }
 
-        [HttpGet]
+        [HttpPost]
         public virtual async Task<IActionResult> DeleteById([FromQuery] Guid id)
         {
             var keys = await GetKeysFromRequest();
@@ -160,7 +163,7 @@ namespace api.Controllers.Model
             {
                 return BadRequest(ModelState);
             }
-            
+
             await dbDataAccessService_.DeleteBaseModel<TModel>(id);
             return Ok();
         }

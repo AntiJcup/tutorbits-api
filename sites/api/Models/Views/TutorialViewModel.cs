@@ -15,12 +15,15 @@ namespace api.Models.Views
 
         public string UserName { get; set; } //Enriched
 
+        public string Status { get; set; }
+
         public override void Convert(Tutorial baseModel)
         {
             Id = baseModel.Id.ToString();
             Title = baseModel.Title;
             Language = baseModel.Language;
             Description = baseModel.Description;
+            Status = baseModel.Status.ToString();
         }
     }
 }

@@ -10,7 +10,7 @@ using TutorBits.Storage.MicrosoftSQL;
 namespace TutorBits.Storage.MicrosoftSQL.Migrations
 {
     [DbContext(typeof(TutorBitsSQLDbContext))]
-    [Migration("20191021171359_Initial")]
+    [Migration("20191108170414_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -34,12 +34,21 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Description")
+                        .HasMaxLength(1028);
 
-                    b.Property<string>("Notes");
+                    b.Property<string>("Language")
+                        .HasMaxLength(64);
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1028);
 
                     b.Property<string>("Status")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(64);
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(64);
 
                     b.Property<Guid?>("UserId");
 

@@ -9,10 +9,13 @@ namespace TutorBits.Models.Common
     {
         public Guid? UserId { get; set; }
 
+        [MaxLength(64)]
         public string Title { get; set; }
 
+        [MaxLength(64)]
         public string Language { get; set; }
 
+        [MaxLength(1028)]
         public string Description { get; set; }
     }
 }
