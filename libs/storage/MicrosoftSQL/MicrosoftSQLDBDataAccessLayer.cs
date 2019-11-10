@@ -77,61 +77,80 @@ namespace TutorBits
                 public async Task<T> Get<T, TProperty>(ICollection<Expression<Func<T, TProperty>>> includes, params object[] keys) where T : class, new()
                 {
                     var dbSet = dbContext_.Set<T>();
+                    var query = dbSet.AsNoTracking();
 
-                    dbSet.AsNoTracking();
                     foreach (var include in includes)
                     {
-                        dbSet.Include(include);
+                        query = dbSet.Include(include);
                     }
 
+                    var modelKeys = dbContext_.Model.FindEntityType(typeof(T)).GetKeys();
+                    Expression previousExpression = null;
+                    var keyIndex = 0;
+                    foreach (var modelKey in modelKeys)
+                    {
+                        var param = Expression.Parameter(typeof(T), modelKey.Properties[0].Name);
+                        dynamic val = keys[keyIndex++];
+                        if (previousExpression == null)
+                        {
+                            previousExpression = Expression.Equal(param, Expression.Constant(val));
+                            continue;
+                        }
 
-                    return await dbSet.FindAsync(keys);
+                        previousExpression = Expression.Or(previousExpression, Expression.Equal(param, Expression.Constant(val)));
+                    }
+
+                    var lambda = Expression.Lambda<Func<T, bool>>(previousExpression);
+
+                    return await query.Where(lambda).FirstOrDefaultAsync();
                 }
 
                 public async Task<ICollection<T>> GetAll<T>(Expression<Func<T, bool>> where = null, int? skip = null, int? take = null) where T : class, new()
                 {
                     var dbSet = dbContext_.Set<T>();
+                    var query = dbSet.AsNoTracking();
 
                     if (where != null)
                     {
-                        dbSet.Where(where);
+                        query = query.Where(where);
                     }
 
                     if (skip.HasValue)
                     {
-                        dbSet.Skip(skip.Value);
+                        query = query.Skip(skip.Value);
                     }
 
                     if (take.HasValue)
                     {
-                        dbSet.Take(take.Value);
+                        query = query.Take(take.Value);
                     }
 
-                    return await dbSet.AsNoTracking().ToListAsync();
+                    return await query.ToListAsync();
                 }
 
                 public async Task<ICollection<T>> GetAll<T, TProperty>(ICollection<Expression<Func<T, TProperty>>> includes, Expression<Func<T, bool>> where = null, int? skip = null, int? take = null) where T : class, new()
                 {
                     var dbSet = dbContext_.Set<T>();
+                    var query = dbSet.AsNoTracking();
 
                     foreach (var include in includes)
                     {
-                        dbSet.Include(include);
+                        query = query.Include(include);
                     }
 
                     if (where != null)
                     {
-                        dbSet.Where(where);
+                        query = query.Where(where);
                     }
 
                     if (skip.HasValue)
                     {
-                        dbSet.Skip(skip.Value);
+                        query = query.Skip(skip.Value);
                     }
 
                     if (take.HasValue)
                     {
-                        dbSet.Take(take.Value);
+                        query = query.Take(take.Value);
                     }
 
                     return await dbSet.ToListAsync();
