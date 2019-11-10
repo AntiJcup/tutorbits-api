@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\service\LambdaAccess\LambdaAccess.csproj" />
+    <ProjectReference Include="..\..\utils\Common\CommonUtils.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.Core" Version="3.3.103.62" />
+    <PackageReference Include="AWSSDK.Lambda" Version="3.3.103.29" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.6">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
+  </ItemGroup>
+
+</Project>
