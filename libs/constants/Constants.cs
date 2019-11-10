@@ -15,10 +15,14 @@ public static class Constants
             public static class Settings
             {
                 public static readonly string PartitionSizeKey = "PartitionSize";
+
+                public static readonly string UseAWSKey = "UseAWS";
             }
 
             public static class Paths
             {
+                public static readonly string BucketKey = "Bucket";
+
                 public static readonly string ProjectsDirKey = "ProjectsDir";
 
                 public static readonly string ProjectFileNameKey = "ProjectFileName";

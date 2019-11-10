@@ -19,6 +19,9 @@ using GenericServices.Setup;
 using TutorBits.WindowsFileSystem;
 using Microsoft.EntityFrameworkCore.Migrations;
 using TutorBits.Lambda.Local;
+using Amazon.S3;
+using Amazon.Lambda;
+using TutorBits.S3FileSystem;
 
 namespace tutorbits_api
 {
@@ -35,6 +38,7 @@ namespace tutorbits_api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "TutorBits", Version = "v1" });
@@ -54,11 +58,24 @@ namespace tutorbits_api
                 connectionString,
                 b => b.MigrationsAssembly("MicrosoftSQL"))
                 );
-            //.ReplaceService<IMigrationsSqlGenerator, MyMigrationsSqlGenerator>()
 
             services.AddMicrosoftSQLDBDataAccessLayer();
-            services.AddWindowsFileDataAccessLayer();
-            services.AddLocalLambdaAccessLayer();
+
+            var useAWS = Configuration.GetSection(Constants.Configuration.Sections.SettingsKey)
+                        .GetValue<bool>(Constants.Configuration.Sections.Settings.UseAWSKey, false);
+            if (useAWS)
+            {
+                services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+                services.AddAWSService<IAmazonS3>();
+                services.AddAWSService<IAmazonLambda>();
+                services.AddS3FileDataAccessLayer();
+            }
+            else
+            {
+                services.AddWindowsFileDataAccessLayer();
+                services.AddLocalLambdaAccessLayer();
+            }
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

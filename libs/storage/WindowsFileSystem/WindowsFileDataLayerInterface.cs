@@ -111,6 +111,21 @@ namespace TutorBits
                 return uploadId;
             }
 
+            public async Task UploadPart(string path, string multipartUploadId, int part, Stream stream)
+            {
+                path = Path.Combine(path, multipartUploadId, PartsSubDirectory);
+                path = RootPath(path);
+
+                var uploadFolderExists = await DirectoryExists(path);
+                if (!uploadFolderExists)
+                {
+                    throw new Exception($"multipart upload directory doesnt exist {path}");
+                }
+
+                var partPath = Path.Combine(path, part.ToString());
+                await CreateFile(partPath, stream);
+            }
+
             public async Task<string> StopMultipartUpload(string path, string multipartUploadId, string destinationPath)
             {
                 path = Path.Combine(path, multipartUploadId);
@@ -149,21 +164,6 @@ namespace TutorBits
                     writeStream.Seek(0, SeekOrigin.End);
                     await stream.CopyToAsync(writeStream);
                 }
-            }
-
-            public async Task UploadPart(string path, string multipartUploadId, int part, Stream stream)
-            {
-                path = Path.Combine(path, multipartUploadId, PartsSubDirectory);
-                path = RootPath(path);
-
-                var uploadFolderExists = await DirectoryExists(path);
-                if (!uploadFolderExists)
-                {
-                    throw new Exception($"multipart upload directory doesnt exist {path}");
-                }
-
-                var partPath = Path.Combine(path, part.ToString());
-                await CreateFile(partPath, stream);
             }
 
             public async Task CreatePathForFile(string filePath)

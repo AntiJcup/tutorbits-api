@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tracer", "shared\Tracer\Tra
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LocalTracer", "cli\LocalTracer\LocalTracer.csproj", "{79840444-D3C4-4170-9A90-F68509895FE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "libs\models\Common\CommonUtils.csproj", "{F88D8062-EEFF-47E2-BD0D-1518015656C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "libs\utils\Common\CommonUtils.csproj", "{F88D8062-EEFF-47E2-BD0D-1518015656C4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicrosoftSQL", "libs\storage\MicrosoftSQL\MicrosoftSQL.csproj", "{9E9C41E5-92DA-4B85-A58E-AF70A4F083B9}"
 EndProject
