@@ -22,6 +22,7 @@ using TutorBits.Lambda.Local;
 using Amazon.S3;
 using Amazon.Lambda;
 using TutorBits.S3FileSystem;
+using TutorBits.Lambda.AWSLambda;
 
 namespace tutorbits_api
 {
@@ -69,6 +70,7 @@ namespace tutorbits_api
                 services.AddAWSService<IAmazonS3>();
                 services.AddAWSService<IAmazonLambda>();
                 services.AddS3FileDataAccessLayer();
+                services.AddAWSLambdaAccessLayer();
             }
             else
             {
