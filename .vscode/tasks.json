@@ -86,7 +86,7 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "Create SQL Migration",
+            "label": "Create Local SQL Migration",
             "type": "shell",
             "command": "dotnet ef migrations add ${input:MigrationName}",
             "problemMatcher": [],
@@ -95,9 +95,18 @@
             }
         },
         {
-            "label": "Apply Latest SQL Migration",
+            "label": "Apply Local Latest SQL Migration",
             "type": "shell",
             "command": "dotnet ef database update",
+            "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}/libs/storage/MicrosoftSQL"
+            }
+        }
+        {
+            "label": "Create Remote SQL Migration Script",
+            "type": "shell",
+            "command": "dotnet ef migrations script > Scripts/${input:MigrationName}.sql",
             "problemMatcher": [],
             "options": {
                 "cwd": "${workspaceFolder}/libs/storage/MicrosoftSQL"
