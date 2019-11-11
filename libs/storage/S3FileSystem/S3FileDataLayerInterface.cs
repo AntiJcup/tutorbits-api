@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 using TutorBits.FileDataAccess;
 
 using Amazon.S3;
-using Amazon.S3.Transfer;
 using Amazon.S3.Model;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
