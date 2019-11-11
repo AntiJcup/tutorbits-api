@@ -45,7 +45,7 @@ namespace TutorBits.Lambda.AWSLambda
             var requestModel = new WebmToMp4Request()
             {
                 BucketName = BucketName,
-                Endpoint = lambdaClient_.Config.RegionEndpoint,
+                Endpoint = lambdaClient_.Config.RegionEndpoint.SystemName,
                 WebmPath = webmPath,
                 Mp4Path = outMp4Path
             };

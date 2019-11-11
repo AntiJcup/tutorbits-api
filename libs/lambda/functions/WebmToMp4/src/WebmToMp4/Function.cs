@@ -21,6 +21,7 @@ namespace WebmToMp4
     public class Function
     {
         private static readonly string workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        private static readonly string tmpDirectory = "/tmp";
         private static readonly string ffmpegPath = "ffmpeg";
 
         /// <summary>
@@ -29,15 +30,24 @@ namespace WebmToMp4
         /// <param name="input"></param>
         /// <param name="context"></param>
         /// <returns></returns>
-        public async Task<bool> FunctionHandler(string input, ILambdaContext context)
+        public async Task<bool> FunctionHandler(Stream input, ILambdaContext context)
         {
             try
             {
-                var inputModel = JsonConvert.DeserializeObject<WebmToMp4Request>(input);
-                var localWebmFile = $"{Guid.NewGuid().ToString()}.webm";
-                var localMp4File = $"{Guid.NewGuid().ToString()}.mp4";
+                WebmToMp4Request inputModel = null;
+                using (StreamReader sr = new StreamReader(input))
+                {
+                    using (JsonReader reader = new JsonTextReader(sr))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        inputModel = serializer.Deserialize<WebmToMp4Request>(reader);
+                    }
+                }
 
-                var s3Client = new AmazonS3Client(inputModel.Endpoint);
+                var localWebmFile = Path.Combine(tmpDirectory, $"{Guid.NewGuid().ToString()}.webm");
+                var localMp4File = Path.Combine(tmpDirectory, $"{Guid.NewGuid().ToString()}.mp4");
+
+                var s3Client = new AmazonS3Client(Amazon.RegionEndpoint.GetBySystemName(inputModel.Endpoint));
 
                 //Get webm file
                 var webmRequest = new GetObjectRequest()
@@ -69,7 +79,7 @@ namespace WebmToMp4
                     Key = inputModel.Mp4Path,
                     InputStream = File.OpenRead(localMp4File)
                 };
-                
+
                 var mp4Response = await s3Client.PutObjectAsync(mp4Request);
 
 

@@ -6,7 +6,7 @@ namespace LambdaModels
     {
         public string BucketName;
 
-        public RegionEndpoint Endpoint;
+        public string Endpoint;
 
         public string WebmPath;
         public string Mp4Path;
