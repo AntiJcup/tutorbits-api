@@ -95,8 +95,7 @@ namespace TutorBits
             public async Task<string> StartMultipartUpload(string path)
             {
                 var uploadId = Guid.NewGuid().ToString();
-                path = Path.Combine(path, uploadId);
-                path = $"{RootPath(path)}_{PartsSubDirectory}";
+                path = $"{RootPath(path)}_{uploadId}_{PartsSubDirectory}";
 
                 var uploadFolderExists = await DirectoryExists(path);
                 if (uploadFolderExists)
@@ -106,16 +105,12 @@ namespace TutorBits
 
                 await CreateDirectory(path);
 
-                var partsPath = Path.Combine(path, PartsSubDirectory);
-                await CreateDirectory(partsPath);
-
                 return uploadId;
             }
 
             public async Task<string> UploadPart(string path, string multipartUploadId, int part, Stream stream, bool last)
             {
-                path = $"{RootPath(path)}_{PartsSubDirectory}";
-                path = Path.Combine(path, multipartUploadId);
+                path = $"{RootPath(path)}_{multipartUploadId}_{PartsSubDirectory}";
                 
                 var uploadFolderExists = await DirectoryExists(path);
                 if (!uploadFolderExists)
@@ -123,14 +118,14 @@ namespace TutorBits
                     throw new Exception($"multipart upload directory doesnt exist {path}");
                 }
 
-                var partPath = Path.Combine(path, part.ToString());
+                var partPath = $"{path}/{part.ToString()}";
                 await CreateFile(partPath, stream);
                 return "NA";
             }
 
             public async Task<string> StopMultipartUpload(string path, string multipartUploadId, ICollection<VideoPart> parts)
             {
-                var partsPath = $"{RootPath(path)}_{PartsSubDirectory}";
+                var partsPath = $"{RootPath(path)}_{multipartUploadId}_{PartsSubDirectory}";
                 path = RootPath(path);
 
                 var uploadFolderExists = await DirectoryExists(partsPath);
