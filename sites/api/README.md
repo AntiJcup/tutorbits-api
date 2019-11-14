@@ -10,5 +10,13 @@ Setup:
 7. Extract
 8. Open admin cmd in extracted folder
 9. Run wacs.exe with manual and follow steps with *.domain
-10. Setup SQL_PWD and SQL_UID for AWS SQL Login information
+10. Setup SQL_PWD and SQL_UID for AWS SQL Login information in Environmental Variables IIS configuration editor (On the overall system.webServer/aspNetCore)
 11. Download https://dotnet.microsoft.com/download/thank-you/dotnet-runtime-2.2.7-windows-hosting-bundle-installer and install
+12. Download https://s3.amazonaws.com/aws-cli/AWSCLI64PY3.msi and install
+13. Setup aws profile local-test
+
+
+
+
+CloudFront:
+1. www needs error page forwarding to index.html (400 and 403)
