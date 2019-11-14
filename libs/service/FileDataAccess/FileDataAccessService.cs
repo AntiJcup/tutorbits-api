@@ -7,6 +7,7 @@ using Tracer;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using System.Text;
+using TutorBits.Models.Common;
 
 namespace TutorBits.FileDataAccess
 {
@@ -52,50 +53,55 @@ namespace TutorBits.FileDataAccess
         }
 
         #region Paths
+        public string SanitizePath(string path)
+        {
+            return path.Replace("\\", "/");
+        }
+
         public string GetWorkingDirectory()
         {
-            return dataLayer_.GetWorkingDirectory();
+            return SanitizePath(dataLayer_.GetWorkingDirectory());
         }
 
         public string GetProjectPath(string projectId)
         {
             var workingDirectory = GetWorkingDirectory();
-            return string.IsNullOrWhiteSpace(workingDirectory) ? Path.Combine(ProjectsDir, projectId) : Path.Combine(workingDirectory, ProjectsDir, projectId);
+            return SanitizePath(string.IsNullOrWhiteSpace(workingDirectory) ? Path.Combine(ProjectsDir, projectId) : Path.Combine(workingDirectory, ProjectsDir, projectId));
         }
 
         public string GetProjectFilePath(string directory)
         {
-            return Path.Combine(directory, ProjectFileName);
+            return SanitizePath(Path.Combine(directory, ProjectFileName));
         }
 
         public string GetFullProjectFilePath(string projectId)
         {
-            return GetProjectFilePath(GetProjectPath(projectId));
+            return SanitizePath(GetProjectFilePath(GetProjectPath(projectId)));
         }
 
         public string GetTransactionLogPath(string projectDirectoryPath)
         {
-            return Path.Combine(projectDirectoryPath, TransactionsDir);
+            return SanitizePath(Path.Combine(projectDirectoryPath, TransactionsDir));
         }
 
         public string GetTransactionLogFilePath(string transactionLogPath, UInt32 partition)
         {
-            return Path.Combine(transactionLogPath, string.Format(TransactionLogFileName, partition));
+            return SanitizePath(Path.Combine(transactionLogPath, string.Format(TransactionLogFileName, partition)));
         }
 
         public string GetVideoPath(string projectId)
         {
-            return Path.Combine(GetProjectPath(projectId), VideoDir);
+            return SanitizePath(Path.Combine(GetProjectPath(projectId), VideoDir));
         }
 
         public string GetVideoFilePath(string directory)
         {
-            return Path.Combine(directory, VideoFileName);
+            return SanitizePath(Path.Combine(directory, VideoFileName));
         }
 
         public string GetPreviewPath(string projectId, string previewId)
         {
-            return Path.Combine(PreviewsDir, projectId, previewId);
+            return SanitizePath(Path.Combine(PreviewsDir, projectId, previewId));
         }
         #endregion
 
@@ -229,21 +235,23 @@ namespace TutorBits.FileDataAccess
         public async Task<string> StartVideoRecording(Guid projectId)
         {
             var videoPath = GetVideoPath(projectId.ToString());
-            var uploadId = await dataLayer_.StartMultipartUpload(videoPath);
+            var videoFilePath = GetVideoFilePath(videoPath);
+            var uploadId = await dataLayer_.StartMultipartUpload(videoFilePath);
             return uploadId;
         }
 
-        public async Task ContinueVideoRecording(Guid projectId, string uploadId, int part, Stream videoPart)
-        {
-            var videoPath = GetVideoPath(projectId.ToString());
-            await dataLayer_.UploadPart(videoPath, uploadId, part, videoPart);
-        }
-
-        public async Task<string> FinishVideoRecording(Guid projectId, string uploadId)
+        public async Task<string> ContinueVideoRecording(Guid projectId, string uploadId, int part, Stream videoPart, bool last)
         {
             var videoPath = GetVideoPath(projectId.ToString());
             var videoFilePath = GetVideoFilePath(videoPath);
-            return await dataLayer_.StopMultipartUpload(videoPath, uploadId, videoFilePath);
+            return await dataLayer_.UploadPart(videoFilePath, uploadId, part, videoPart, last);
+        }
+
+        public async Task<string> FinishVideoRecording(Guid projectId, string uploadId, ICollection<VideoPart> parts)
+        {
+            var videoPath = GetVideoPath(projectId.ToString());
+            var videoFilePath = GetVideoFilePath(videoPath);
+            return await dataLayer_.StopMultipartUpload(videoFilePath, uploadId, parts);
         }
         #endregion
 
@@ -301,7 +309,7 @@ namespace TutorBits.FileDataAccess
             foreach (var file in files)
             {
                 var path = (await dataLayer_.ConvertToNativePath(file.Key)).Substring(1);
-                var fullPath = Path.Combine(previewFolder, path);
+                var fullPath = SanitizePath(Path.Combine(previewFolder, path));
                 await dataLayer_.CreatePathForFile(fullPath);
                 var fileBytes = Encoding.UTF8.GetBytes(file.Value.ToString());
                 using (var stream = new MemoryStream(fileBytes))

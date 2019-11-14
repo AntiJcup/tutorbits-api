@@ -3,6 +3,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TutorBits.Models.Common;
 
 namespace TutorBits.FileDataAccess
 {
@@ -30,9 +31,9 @@ namespace TutorBits.FileDataAccess
 
         Task<string> StartMultipartUpload(string path);
 
-        Task UploadPart(string path, string multipartUploadId, int part, Stream stream);
+        Task<string> UploadPart(string path, string multipartUploadId, int part, Stream stream, bool last);
 
-        Task<string> StopMultipartUpload(string path, string multipartUploadId, string destinationPath);
+        Task<string> StopMultipartUpload(string path, string multipartUploadId, ICollection<VideoPart> parts);
 
         Task CreatePathForFile(string filePath);
 

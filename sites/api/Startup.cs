@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using TutorBits.Lambda.Local;
 using Amazon.S3;
 using Amazon.Lambda;
+using Amazon.ElasticTranscoder;
 using TutorBits.S3FileSystem;
 using TutorBits.Lambda.AWSLambda;
 
@@ -55,6 +56,8 @@ namespace tutorbits_api
             });
 
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            connectionString = connectionString.Replace("<UID>", Environment.GetEnvironmentVariable("SQL_UID"));
+            connectionString = connectionString.Replace("<PWD>", Environment.GetEnvironmentVariable("SQL_PWD"));
             services.AddDbContext<TutorBitsSQLDbContext>(item => item.UseSqlServer(
                 connectionString,
                 b => b.MigrationsAssembly("MicrosoftSQL"))
@@ -69,6 +72,7 @@ namespace tutorbits_api
                 services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
                 services.AddAWSService<IAmazonS3>();
                 services.AddAWSService<IAmazonLambda>();
+                services.AddAWSService<IAmazonElasticTranscoder>();
                 services.AddS3FileDataAccessLayer();
                 services.AddAWSLambdaAccessLayer();
             }

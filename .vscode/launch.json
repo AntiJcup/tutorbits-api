@@ -21,7 +21,7 @@
             },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development",
-                "ASPNETCORE_URLS": "http://api.tutorbits.com:5000"
+                "ASPNETCORE_URLS": "http://api.local.tutorbits.com:5000"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"
@@ -44,7 +44,7 @@
             },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "AWSDevelopment",
-                "ASPNETCORE_URLS": "http://api.tutorbits.com:5000"
+                "ASPNETCORE_URLS": "http://api.local.tutorbits.com:5000"
             },
             "sourceFileMap": {
                 "/Views": "${workspaceFolder}/Views"

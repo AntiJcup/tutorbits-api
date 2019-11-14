@@ -10,12 +10,13 @@
     <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="1.7.0" />
     <PackageReference Include="AWSSDK.S3" Version="3.3.106.4" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="System.IO.FileSystem.AccessControl" Version="4.6.0" />
   </ItemGroup>
 
     <ItemGroup>
-    <Content Include="..\..\..\..\..\..\tools\ffmpeg">
+    <!-- <Content Include="..\..\..\..\..\..\tools\ffmpeg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </Content> -->
   </ItemGroup>
 
     <ItemGroup>

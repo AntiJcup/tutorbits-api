@@ -10,13 +10,17 @@ public static class Constants
 
             public static readonly string PathsKey = "Paths";
 
-            public static readonly string UrlsKey = "Urls";
+            public static readonly string UrlsKey = "UrlSettings";
 
             public static class Settings
             {
                 public static readonly string PartitionSizeKey = "PartitionSize";
 
                 public static readonly string UseAWSKey = "UseAWS";
+
+                public static readonly string TranscoderPresetIdKey = "TranscoderPresetId";
+
+                public static readonly string TranscoderPipelineIdKey = "TranscoderPipelineId";
             }
 
             public static class Paths

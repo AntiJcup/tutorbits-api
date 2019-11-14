@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using TutorBits.FileDataAccess;
+using TutorBits.Models.Common;
 
 namespace TutorBits
 {
@@ -95,7 +96,7 @@ namespace TutorBits
             {
                 var uploadId = Guid.NewGuid().ToString();
                 path = Path.Combine(path, uploadId);
-                path = RootPath(path);
+                path = $"{RootPath(path)}_{PartsSubDirectory}";
 
                 var uploadFolderExists = await DirectoryExists(path);
                 if (uploadFolderExists)
@@ -111,11 +112,11 @@ namespace TutorBits
                 return uploadId;
             }
 
-            public async Task UploadPart(string path, string multipartUploadId, int part, Stream stream)
+            public async Task<string> UploadPart(string path, string multipartUploadId, int part, Stream stream, bool last)
             {
-                path = Path.Combine(path, multipartUploadId, PartsSubDirectory);
-                path = RootPath(path);
-
+                path = $"{RootPath(path)}_{PartsSubDirectory}";
+                path = Path.Combine(path, multipartUploadId);
+                
                 var uploadFolderExists = await DirectoryExists(path);
                 if (!uploadFolderExists)
                 {
@@ -124,14 +125,13 @@ namespace TutorBits
 
                 var partPath = Path.Combine(path, part.ToString());
                 await CreateFile(partPath, stream);
+                return "NA";
             }
 
-            public async Task<string> StopMultipartUpload(string path, string multipartUploadId, string destinationPath)
+            public async Task<string> StopMultipartUpload(string path, string multipartUploadId, ICollection<VideoPart> parts)
             {
-                path = Path.Combine(path, multipartUploadId);
+                var partsPath = $"{RootPath(path)}_{PartsSubDirectory}";
                 path = RootPath(path);
-
-                var partsPath = Path.Combine(path, PartsSubDirectory);
 
                 var uploadFolderExists = await DirectoryExists(partsPath);
                 if (!uploadFolderExists)
@@ -142,12 +142,12 @@ namespace TutorBits
                 var allParts = await GetAllFiles(partsPath);
                 foreach (var part in allParts)
                 {
-                    await UpdateFile(destinationPath, await ReadFile(part), true);
+                    await UpdateFile(path, await ReadFile(part), true);
                 }
 
                 await DeleteDirectory(partsPath);
 
-                return destinationPath;
+                return path;
             }
 
             public async Task UpdateFile(string path, Stream stream, bool append = false)

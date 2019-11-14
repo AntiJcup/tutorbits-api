@@ -11,6 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using TutorBits.LambdaAccess;
 using Utils.Common;
 using Newtonsoft.Json;
+using Amazon.ElasticTranscoder;
+using Amazon.ElasticTranscoder.Model;
+using System.Threading;
 
 namespace TutorBits.Lambda.AWSLambda
 {
@@ -25,40 +28,82 @@ namespace TutorBits.Lambda.AWSLambda
 
     public class AWSLambdaLayerInterface : LambdaLayerInterface
     {
-        private readonly string WebmToMp4Function = "WebmToMp4";
         private readonly IConfiguration configuration_;
         private readonly IAmazonLambda lambdaClient_;
+        IAmazonElasticTranscoder transcoderClient_;
 
         public readonly string BucketName;
+        public readonly string TranscoderPresetId;
+        public readonly string TranscoderPipelineId;
 
-        public AWSLambdaLayerInterface(IConfiguration config, IAmazonLambda lambdaClient)
+        private readonly System.TimeSpan MaxWaitForTranscode = new System.TimeSpan(hours: 0, minutes: 5, seconds: 0);
+
+        public AWSLambdaLayerInterface(IConfiguration config, IAmazonLambda lambdaClient, IAmazonElasticTranscoder transcoderClient)
         {
             configuration_ = config;
             lambdaClient_ = lambdaClient;
+            transcoderClient_ = transcoderClient;
 
             BucketName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                     .GetValue<string>(Constants.Configuration.Sections.Paths.BucketKey);
+            TranscoderPresetId = configuration_.GetSection(Constants.Configuration.Sections.SettingsKey)
+                    .GetValue<string>(Constants.Configuration.Sections.Settings.TranscoderPresetIdKey);
+            TranscoderPipelineId = configuration_.GetSection(Constants.Configuration.Sections.SettingsKey)
+                    .GetValue<string>(Constants.Configuration.Sections.Settings.TranscoderPipelineIdKey);
         }
 
         public async Task ConvertWebmToMp4(string webmPath, string outMp4Path)
         {
-            var requestModel = new WebmToMp4Request()
+            // var readPresetRequest = new ReadPresetRequest()
+            // {
+            //     Id = TranscoderPresetId
+            // };
+
+            // var readPresetResponse = await transcoderClient_.ReadPresetAsync(readPresetRequest);
+            //Tried lambda here but the lambda environment corrupts the video when using ffmpeg.
+            var createJobRequest = new CreateJobRequest()
             {
-                BucketName = BucketName,
-                Endpoint = lambdaClient_.Config.RegionEndpoint.SystemName,
-                WebmPath = webmPath,
-                Mp4Path = outMp4Path
+                Input = new JobInput()
+                {
+                    AspectRatio = "auto",
+                    Container = "auto",
+                    FrameRate = "auto",
+                    Interlaced = "auto",
+                    Resolution = "auto",
+                    Key = webmPath,
+                },
+                Output = new CreateJobOutput()
+                {
+                    Key = outMp4Path,
+                    PresetId = TranscoderPresetId,
+                },
+                PipelineId = TranscoderPipelineId
             };
 
-            var lambdaExecuteRequest = new Amazon.Lambda.Model.InvokeRequest()
+            var createResponse = await transcoderClient_.CreateJobAsync(createJobRequest);
+
+            var readJobRequest = new ReadJobRequest()
             {
-                FunctionName = WebmToMp4Function,
-                InvocationType = InvocationType.RequestResponse,
-                LogType = LogType.Tail,
-                Payload = JsonConvert.SerializeObject(requestModel)
+                Id = createResponse.Job.Id
             };
 
-            await lambdaClient_.InvokeAsync(lambdaExecuteRequest);
+            var timeStart = DateTime.Now;
+            var now = timeStart;
+            while (now - timeStart < MaxWaitForTranscode)
+            {
+                var readResponse = await transcoderClient_.ReadJobAsync(readJobRequest);
+
+                switch (readResponse.Job.Status)
+                {
+                    case "Complete":
+                    case "Canceled":
+                    case "Error":
+                        return;
+                    default:
+                        break;
+                }
+                Thread.Sleep(100);
+            }
         }
     }
 }

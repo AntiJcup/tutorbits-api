@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -19,6 +20,8 @@ namespace TutorBits
                         .Build();
                     var builder = new DbContextOptionsBuilder<TutorBitsSQLDbContext>();
                     var connectionString = configuration.GetConnectionString("DefaultConnection");
+                    connectionString = connectionString.Replace("<UID>", Environment.GetEnvironmentVariable("SQL_UID"));
+                    connectionString = connectionString.Replace("<PWD>", Environment.GetEnvironmentVariable("SQL_PWD"));
                     builder.UseSqlServer(connectionString);
                     return new TutorBitsSQLDbContext(builder.Options);
                 }

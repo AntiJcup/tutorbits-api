@@ -11,6 +11,7 @@ using Tracer;
 using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
 using TutorBits.LambdaAccess;
+using TutorBits.Models.Common;
 
 namespace tutorbits_api.Controllers
 {
@@ -54,7 +55,7 @@ namespace tutorbits_api.Controllers
 
         [ActionName("continue")]
         [HttpPost]
-        public async Task<IActionResult> ContinueRecordingVideo([FromQuery]Guid projectId, [FromQuery]string recordingId, [FromQuery]int part)
+        public async Task<IActionResult> ContinueRecordingVideo([FromQuery]Guid projectId, [FromQuery]string recordingId, [FromQuery]int part, [FromQuery]bool last)
         {
             try
             {
@@ -62,9 +63,8 @@ namespace tutorbits_api.Controllers
                 {
                     return BadRequest();
                 }
-
-                await fileDataAccessService_.ContinueVideoRecording(projectId, recordingId, part, Request.Body);
-                return Ok();
+                
+                return new JsonResult(await fileDataAccessService_.ContinueVideoRecording(projectId, recordingId, part, Request.Body, last));
             }
             catch (Exception e)
             {
@@ -76,11 +76,11 @@ namespace tutorbits_api.Controllers
 
         [ActionName("stop")]
         [HttpPost]
-        public async Task<IActionResult> FinishRecordingVideo([FromQuery]Guid projectId, [FromQuery]string recordingId)
+        public async Task<IActionResult> FinishRecordingVideo([FromQuery]Guid projectId, [FromQuery]string recordingId, [FromBody]ICollection<VideoPart> parts)
         {
             try
             {
-                var fullVideoUrl = await fileDataAccessService_.FinishVideoRecording(projectId, recordingId);
+                var fullVideoUrl = await fileDataAccessService_.FinishVideoRecording(projectId, recordingId, parts);
                 await lambdaAccessService_.ConvertProjectVideo(projectId);
                 return new JsonResult(fullVideoUrl);
             }

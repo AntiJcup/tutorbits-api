@@ -2,6 +2,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\service\FileDataAccess\FileDataAccess.csproj" />
+    <ProjectReference Include="..\..\models\Common\CommonModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>

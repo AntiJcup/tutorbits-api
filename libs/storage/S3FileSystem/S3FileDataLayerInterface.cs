@@ -10,6 +10,7 @@ using Amazon.S3.Model;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
 using System.Threading;
+using TutorBits.Models.Common;
 
 namespace TutorBits
 {
@@ -41,16 +42,6 @@ namespace TutorBits
 
                 BucketName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                     .GetValue<string>(Constants.Configuration.Sections.Paths.BucketKey);
-            }
-
-            public static string RootPath(string path) //TODO REMOVE
-            {
-                return Path.IsPathRooted(path) ? path : Path.Combine("", path);
-            }
-
-            public string GetWorkingDirectory() //TODO REMOVE
-            {
-                return "";
             }
 
             public async Task CreateDirectory(string path)
@@ -181,34 +172,44 @@ namespace TutorBits
                 return response.UploadId;
             }
 
-            public async Task UploadPart(string path, string multipartUploadId, int part, Stream stream)
+            public async Task<string> UploadPart(string path, string multipartUploadId, int part, Stream stream, bool last)
             {
-                var multipartUploadStartRequest = new UploadPartRequest()
+                using (var memStream = new MemoryStream())
                 {
-                    BucketName = BucketName,
-                    Key = path,
-                    UploadId = multipartUploadId
-                };
+                    await stream.CopyToAsync(memStream);
+                    memStream.Position = 0;
 
-                await s3Client_.UploadPartAsync(multipartUploadStartRequest);
+                    var multipartUploadStartRequest = new UploadPartRequest()
+                    {
+                        BucketName = BucketName,
+                        Key = path,
+                        UploadId = multipartUploadId,
+                        InputStream = memStream,
+                        PartNumber = part + 1,
+                        IsLastPart = last
+                    };
+
+                    var response = await s3Client_.UploadPartAsync(multipartUploadStartRequest);
+                    return response.ETag;
+                }
             }
 
-            public async Task<string> StopMultipartUpload(string path, string multipartUploadId, string destinationPath)
+            public async Task<string> StopMultipartUpload(string path, string multipartUploadId, ICollection<VideoPart> parts)
             {
-                var multipartUploadStartRequest = new CompleteMultipartUploadRequest()
+                var multipartUploadStopRequest = new CompleteMultipartUploadRequest()
                 {
                     BucketName = BucketName,
                     Key = path,
-                    UploadId = multipartUploadId
+                    UploadId = multipartUploadId,
+                    PartETags = parts.Select(p => new PartETag(p.Index + 1, p.ETag)).ToList()
                 };
 
-                await s3Client_.CompleteMultipartUploadAsync(multipartUploadStartRequest);
-                return destinationPath;
+                await s3Client_.CompleteMultipartUploadAsync(multipartUploadStopRequest);
+                return path;
             }
 
             public async Task UpdateFile(string path, Stream stream, bool append = false)
             {
-                path = RootPath(path);
                 if (!append)
                 {
                     await CreateFile(path, stream);
@@ -230,6 +231,11 @@ namespace TutorBits
             public async Task<string> ConvertToNativePath(string path)
             {
                 return path.Replace('/', '\\');
+            }
+
+            public string GetWorkingDirectory()
+            {
+                return "";
             }
         }
     }
