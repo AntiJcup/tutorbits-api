@@ -21,6 +21,12 @@ public static class Constants
                 public static readonly string TranscoderPresetIdKey = "TranscoderPresetId";
 
                 public static readonly string TranscoderPipelineIdKey = "TranscoderPipelineId";
+
+                public static readonly string UserPoolClientIdKey = "UserPoolClientId";
+
+                public static readonly string UserPoolIdKey = "UserPoolId";
+
+                public static readonly string UserPoolAuthorityKey = "UserPoolAuthority";
             }
 
             public static class Paths

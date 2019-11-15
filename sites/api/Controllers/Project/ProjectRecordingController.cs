@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using GenericServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Tracer;
@@ -14,6 +15,7 @@ using Utils.Common;
 
 namespace tutorbits_api.Controllers
 {
+    [Authorize(Policy = "LimitedDomains")]
     [Route("api/project/recording/[action]")]
     [ApiController]
     public class ProjectRecordingController : ControllerBase

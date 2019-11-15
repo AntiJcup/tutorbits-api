@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Amazon.Extensions.CognitoAuthentication" Version="1.0.3" />
+    <PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="3.3.103.16" />
     <PackageReference Include="AWSSDK.ElasticTranscoder" Version="3.3.100.97" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.100.1" />
     <PackageReference Include="AWSSDK.Lambda" Version="3.3.103.29" />

@@ -24,6 +24,8 @@ using Amazon.Lambda;
 using Amazon.ElasticTranscoder;
 using TutorBits.S3FileSystem;
 using TutorBits.Lambda.AWSLambda;
+using Amazon.CognitoIdentityProvider;
+using Amazon.Extensions.CognitoAuthentication;
 
 namespace tutorbits_api
 {
@@ -69,12 +71,44 @@ namespace tutorbits_api
                         .GetValue<bool>(Constants.Configuration.Sections.Settings.UseAWSKey, false);
             if (useAWS)
             {
-                services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+                var awsOptions = Configuration.GetAWSOptions();
+                services.AddDefaultAWSOptions(awsOptions);
                 services.AddAWSService<IAmazonS3>();
                 services.AddAWSService<IAmazonLambda>();
                 services.AddAWSService<IAmazonElasticTranscoder>();
                 services.AddS3FileDataAccessLayer();
                 services.AddAWSLambdaAccessLayer();
+
+
+                // The following 3 variables are null
+                var userPoolId = Configuration.GetSection(Constants.Configuration.Sections.SettingsKey)
+                        .GetValue<string>(Constants.Configuration.Sections.Settings.UserPoolIdKey);
+                var userPoolClientId = Configuration.GetSection(Constants.Configuration.Sections.SettingsKey)
+                        .GetValue<string>(Constants.Configuration.Sections.Settings.UserPoolClientIdKey);
+                var userPoolAuthority = Configuration.GetSection(Constants.Configuration.Sections.SettingsKey)
+                        .GetValue<string>(Constants.Configuration.Sections.Settings.UserPoolAuthorityKey);
+                var userPoolClientSecret = Environment.GetEnvironmentVariable("COGNITO_USER_POOL_CLIENT_SECRET");
+
+                var amazonCognitoIdentityProvider = new AmazonCognitoIdentityProviderClient(awsOptions.Credentials,
+                                                                                            awsOptions.Region);
+                var cognitoUserPool = new CognitoUserPool(userPoolId, userPoolClientId, amazonCognitoIdentityProvider,
+                                                        userPoolClientSecret);
+
+                services.AddSingleton<IAmazonCognitoIdentityProvider>(x => amazonCognitoIdentityProvider);
+                services.AddSingleton<CognitoUserPool>(x => cognitoUserPool);
+
+                services.AddAuthentication("Bearer")
+                    .AddJwtBearer(options =>
+                    {
+                        options.Audience = userPoolClientId;
+                        options.Authority = userPoolAuthority;
+                    });
+
+
+                services.AddAuthorization(options =>
+                {
+                    options.AddPolicy("LimitedDomains", policy => policy.RequireClaim("custom:domain", "local.tutorbits.com"));
+                });
             }
             else
             {
@@ -101,6 +135,8 @@ namespace tutorbits_api
 
             app.UseHttpsRedirection();
             app.UseMvc();
+
+            app.UseAuthentication();
 
             app.UseSwagger();
 

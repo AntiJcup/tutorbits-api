@@ -14,7 +14,7 @@ Setup:
 11. Download https://dotnet.microsoft.com/download/thank-you/dotnet-runtime-2.2.7-windows-hosting-bundle-installer and install
 12. Download https://s3.amazonaws.com/aws-cli/AWSCLI64PY3.msi and install
 13. Setup aws profile local-test
-
+14. Setup COGNITO_USER_POOL_CLIENT_SECRET Environmental Variable IIS configuration editor(On the overall system.webServer/aspNetCore)
 
 
 

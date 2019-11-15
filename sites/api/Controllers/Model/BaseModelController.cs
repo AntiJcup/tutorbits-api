@@ -13,6 +13,7 @@ using TutorBits.FileDataAccess;
 using TutorBits.Models.Common;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace api.Controllers.Model
 {
@@ -95,7 +96,7 @@ namespace api.Controllers.Model
             return new JsonResult(viewModels);
         }
 
-
+        [Authorize(Policy = "LimitedDomains")]
         [HttpPost]
         public virtual async Task<IActionResult> Create([FromBody] TCreateModel createModel)
         {
@@ -113,6 +114,7 @@ namespace api.Controllers.Model
             return new JsonResult(viewModel);
         }
 
+        [Authorize(Policy = "LimitedDomains")]
         [HttpPost]
         public virtual async Task<IActionResult> Update([FromBody] TUpdateModel updateModel)
         {
@@ -127,6 +129,7 @@ namespace api.Controllers.Model
             return Ok();
         }
 
+        [Authorize(Policy = "LimitedDomains")]
         [HttpPost]
         public virtual async Task<IActionResult> UpdateStatusById([FromQuery] Guid id, [FromQuery] BaseState status)
         {
@@ -142,6 +145,7 @@ namespace api.Controllers.Model
             return Ok();
         }
 
+        [Authorize(Policy = "LimitedDomains")]
         [HttpPost]
         public virtual async Task<IActionResult> Delete()
         {
@@ -150,6 +154,7 @@ namespace api.Controllers.Model
             return Ok();
         }
 
+        [Authorize(Policy = "LimitedDomains")]
         [HttpPost]
         public virtual async Task<IActionResult> DeleteById([FromQuery] Guid id)
         {
