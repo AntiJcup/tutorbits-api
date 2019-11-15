@@ -26,22 +26,35 @@ using TutorBits.S3FileSystem;
 using TutorBits.Lambda.AWSLambda;
 using Amazon.CognitoIdentityProvider;
 using Amazon.Extensions.CognitoAuthentication;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 namespace tutorbits_api
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
+            Env = env;
         }
 
         public IConfiguration Configuration { get; }
+        public IHostingEnvironment Env { get; private set; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            if (Env.IsEnvironment("Development"))
+            {
+                services.AddMvc(options =>
+                {
+                    options.Filters.Add(new AllowAnonymousFilter());
+                }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            }
+            else
+            {
+                services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            }
 
             services.AddSwaggerGen(c =>
             {
