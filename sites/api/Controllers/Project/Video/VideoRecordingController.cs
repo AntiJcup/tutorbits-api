@@ -16,7 +16,7 @@ using TutorBits.Models.Common;
 
 namespace tutorbits_api.Controllers
 {
-    [Authorize(Policy = "LimitedDomains")]
+    [Authorize]
     [Route("api/project/video/recording/[action]")]
     [ApiController]
     public class VideoRecordingController : ControllerBase

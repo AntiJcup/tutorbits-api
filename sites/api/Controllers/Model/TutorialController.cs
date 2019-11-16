@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Amazon.CognitoIdentityProvider;
 using api.Controllers.Model;
 using api.Models;
 using api.Models.Requests;
@@ -21,8 +22,8 @@ namespace api.Controllers.Model
     [ApiController]
     public class TutorialController : BaseModelController<Tutorial, CreateUpdateTutorialModel, CreateUpdateTutorialModel, TutorialViewModel>
     {
-        public TutorialController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
-            : base(configuration, dbDataAccessService, fileDataAccessService)
+        public TutorialController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService, IAmazonCognitoIdentityProvider cognitoService)
+            : base(configuration, dbDataAccessService, fileDataAccessService, cognitoService)
         {
 
         }

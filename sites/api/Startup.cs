@@ -27,6 +27,8 @@ using TutorBits.Lambda.AWSLambda;
 using Amazon.CognitoIdentityProvider;
 using Amazon.Extensions.CognitoAuthentication;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Authorization;
+using AWS.Auth;
 
 namespace tutorbits_api
 {
@@ -59,6 +61,17 @@ namespace tutorbits_api
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "TutorBits", Version = "v1" });
+                c.AddSecurityDefinition("Bearer",
+                                        new ApiKeyScheme
+                                        {
+                                            In = "header",
+                                            Description = "Please enter into field the word 'Bearer' following by space and JWT",
+                                            Name = "Authorization",
+                                            Type = "apiKey"
+                                        });
+                c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> {
+                                            { "Bearer", Enumerable.Empty<string>() },
+                                        });
             });
 
             services.AddCors(options =>
@@ -113,15 +126,20 @@ namespace tutorbits_api
                 services.AddAuthentication("Bearer")
                     .AddJwtBearer(options =>
                     {
-                        options.Audience = userPoolClientId;
                         options.Authority = userPoolAuthority;
+                        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
+                        {
+                            ValidateAudience = false //TODO FIX
+                        };
                     });
 
 
-                services.AddAuthorization(options =>
-                {
-                    options.AddPolicy("LimitedDomains", policy => policy.RequireClaim("custom:domain", "local.tutorbits.com"));
-                });
+                services.AddAuthorization(
+                    options => options.AddPolicy("IsAdmin", policy => policy.Requirements.Add(new CognitoGroupAuthorizationRequirement("Admin")))
+                );
+                
+                // add a singleton of our cognito authorization handler
+                services.AddSingleton<IAuthorizationHandler, CognitoGroupAuthorizationHandler>();
             }
             else
             {
@@ -147,9 +165,9 @@ namespace tutorbits_api
             app.UseCors("tutorbits");
 
             app.UseHttpsRedirection();
-            app.UseMvc();
-
             app.UseAuthentication();
+
+            app.UseMvc();
 
             app.UseSwagger();
 

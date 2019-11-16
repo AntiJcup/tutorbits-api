@@ -49,7 +49,7 @@ namespace TutorBits
 
                 public async Task Delete<T>(params object[] keys) where T : class, new()
                 {
-                    await Delete<T>(keys.ToArray());
+                    await Delete<T>(keys.ToArray() as ICollection<object>);
                 }
 
                 public async Task Delete<T>(ICollection<object> keys) where T : class, new()

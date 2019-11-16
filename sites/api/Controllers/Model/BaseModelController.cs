@@ -14,6 +14,7 @@ using TutorBits.Models.Common;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Authorization;
+using Amazon.CognitoIdentityProvider;
 
 namespace api.Controllers.Model
 {
@@ -32,12 +33,13 @@ namespace api.Controllers.Model
         protected readonly DBDataAccessService dbDataAccessService_;
         protected readonly FileDataAccessService fileDataAccessService_;
         protected readonly IConfiguration configuration_;
-
-        public BaseModelController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
+        protected readonly IAmazonCognitoIdentityProvider cognitoService_;
+        public BaseModelController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService, IAmazonCognitoIdentityProvider cognitoService)
         {
             dbDataAccessService_ = dbDataAccessService;
             fileDataAccessService_ = fileDataAccessService;
             configuration_ = configuration;
+            cognitoService_ = cognitoService;
         }
 
         [HttpGet]
@@ -96,7 +98,6 @@ namespace api.Controllers.Model
             return new JsonResult(viewModels);
         }
 
-        [Authorize(Policy = "LimitedDomains")]
         [HttpPost]
         public virtual async Task<IActionResult> Create([FromBody] TCreateModel createModel)
         {
@@ -114,7 +115,7 @@ namespace api.Controllers.Model
             return new JsonResult(viewModel);
         }
 
-        [Authorize(Policy = "LimitedDomains")]
+        [Authorize]
         [HttpPost]
         public virtual async Task<IActionResult> Update([FromBody] TUpdateModel updateModel)
         {
@@ -129,7 +130,7 @@ namespace api.Controllers.Model
             return Ok();
         }
 
-        [Authorize(Policy = "LimitedDomains")]
+        [Authorize]
         [HttpPost]
         public virtual async Task<IActionResult> UpdateStatusById([FromQuery] Guid id, [FromQuery] BaseState status)
         {
@@ -145,7 +146,7 @@ namespace api.Controllers.Model
             return Ok();
         }
 
-        [Authorize(Policy = "LimitedDomains")]
+        [Authorize]
         [HttpPost]
         public virtual async Task<IActionResult> Delete()
         {
@@ -154,7 +155,7 @@ namespace api.Controllers.Model
             return Ok();
         }
 
-        [Authorize(Policy = "LimitedDomains")]
+        [Authorize]
         [HttpPost]
         public virtual async Task<IActionResult> DeleteById([FromQuery] Guid id)
         {

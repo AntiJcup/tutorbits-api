@@ -15,7 +15,7 @@ using Utils.Common;
 
 namespace tutorbits_api.Controllers
 {
-    [Authorize(Policy = "LimitedDomains")]
+    [Authorize]
     [Route("api/project/recording/[action]")]
     [ApiController]
     public class ProjectRecordingController : ControllerBase

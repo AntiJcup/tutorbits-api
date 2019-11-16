@@ -40,6 +40,7 @@
     <ProjectReference Include="..\..\libs\constants\constants.csproj" />
     <ProjectReference Include="..\..\libs\utils\Common\CommonUtils.csproj" />
     <ProjectReference Include="..\..\libs\utils\MVC\MVC.csproj" />
+    <ProjectReference Include="..\..\libs\utils\AWS\AWSUtils.csproj" />
     <ProjectReference Include="..\..\libs\lambda\Local\LocalLambda.csproj" />
     <ProjectReference Include="..\..\libs\lambda\AWSLambda\AWSLambda.csproj" />
   </ItemGroup>
