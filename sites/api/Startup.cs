@@ -129,7 +129,7 @@ namespace tutorbits_api
                         options.Authority = userPoolAuthority;
                         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters()
                         {
-                            ValidateAudience = false //TODO FIX
+                            ValidateAudience = false //Amazon doesnt provide an audience
                         };
                     });
 

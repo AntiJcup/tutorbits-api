@@ -98,6 +98,7 @@ namespace api.Controllers.Model
             return new JsonResult(viewModels);
         }
 
+        [Authorize]
         [HttpPost]
         public virtual async Task<IActionResult> Create([FromBody] TCreateModel createModel)
         {
