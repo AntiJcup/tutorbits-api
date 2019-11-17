@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Controllers;
 using GenericServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ namespace tutorbits_api.Controllers
     [Authorize]
     [Route("api/project/recording/[action]")]
     [ApiController]
-    public class ProjectRecordingController : ControllerBase
+    public class ProjectRecordingController : TutorBitsController
     {
         private readonly DBDataAccessService dbDataAccessService_;
         private readonly FileDataAccessService fileDataAccessService_;

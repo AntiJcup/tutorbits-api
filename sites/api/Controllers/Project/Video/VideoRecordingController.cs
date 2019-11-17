@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using api.Controllers;
 using api.Models;
 using GenericServices;
 using Microsoft.AspNetCore.Authorization;
@@ -19,7 +20,7 @@ namespace tutorbits_api.Controllers
     [Authorize]
     [Route("api/project/video/recording/[action]")]
     [ApiController]
-    public class VideoRecordingController : ControllerBase
+    public class VideoRecordingController : TutorBitsController
     {
         private readonly DBDataAccessService dbDataAccessService_;
         private readonly FileDataAccessService fileDataAccessService_;

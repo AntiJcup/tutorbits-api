@@ -29,6 +29,9 @@ using Amazon.Extensions.CognitoAuthentication;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using AWS.Auth;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Amazon.AspNetCore.Identity.Cognito;
 
 namespace tutorbits_api
 {
@@ -133,11 +136,10 @@ namespace tutorbits_api
                         };
                     });
 
-
                 services.AddAuthorization(
                     options => options.AddPolicy("IsAdmin", policy => policy.Requirements.Add(new CognitoGroupAuthorizationRequirement("Admin")))
                 );
-                
+
                 // add a singleton of our cognito authorization handler
                 services.AddSingleton<IAuthorizationHandler, CognitoGroupAuthorizationHandler>();
             }

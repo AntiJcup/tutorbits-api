@@ -14,7 +14,8 @@ using TutorBits.Models.Common;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Authorization;
-using Amazon.CognitoIdentityProvider;
+using Microsoft.AspNetCore.Identity;
+using Amazon.Extensions.CognitoAuthentication;
 
 namespace api.Controllers.Model
 {
@@ -24,7 +25,7 @@ namespace api.Controllers.Model
         Update,
     }
 
-    public abstract class BaseModelController<TModel, TCreateModel, TUpdateModel, TViewModel> : ControllerBase
+    public abstract class BaseModelController<TModel, TCreateModel, TUpdateModel, TViewModel> : TutorBitsController
         where TModel : BaseModel, new()
         where TCreateModel : BaseConvertableModel<TModel>
         where TUpdateModel : BaseConvertableModel<TModel>
@@ -33,13 +34,13 @@ namespace api.Controllers.Model
         protected readonly DBDataAccessService dbDataAccessService_;
         protected readonly FileDataAccessService fileDataAccessService_;
         protected readonly IConfiguration configuration_;
-        protected readonly IAmazonCognitoIdentityProvider cognitoService_;
-        public BaseModelController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService, IAmazonCognitoIdentityProvider cognitoService)
+        protected readonly CognitoUserPool userService_;
+        public BaseModelController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService, CognitoUserPool userService)
         {
             dbDataAccessService_ = dbDataAccessService;
             fileDataAccessService_ = fileDataAccessService;
             configuration_ = configuration;
-            cognitoService_ = cognitoService;
+            userService_ = userService;
         }
 
         [HttpGet]
@@ -106,6 +107,8 @@ namespace api.Controllers.Model
             {
                 return BadRequest(ModelState);
             }
+
+            var user = userService_.GetUser(this.User.Claims.Where(c => c.Type == "username").FirstOrDefault().Value);
 
             var model = createModel.Convert();
             await EnrichModel(model, Action.Create);

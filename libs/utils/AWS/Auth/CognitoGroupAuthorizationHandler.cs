@@ -20,6 +20,5 @@ namespace AWS.Auth
 
             return Task.CompletedTask;
         }
-
     }
 }
