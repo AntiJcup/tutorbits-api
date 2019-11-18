@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Tracer;
+using TutorBits.AuthAccess;
 using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
 using Utils.Common;
@@ -22,41 +23,29 @@ namespace tutorbits_api.Controllers
     [ApiController]
     public class UserController : TutorBitsController
     {
-        private readonly DBDataAccessService dbDataAccessService_;
-        private readonly FileDataAccessService fileDataAccessService_;
+        private readonly AuthAccessService authService_;
 
-        private readonly IConfiguration configuration_;
-
-        private readonly CognitoUserPool userService_;
-
-        public UserController(IConfiguration configuration, CognitoUserPool userService)
+        public UserController(IConfiguration configuration, AuthAccessService authService) : base(configuration)
         {
-            configuration_ = configuration;
-            userService_ = userService;
+            authService_ = authService;
         }
 
         [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetCurrentUser()
         {
-            var user = userService_.GetUser(UserName);
-            var userDetails = await user.GetUserDetailsAsync();
-            var view = new UserViewModel();
-            view.Convert(userDetails);
+            var user = authService_.GetUser(UserName);
 
-            return new JsonResult(view);
+            return new JsonResult(user);
         }
 
         [Authorize(Policy = "IsAdmin")]
         [HttpGet]
         public async Task<IActionResult> GetOtherUser([FromQuery] string userName)
         {
-            var user = userService_.GetUser(userName);
-            var userDetails = await user.GetUserDetailsAsync();
-            var view = new UserViewModel();
-            view.Convert(userDetails);
+            var user = authService_.GetUser(userName);
 
-            return new JsonResult(view);
+            return new JsonResult(user);
         }
     }
 }

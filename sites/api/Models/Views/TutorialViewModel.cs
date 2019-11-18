@@ -13,7 +13,7 @@ namespace api.Models.Views
 
         public string Description { get; set; }
 
-        public string UserName { get; set; } //Enriched
+        public string Owner { get; set; }
 
         public string Status { get; set; }
 
@@ -24,6 +24,7 @@ namespace api.Models.Views
             Language = baseModel.Language;
             Description = baseModel.Description;
             Status = baseModel.Status.ToString();
+            Owner = baseModel.Owner;
         }
     }
 }

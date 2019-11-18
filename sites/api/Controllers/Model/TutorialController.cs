@@ -24,15 +24,10 @@ namespace api.Controllers.Model
     [ApiController]
     public class TutorialController : BaseModelController<Tutorial, CreateUpdateTutorialModel, CreateUpdateTutorialModel, TutorialViewModel>
     {
-        public TutorialController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService, CognitoUserPool userService)
-            : base(configuration, dbDataAccessService, fileDataAccessService, userService)
+        public TutorialController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
+            : base(configuration, dbDataAccessService, fileDataAccessService)
         {
 
-        }
-
-        protected override async Task EnrichViewModel(TutorialViewModel viewModel)
-        {
-            viewModel.UserName = "Jacob";
         }
     }
 }

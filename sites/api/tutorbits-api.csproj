@@ -44,6 +44,8 @@
     <ProjectReference Include="..\..\libs\utils\AWS\AWSUtils.csproj" />
     <ProjectReference Include="..\..\libs\lambda\Local\LocalLambda.csproj" />
     <ProjectReference Include="..\..\libs\lambda\AWSLambda\AWSLambda.csproj" />
+    <ProjectReference Include="..\..\libs\auth\AWSAuth\AWSAuth.csproj" />
+    <ProjectReference Include="..\..\libs\auth\LocalAuth\LocalAuth.csproj" />
   </ItemGroup>
 
 </Project>

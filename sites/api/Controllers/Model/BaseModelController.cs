@@ -33,14 +33,12 @@ namespace api.Controllers.Model
     {
         protected readonly DBDataAccessService dbDataAccessService_;
         protected readonly FileDataAccessService fileDataAccessService_;
-        protected readonly IConfiguration configuration_;
-        protected readonly CognitoUserPool userService_;
-        public BaseModelController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService, CognitoUserPool userService)
+        
+        public BaseModelController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
+         : base(configuration)
         {
             dbDataAccessService_ = dbDataAccessService;
             fileDataAccessService_ = fileDataAccessService;
-            configuration_ = configuration;
-            userService_ = userService;
         }
 
         [HttpGet]
@@ -108,8 +106,6 @@ namespace api.Controllers.Model
                 return BadRequest(ModelState);
             }
 
-            var user = userService_.GetUser(this.User.Claims.Where(c => c.Type == "username").FirstOrDefault().Value);
-
             var model = createModel.Convert();
             await EnrichModel(model, Action.Create);
             var entity = await dbDataAccessService_.CreateBaseModel(model);
@@ -129,6 +125,19 @@ namespace api.Controllers.Model
             }
 
             var model = updateModel.Convert();
+            var modelKeys = await GetKeysFromModel(model);
+            var oldModel = await dbDataAccessService_.GetBaseModel<TModel>(modelKeys);
+
+            if (oldModel == null)
+            {
+                return NotFound(); //Update cant be called on items that dont exist
+            }
+
+            if (oldModel.Owner != UserName && !IsAdmin())
+            {
+                return Forbid(); //Only the owner and admins can modify this data
+            }
+
             await EnrichModel(model, Action.Update);
             await dbDataAccessService_.UpdateBaseModel(model);
             return Ok();
@@ -144,6 +153,16 @@ namespace api.Controllers.Model
             }
 
             var model = await dbDataAccessService_.GetBaseModel<TModel>(id);
+            if (model == null)
+            {
+                return NotFound(); //Update cant be called on items that dont exist
+            }
+
+            if (model.Owner != UserName && !IsAdmin())
+            {
+                return Forbid(); //Only the owner and admins can modify this data
+            }
+
             model.Status = status;
             await dbDataAccessService_.UpdateBaseModel(model);
 
@@ -155,6 +174,18 @@ namespace api.Controllers.Model
         public virtual async Task<IActionResult> Delete()
         {
             var keys = await GetKeysFromRequest();
+            var oldModel = await dbDataAccessService_.GetBaseModel<TModel>(keys);
+
+            if (oldModel == null)
+            {
+                return NotFound(); //Delete cant be called on items that dont exist
+            }
+
+            if (oldModel.Owner != UserName && !IsAdmin())
+            {
+                return Forbid(); //Only the owner and admins can delete this data
+            }
+
             await dbDataAccessService_.DeleteBaseModel<TModel>(keys);
             return Ok();
         }
@@ -172,6 +203,18 @@ namespace api.Controllers.Model
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            var oldModel = await dbDataAccessService_.GetBaseModel<TModel>(keys);
+
+            if (oldModel == null)
+            {
+                return NotFound(); //Delete cant be called on items that dont exist
+            }
+
+            if (oldModel.Owner != UserName && !IsAdmin())
+            {
+                return Forbid(); //Only the owner and admins can delete this data
             }
 
             await dbDataAccessService_.DeleteBaseModel<TModel>(id);
@@ -200,6 +243,32 @@ namespace api.Controllers.Model
             return keys;
         }
 
+        protected virtual async Task<ICollection<object>> GetKeysFromModel(TModel model)
+        {
+            var keys = new List<object>();
+
+            var keyProperties = typeof(TModel).GetProperties().Where(p => Attribute.IsDefined(p, typeof(KeyAttribute)));
+            foreach (var keyProp in keyProperties)
+            {
+                var val = keyProp.GetValue(model);
+                if (val != null)
+                {
+                    keys.Add(val);
+                }
+                else
+                {
+                    throw new Exception("Key missing value");
+                }
+            }
+
+            if (keys.Count() < keyProperties.Count())
+            {
+                throw new Exception("Not enough keys");
+            }
+
+            return keys;
+        }
+
         protected virtual async Task<string> GenerateModelStateErrorMessage()
         {
             var builder = new StringBuilder();
@@ -216,7 +285,12 @@ namespace api.Controllers.Model
 
         protected virtual async Task EnrichModel(TModel model, Action action)
         {
-
+            switch (action)
+            {
+                case Action.Create:
+                    model.Owner = UserName;
+                    break;
+            }
         }
 
         protected virtual async Task EnrichViewModel(TViewModel viewModel)

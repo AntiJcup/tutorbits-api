@@ -22,13 +22,11 @@ namespace tutorbits_api.Controllers
         private readonly DBDataAccessService dbDataAccessService_;
         private readonly FileDataAccessService fileDataAccessService_;
 
-        private readonly IConfiguration configuration_;
-
         public ProjectStreamingController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
+        : base(configuration)
         {
             dbDataAccessService_ = dbDataAccessService;
             fileDataAccessService_ = fileDataAccessService;
-            configuration_ = configuration;
         }
 
         [ActionName("project")]

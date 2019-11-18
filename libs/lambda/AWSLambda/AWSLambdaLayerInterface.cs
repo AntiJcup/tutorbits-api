@@ -54,12 +54,6 @@ namespace TutorBits.Lambda.AWSLambda
 
         public async Task ConvertWebmToMp4(string webmPath, string outMp4Path)
         {
-            // var readPresetRequest = new ReadPresetRequest()
-            // {
-            //     Id = TranscoderPresetId
-            // };
-
-            // var readPresetResponse = await transcoderClient_.ReadPresetAsync(readPresetRequest);
             //Tried lambda here but the lambda environment corrupts the video when using ffmpeg.
             var createJobRequest = new CreateJobRequest()
             {

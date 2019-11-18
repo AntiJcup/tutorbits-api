@@ -22,13 +22,11 @@ namespace tutorbits_api.Controllers
         private readonly DBDataAccessService dbDataAccessService_;
         private readonly FileDataAccessService fileDataAccessService_;
 
-        private readonly IConfiguration configuration_;
-
         public ProjectPreviewController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
+         : base(configuration)
         {
             dbDataAccessService_ = dbDataAccessService;
             fileDataAccessService_ = fileDataAccessService;
-            configuration_ = configuration;
         }
 
         [ActionName("load")]
@@ -74,7 +72,8 @@ namespace tutorbits_api.Controllers
                 }
 
                 var tempID = Guid.NewGuid();
-                var tempProject = new TraceProject() {
+                var tempProject = new TraceProject()
+                {
                     Id = tempID.ToString()
                 };
                 await fileDataAccessService_.GeneratePreview(tempProject, (int)offsetEnd, previewId, transactionLogs);

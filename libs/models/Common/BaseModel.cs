@@ -31,5 +31,9 @@ namespace TutorBits.Models.Common
         public string Notes { get; set; }
 
         public BaseState Status { get; set; } = BaseState.Inactive;
+
+        [MinLength(1)]
+        [MaxLength(1028)]
+        public string Owner { get; set; }
     }
 }

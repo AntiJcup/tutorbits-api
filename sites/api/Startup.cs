@@ -32,6 +32,8 @@ using AWS.Auth;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Amazon.AspNetCore.Identity.Cognito;
+using TutorBits.Auth.AWSAuth;
+using LocalAuth;
 
 namespace tutorbits_api
 {
@@ -136,19 +138,21 @@ namespace tutorbits_api
                         };
                     });
 
-                services.AddAuthorization(
-                    options => options.AddPolicy("IsAdmin", policy => policy.Requirements.Add(new CognitoGroupAuthorizationRequirement("Admin")))
-                );
-
                 // add a singleton of our cognito authorization handler
                 services.AddSingleton<IAuthorizationHandler, CognitoGroupAuthorizationHandler>();
+
+                services.AddAWSAuthAccessLayer();
             }
             else
             {
                 services.AddWindowsFileDataAccessLayer();
                 services.AddLocalLambdaAccessLayer();
+                services.AddLocalAuthAccessLayer();
             }
 
+            services.AddAuthorization(
+                options => options.AddPolicy("IsAdmin", policy => policy.Requirements.Add(new CognitoGroupAuthorizationRequirement("Admin")))
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

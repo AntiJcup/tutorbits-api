@@ -49,23 +49,5 @@ namespace TutorBits.DBDataAccess
         {
             await dataLayer_.Delete<TModel>(keys);
         }
-
-        #region Tutorials
-
-        public async Task<ICollection<Tutorial>> GetAllTutorialsForUser(Guid userId)
-        {
-            return await dataLayer_.GetAll<Tutorial>((t => t.UserId == userId), null, null);
-        }
-
-        public async Task UpdateTutorial(Tutorial tutorial)
-        {
-            await dataLayer_.Update(tutorial);
-        }
-
-        public async Task DeleteTutorial(Tutorial tutorial)
-        {
-            await dataLayer_.Delete(tutorial);
-        }
-        #endregion
     }
 }

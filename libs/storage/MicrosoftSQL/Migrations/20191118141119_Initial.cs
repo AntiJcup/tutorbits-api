@@ -16,7 +16,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     DateModified = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
                     Notes = table.Column<string>(maxLength: 1028, nullable: true),
                     Status = table.Column<string>(maxLength: 64, nullable: false),
-                    UserId = table.Column<Guid>(nullable: true),
+                    Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     Title = table.Column<string>(maxLength: 64, nullable: true),
                     Language = table.Column<string>(maxLength: 64, nullable: true),
                     Description = table.Column<string>(maxLength: 1028, nullable: true)

@@ -7,8 +7,6 @@ namespace TutorBits.Models.Common
     [Table("Tutorials")]
     public class Tutorial : BaseModel
     {
-        public Guid? UserId { get; set; }
-
         [MaxLength(64)]
         public string Title { get; set; }
 

@@ -10,7 +10,7 @@ using TutorBits.Storage.MicrosoftSQL;
 namespace TutorBits.Storage.MicrosoftSQL.Migrations
 {
     [DbContext(typeof(TutorBitsSQLDbContext))]
-    [Migration("20191108170414_Initial")]
+    [Migration("20191118141119_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,14 +43,15 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     b.Property<string>("Notes")
                         .HasMaxLength(1028);
 
+                    b.Property<string>("Owner")
+                        .HasMaxLength(1028);
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(64);
 
                     b.Property<string>("Title")
                         .HasMaxLength(64);
-
-                    b.Property<Guid?>("UserId");
 
                     b.HasKey("Id");
 

@@ -26,17 +26,15 @@ namespace tutorbits_api.Controllers
         private readonly FileDataAccessService fileDataAccessService_;
         private readonly LambdaAccessService lambdaAccessService_;
 
-        private readonly IConfiguration configuration_;
-
         public VideoRecordingController(IConfiguration configuration,
         DBDataAccessService dbDataAccessService,
         FileDataAccessService fileDataAccessService,
         LambdaAccessService lambdaAccessService)
+         : base(configuration)
         {
             dbDataAccessService_ = dbDataAccessService;
             fileDataAccessService_ = fileDataAccessService;
             lambdaAccessService_ = lambdaAccessService;
-            configuration_ = configuration;
         }
 
         [ActionName("start")]
@@ -66,7 +64,7 @@ namespace tutorbits_api.Controllers
                 {
                     return BadRequest();
                 }
-                
+
                 return new JsonResult(await fileDataAccessService_.ContinueVideoRecording(projectId, recordingId, part, Request.Body, last));
             }
             catch (Exception e)
