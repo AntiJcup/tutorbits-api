@@ -41,7 +41,12 @@ namespace tutorbits_api.Controllers
                 var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(tutorialId);
                 if (tutorial == null)
                 {
-                    return BadRequest();
+                    return NotFound();
+                }
+
+                if (!HasAccessToModel(tutorial))
+                {
+                    return Forbid(); //Only the owner and admins can modify this data
                 }
 
                 var project = new TraceProject()
@@ -72,7 +77,12 @@ namespace tutorbits_api.Controllers
                 var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(tutorialId);
                 if (tutorial == null)
                 {
-                    return BadRequest();
+                    return NotFound();
+                }
+
+                if (!HasAccessToModel(tutorial))
+                {
+                    return Forbid(); //Only the owner and admins can modify this data
                 }
 
                 await fileDataAccessService_.DeleteProject(tutorial.Id);
@@ -101,7 +111,12 @@ namespace tutorbits_api.Controllers
                 var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(projectId);
                 if (tutorial == null)
                 {
-                    return BadRequest();
+                    return NotFound();
+                }
+
+                if (!HasAccessToModel(tutorial))
+                {
+                    return Forbid(); //Only the owner and admins can modify this data
                 }
 
                 var transactionLog = TraceTransactionLog.Parser.ParseFrom(Request.Body);

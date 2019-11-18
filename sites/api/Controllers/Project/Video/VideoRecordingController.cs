@@ -43,6 +43,17 @@ namespace tutorbits_api.Controllers
         {
             try
             {
+                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(projectId);
+                if (tutorial == null)
+                {
+                    return NotFound();
+                }
+
+                if (!HasAccessToModel(tutorial))
+                {
+                    return Forbid(); //Only the owner and admins can modify this data
+                }
+                
                 var recordingId = await fileDataAccessService_.StartVideoRecording(projectId);
                 return new JsonResult(recordingId);
             }

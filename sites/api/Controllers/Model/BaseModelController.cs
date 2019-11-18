@@ -33,7 +33,7 @@ namespace api.Controllers.Model
     {
         protected readonly DBDataAccessService dbDataAccessService_;
         protected readonly FileDataAccessService fileDataAccessService_;
-        
+
         public BaseModelController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
          : base(configuration)
         {
@@ -133,7 +133,7 @@ namespace api.Controllers.Model
                 return NotFound(); //Update cant be called on items that dont exist
             }
 
-            if (oldModel.Owner != UserName && !IsAdmin())
+            if (!HasAccessToModel(oldModel))
             {
                 return Forbid(); //Only the owner and admins can modify this data
             }
@@ -158,7 +158,7 @@ namespace api.Controllers.Model
                 return NotFound(); //Update cant be called on items that dont exist
             }
 
-            if (model.Owner != UserName && !IsAdmin())
+            if (!HasAccessToModel(model))
             {
                 return Forbid(); //Only the owner and admins can modify this data
             }
@@ -181,7 +181,7 @@ namespace api.Controllers.Model
                 return NotFound(); //Delete cant be called on items that dont exist
             }
 
-            if (oldModel.Owner != UserName && !IsAdmin())
+            if (!HasAccessToModel(oldModel))
             {
                 return Forbid(); //Only the owner and admins can delete this data
             }
@@ -212,7 +212,7 @@ namespace api.Controllers.Model
                 return NotFound(); //Delete cant be called on items that dont exist
             }
 
-            if (oldModel.Owner != UserName && !IsAdmin())
+            if (!HasAccessToModel(oldModel))
             {
                 return Forbid(); //Only the owner and admins can delete this data
             }

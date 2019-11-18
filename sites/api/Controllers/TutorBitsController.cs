@@ -1,6 +1,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using TutorBits.Models.Common;
 
 namespace api.Controllers
 {
@@ -42,6 +43,11 @@ namespace api.Controllers
         {
             return useAWS ? this.User.HasClaim(c => c.Type == "cognito:groups" &&
                                             c.Value == "Admin") : localAdmin;
+        }
+
+        protected bool HasAccessToModel<TModel>(TModel model) where TModel : BaseModel
+        {
+            return model.Owner == UserName || IsAdmin();
         }
     }
 }
