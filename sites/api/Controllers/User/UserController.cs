@@ -46,5 +46,17 @@ namespace tutorbits_api.Controllers
 
             return new JsonResult(view);
         }
+
+        [Authorize(Policy = "IsAdmin")]
+        [HttpGet]
+        public async Task<IActionResult> GetOtherUser([FromQuery] string userName)
+        {
+            var user = userService_.GetUser(userName);
+            var userDetails = await user.GetUserDetailsAsync();
+            var view = new UserViewModel();
+            view.Convert(userDetails);
+
+            return new JsonResult(view);
+        }
     }
 }
