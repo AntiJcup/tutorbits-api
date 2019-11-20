@@ -53,7 +53,12 @@ namespace tutorbits_api.Controllers
                 {
                     return Forbid(); //Only the owner and admins can modify this data
                 }
-                
+
+                if (tutorial.Status != BaseState.Inactive)
+                {
+                    return BadRequest();
+                }
+
                 var recordingId = await fileDataAccessService_.StartVideoRecording(projectId);
                 return new JsonResult(recordingId);
             }

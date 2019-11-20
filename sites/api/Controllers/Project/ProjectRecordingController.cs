@@ -49,6 +49,11 @@ namespace tutorbits_api.Controllers
                     return Forbid(); //Only the owner and admins can modify this data
                 }
 
+                if (tutorial.Status != BaseState.Inactive)
+                {
+                    return BadRequest();
+                }
+
                 var project = new TraceProject()
                 {
                     Id = tutorial.Id.ToString(),
@@ -85,6 +90,11 @@ namespace tutorbits_api.Controllers
                     return Forbid(); //Only the owner and admins can modify this data
                 }
 
+                if (tutorial.Status != BaseState.Inactive)
+                {
+                    return BadRequest();
+                }
+
                 await fileDataAccessService_.DeleteProject(tutorial.Id);
 
                 return Ok();
@@ -117,6 +127,11 @@ namespace tutorbits_api.Controllers
                 if (!HasAccessToModel(tutorial))
                 {
                     return Forbid(); //Only the owner and admins can modify this data
+                }
+
+                if (tutorial.Status != BaseState.Inactive)
+                {
+                    return BadRequest();
                 }
 
                 var transactionLog = TraceTransactionLog.Parser.ParseFrom(Request.Body);
