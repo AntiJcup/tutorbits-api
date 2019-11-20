@@ -48,6 +48,8 @@ public static class Constants
                 public static readonly string VideoFileNameKey = "VideoFileName";
 
                 public static readonly string PreviewsDirKey = "PreviewsDir";
+
+                public static readonly string ThumbnailFileNameKey = "ThumbnailFileName";
             }
 
             public static class Urls
@@ -61,6 +63,8 @@ public static class Constants
                 public static readonly string ProjectVideoPathKey = "ProjectVideoPath";
 
                 public static readonly string ProjectPreviewPathKey = "ProjectPreviewPath";
+
+                public static readonly string ProjectThumbnailPathKey = "ProjectThumbnailPath";
             }
         }
     }

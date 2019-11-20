@@ -20,6 +20,7 @@ namespace TutorBits.FileDataAccess
         public readonly string VideoDir;
         public readonly string VideoFileName;
         public readonly string PreviewsDir;
+        public readonly string ThumbnailFileName;
 
         private readonly FileDataLayerInterface dataLayer_;
 
@@ -50,6 +51,9 @@ namespace TutorBits.FileDataAccess
 
             PreviewsDir = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                 .GetValue<string>(Constants.Configuration.Sections.Paths.PreviewsDirKey);
+
+            ThumbnailFileName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                .GetValue<string>(Constants.Configuration.Sections.Paths.ThumbnailFileNameKey);
         }
 
         #region Paths
@@ -102,6 +106,11 @@ namespace TutorBits.FileDataAccess
         public string GetPreviewPath(string projectId, string previewId)
         {
             return SanitizePath(Path.Combine(PreviewsDir, projectId, previewId));
+        }
+
+        public string GetThumbnailFilePath(string directory)
+        {
+            return SanitizePath(Path.Combine(directory, ThumbnailFileName));
         }
         #endregion
 
@@ -349,6 +358,17 @@ namespace TutorBits.FileDataAccess
             }
 
             await SavePreviewCache(files, previewPath);
+        }
+        #endregion
+
+        #region Thumbnail
+        public async Task CreateTutorialThumbnail(Guid tutorialId, Stream thumbnail)
+        {
+            var projectDirectoryPath = GetProjectPath(tutorialId.ToString());
+            var thumbnailFilePath = GetThumbnailFilePath(projectDirectoryPath);
+
+            await dataLayer_.CreateDirectory(projectDirectoryPath);
+            await dataLayer_.CreateFile(thumbnailFilePath, thumbnail);
         }
         #endregion
     }
