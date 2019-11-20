@@ -10,6 +10,7 @@ using api.Models;
 using api.Models.Requests;
 using api.Models.Views;
 using GenericServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +18,7 @@ using Tracer;
 using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
 using TutorBits.Models.Common;
+using Utils.Common;
 
 namespace api.Controllers.Model
 {
@@ -28,6 +30,48 @@ namespace api.Controllers.Model
             : base(configuration, dbDataAccessService, fileDataAccessService)
         {
 
+        }
+
+        [Authorize]
+        [HttpPost]
+        public virtual async Task<IActionResult> Publish([FromQuery] Guid tutorialId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var model = await dbDataAccessService_.GetBaseModel<Tutorial>(tutorialId);
+            if (model == null)
+            {
+                return NotFound(); //Update cant be called on items that dont exist
+            }
+
+            if (!HasAccessToModel(model))
+            {
+                return Forbid(); //Only the owner and admins can modify this data
+            }
+
+            if (model.Status != BaseState.Inactive)
+            {
+                return BadRequest();
+            }
+
+            var project = await fileDataAccessService_.GetProject(tutorialId);
+            if (project == null)
+            {
+                return BadRequest();
+            }
+
+            // model.DurationMS = project.Duration;
+            model.Status = BaseState.Active;
+            await dbDataAccessService_.UpdateBaseModel(model);
+            return Ok();
+        }
+
+        protected override async Task EnrichViewModel(TutorialViewModel viewModel)
+        {
+            viewModel.Thumbnailurl = ProjectUrlGenerator.GenerateProjectThumbnailUrl(Guid.Parse(viewModel.Id), configuration_);
         }
     }
 }

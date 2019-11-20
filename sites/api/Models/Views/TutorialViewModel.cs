@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using TutorBits.Models.Common;
 
@@ -17,6 +18,10 @@ namespace api.Models.Views
 
         public string Status { get; set; }
 
+        public UInt64 DurationMS { get; set; }
+
+        public string Thumbnailurl { get; set; } //Enriched
+
         public override void Convert(Tutorial baseModel)
         {
             Id = baseModel.Id.ToString();
@@ -25,6 +30,7 @@ namespace api.Models.Views
             Description = baseModel.Description;
             Status = baseModel.Status.ToString();
             Owner = baseModel.Owner;
+            // DurationMS = baseModel.DurationMS;
         }
     }
 }
