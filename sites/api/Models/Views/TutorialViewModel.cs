@@ -20,7 +20,7 @@ namespace api.Models.Views
 
         public UInt64 DurationMS { get; set; }
 
-        public string Thumbnailurl { get; set; } //Enriched
+        public string ThumbnailUrl { get; set; } //Enriched
 
         public override void Convert(Tutorial baseModel)
         {

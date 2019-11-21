@@ -71,7 +71,7 @@ namespace api.Controllers.Model
 
         protected override async Task EnrichViewModel(TutorialViewModel viewModel)
         {
-            viewModel.Thumbnailurl = ProjectUrlGenerator.GenerateProjectThumbnailUrl(Guid.Parse(viewModel.Id), configuration_);
+            viewModel.ThumbnailUrl = ProjectUrlGenerator.GenerateProjectThumbnailUrl(Guid.Parse(viewModel.Id), configuration_);
         }
     }
 }

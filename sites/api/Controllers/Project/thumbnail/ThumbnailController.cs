@@ -18,7 +18,7 @@ using Utils.Common;
 
 namespace tutorbits_api.Controllers
 {
-    
+
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class ThumbnailController : TutorBitsController
@@ -57,7 +57,12 @@ namespace tutorbits_api.Controllers
                     return Forbid(); //Only the owner and admins can modify this data
                 }
 
-                await fileDataAccessService_.CreateTutorialThumbnail(tutorialId, Request.Body);
+                using (var memoryStream = new MemoryStream())
+                {
+                    await Request.Body.CopyToAsync(memoryStream);
+                    memoryStream.Position = 0;
+                    await fileDataAccessService_.CreateTutorialThumbnail(tutorialId, memoryStream);
+                }
                 return Ok();
             }
             catch (Exception e)

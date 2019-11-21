@@ -162,8 +162,13 @@ namespace TutorBits.FileDataAccess
         public async Task DeleteProject(Guid id)
         {
             var projectDirectoryPath = GetProjectPath(id.ToString());
+            var transactionLogPath = GetTransactionLogPath(projectDirectoryPath);
+            var projectFilePath = GetProjectFilePath(projectDirectoryPath);
+            var videoPath = GetVideoPath(id.ToString());
 
-            await dataLayer_.DeleteDirectory(projectDirectoryPath);
+            await dataLayer_.DeleteDirectory(transactionLogPath);
+            await dataLayer_.DeleteDirectory(videoPath);
+            await dataLayer_.DeleteFile(projectFilePath);
         }
         #endregion
 
