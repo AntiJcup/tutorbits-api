@@ -181,10 +181,10 @@ namespace TutorBits.FileDataAccess
                 return null;
             }
 
-            var newProjectLength = (transactionLog.Partition + 1) * project.PartitionSize;
-            if (project.Duration < newProjectLength)
+            var latestTransaction = transactionLog.Transactions.OrderByDescending(t => t.TimeOffsetMs).FirstOrDefault();
+            if (latestTransaction != null && project.Duration < latestTransaction.TimeOffsetMs)
             {
-                project.Duration = newProjectLength;
+                project.Duration = latestTransaction.TimeOffsetMs;
                 await UpdateProject(project);
             }
 
