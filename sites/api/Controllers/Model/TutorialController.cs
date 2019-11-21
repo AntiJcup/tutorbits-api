@@ -63,7 +63,7 @@ namespace api.Controllers.Model
                 return BadRequest();
             }
 
-            // model.DurationMS = project.Duration;
+            model.DurationMS = project.Duration;
             model.Status = BaseState.Active;
             await dbDataAccessService_.UpdateBaseModel(model);
             return Ok();

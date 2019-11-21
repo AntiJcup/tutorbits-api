@@ -35,6 +35,9 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(1028);
 
+                    b.Property<decimal>("DurationMS")
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
+
                     b.Property<string>("Language")
                         .HasMaxLength(64);
 

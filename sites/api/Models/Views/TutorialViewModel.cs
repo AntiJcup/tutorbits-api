@@ -30,7 +30,7 @@ namespace api.Models.Views
             Description = baseModel.Description;
             Status = baseModel.Status.ToString();
             Owner = baseModel.Owner;
-            // DurationMS = baseModel.DurationMS;
+            DurationMS = baseModel.DurationMS;
         }
     }
 }

@@ -16,6 +16,6 @@ namespace TutorBits.Models.Common
         [MaxLength(1028)]
         public string Description { get; set; }
 
-        // public UInt64 DurationMS { get; set; }
+        public UInt64 DurationMS { get; set; }
     }
 }

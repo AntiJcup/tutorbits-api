@@ -19,13 +19,14 @@ CREATE TABLE [Tutorials] (
     [Title] nvarchar(64) NULL,
     [Language] nvarchar(64) NULL,
     [Description] nvarchar(1028) NULL,
+    [DurationMS] decimal(20,0) NOT NULL,
     CONSTRAINT [PK_Tutorials] PRIMARY KEY ([Id])
 );
 
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20191118141119_Initial', N'2.2.6-servicing-10079');
+VALUES (N'20191121161038_Initial', N'2.2.6-servicing-10079');
 
 GO
 

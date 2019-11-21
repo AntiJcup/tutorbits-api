@@ -19,7 +19,8 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     Title = table.Column<string>(maxLength: 64, nullable: true),
                     Language = table.Column<string>(maxLength: 64, nullable: true),
-                    Description = table.Column<string>(maxLength: 1028, nullable: true)
+                    Description = table.Column<string>(maxLength: 1028, nullable: true),
+                    DurationMS = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
