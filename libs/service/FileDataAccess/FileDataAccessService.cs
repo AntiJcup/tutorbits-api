@@ -221,7 +221,7 @@ namespace TutorBits.FileDataAccess
             var transactionLogPath = GetTransactionLogPath(projectDirectoryPath);
 
             var bottomPartition = project.PartitionFromOffsetBottom((int)offsetStart);
-            var topPartition = project.PartitionFromOffsetTop((int)offsetEnd);
+            var topPartition = project.PartitionFromOffsetTop((int)offsetEnd) + 1;
             List<string> partitionRange = new List<string>();
             for (var i = bottomPartition; i < topPartition; i++)
             {
