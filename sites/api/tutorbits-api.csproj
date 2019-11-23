@@ -47,5 +47,4 @@
     <ProjectReference Include="..\..\libs\auth\AWSAuth\AWSAuth.csproj" />
     <ProjectReference Include="..\..\libs\auth\LocalAuth\LocalAuth.csproj" />
   </ItemGroup>
-
 </Project>

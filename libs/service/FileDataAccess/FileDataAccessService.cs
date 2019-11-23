@@ -22,6 +22,7 @@ namespace TutorBits.FileDataAccess
         public readonly string VideoFileName;
         public readonly string PreviewsDir;
         public readonly string ThumbnailFileName;
+        public readonly string ProjectZipName;
 
         private readonly FileDataLayerInterface dataLayer_;
 
@@ -55,6 +56,9 @@ namespace TutorBits.FileDataAccess
 
             ThumbnailFileName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                 .GetValue<string>(Constants.Configuration.Sections.Paths.ThumbnailFileNameKey);
+
+            ProjectZipName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                .GetValue<string>(Constants.Configuration.Sections.Paths.ProjectZipNameKey);
         }
 
         #region Paths
@@ -113,6 +117,11 @@ namespace TutorBits.FileDataAccess
         {
             return SanitizePath(Path.Combine(directory, ThumbnailFileName));
         }
+
+        public string GetProjectZipFilePath(string directory)
+        {
+            return SanitizePath(Path.Combine(directory, ProjectZipName));
+        }
         #endregion
 
         #region Project
@@ -167,9 +176,20 @@ namespace TutorBits.FileDataAccess
             var projectFilePath = GetProjectFilePath(projectDirectoryPath);
             var videoPath = GetVideoPath(id.ToString());
 
-            await dataLayer_.DeleteDirectory(transactionLogPath);
-            await dataLayer_.DeleteDirectory(videoPath);
-            await dataLayer_.DeleteFile(projectFilePath);
+            if ((await dataLayer_.DirectoryExists(transactionLogPath)))
+            {
+                await dataLayer_.DeleteDirectory(transactionLogPath);
+            }
+
+            if ((await dataLayer_.DirectoryExists(videoPath)))
+            {
+                await dataLayer_.DeleteDirectory(videoPath);
+            }
+
+            if ((await dataLayer_.FileExists(projectFilePath)))
+            {
+                await dataLayer_.DeleteFile(projectFilePath);
+            }
         }
         #endregion
 
@@ -376,7 +396,7 @@ namespace TutorBits.FileDataAccess
                 if (isDirectory)
                 {
                     var childFiles = await GetAllFilesRecursive(file);
-                    result.Concat(childFiles);
+                    result = result.Concat(childFiles).ToList();
                 }
                 else
                 {
@@ -389,18 +409,20 @@ namespace TutorBits.FileDataAccess
 
         public async Task PackagePreviewZIP(Guid projectId, string previewId)
         {
-            var previewPath = GetPreviewPath(projectId.ToString(), previewId);
+            var projectPath = GetProjectPath(projectId.ToString());
+            var projectZipPath = GetProjectZipFilePath(projectPath);
+            var previewPath = await dataLayer_.ConvertToNativePath(GetPreviewPath(projectId.ToString(), previewId));
             var previewFiles = await GetAllFilesRecursive(previewPath);
 
             using (var memoryStream = new MemoryStream())
             {
-                using (var zipArchive = new ZipArchive(memoryStream, ZipArchiveMode.Create))
+                using (var zipArchive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
                 {
                     foreach (var previewFile in previewFiles)
                     {
                         using (var fileStream = await dataLayer_.ReadFile(previewFile))
                         {
-                            var entry = zipArchive.CreateEntry(previewFile);
+                            var entry = zipArchive.CreateEntry(previewFile.Replace(previewPath, "").Replace("\\project", "project").Replace("/project", "project"));
                             using (var zipStream = entry.Open())
                             {
                                 await fileStream.CopyToAsync(zipStream);
@@ -408,6 +430,9 @@ namespace TutorBits.FileDataAccess
                         }
                     }
                 }
+
+                memoryStream.Position = 0;
+                await dataLayer_.CreateFile(projectZipPath, memoryStream);
             }
         }
 

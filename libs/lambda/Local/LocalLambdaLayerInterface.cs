@@ -41,6 +41,7 @@ namespace TutorBits.Lambda.Local
         public async Task SaveCompletedPreview(Guid projectId)
         {
             var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: false)
                 .Build();
             var dataLayer = new FileDataAccessService(config, new WindowsFileDataLayerInterface());

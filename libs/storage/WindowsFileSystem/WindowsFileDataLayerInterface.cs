@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using TutorBits.FileDataAccess;
@@ -77,7 +78,7 @@ namespace TutorBits
             public async Task<ICollection<string>> GetAllFiles(string parentPath)
             {
                 parentPath = RootPath(parentPath);
-                return Directory.GetFiles(parentPath);
+                return Directory.GetFiles(parentPath).Concat(Directory.GetDirectories(parentPath)).ToArray();
             }
 
             public async Task<Stream> ReadFile(string path)
@@ -170,7 +171,7 @@ namespace TutorBits
 
             public async Task<string> ConvertToNativePath(string path)
             {
-                return path.Replace('/', '\\');
+                return RootPath(path.Replace('/', '\\'));
             }
 
             public async Task<bool> IsDirectory(string path)

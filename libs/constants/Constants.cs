@@ -52,6 +52,8 @@ public static class Constants
                 public static readonly string PreviewsDirKey = "PreviewsDir";
 
                 public static readonly string ThumbnailFileNameKey = "ThumbnailFileName";
+
+                public static readonly string ProjectZipNameKey = "ProjectZipName";
             }
 
             public static class Urls
