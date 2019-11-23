@@ -32,5 +32,10 @@ namespace TutorBits.LambdaAccess
             var mp4Path = Path.ChangeExtension(webmPath, ".mp4");
             await lambdaLayer_.ConvertWebmToMp4(webmPath, mp4Path);
         }
+
+        public async Task FinalizeProject(Guid projectId)
+        {
+            await lambdaLayer_.SaveCompletedPreview(projectId);
+        }
     }
 }

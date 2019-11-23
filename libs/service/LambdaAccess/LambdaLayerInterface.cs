@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 namespace TutorBits.LambdaAccess
@@ -5,5 +6,6 @@ namespace TutorBits.LambdaAccess
     public interface LambdaLayerInterface
     {
         Task ConvertWebmToMp4(string webmPath, string outMp4Path);
+        Task SaveCompletedPreview(Guid projectId);
     }
 }

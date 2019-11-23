@@ -110,7 +110,7 @@ namespace TutorBits
                     MaxKeys = 1
                 };
 
-                var response = await s3Client_.ListObjectsAsync(request, CancellationToken.None);
+                var response = await s3Client_.ListObjectsAsync(request);
 
                 return response.S3Objects.Any();
             }
@@ -236,6 +236,11 @@ namespace TutorBits
             public string GetWorkingDirectory()
             {
                 return "";
+            }
+
+            public async Task<bool> IsDirectory(string path)
+            {
+                return path.EndsWith("/");
             }
         }
     }

@@ -111,7 +111,7 @@ namespace TutorBits
             public async Task<string> UploadPart(string path, string multipartUploadId, int part, Stream stream, bool last)
             {
                 path = $"{RootPath(path)}_{multipartUploadId}_{PartsSubDirectory}";
-                
+
                 var uploadFolderExists = await DirectoryExists(path);
                 if (!uploadFolderExists)
                 {
@@ -171,6 +171,11 @@ namespace TutorBits
             public async Task<string> ConvertToNativePath(string path)
             {
                 return path.Replace('/', '\\');
+            }
+
+            public async Task<bool> IsDirectory(string path)
+            {
+                return await DirectoryExists(path);
             }
         }
     }

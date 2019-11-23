@@ -17,6 +17,7 @@ using Microsoft.Extensions.Configuration;
 using Tracer;
 using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
+using TutorBits.LambdaAccess;
 using TutorBits.Models.Common;
 using Utils.Common;
 
@@ -26,10 +27,14 @@ namespace api.Controllers.Model
     [ApiController]
     public class TutorialController : BaseModelController<Tutorial, CreateUpdateTutorialModel, CreateUpdateTutorialModel, TutorialViewModel>
     {
-        public TutorialController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
+        private readonly LambdaAccessService lambdaAccessService_;
+        public TutorialController(IConfiguration configuration,
+                                    DBDataAccessService dbDataAccessService,
+                                    FileDataAccessService fileDataAccessService,
+                                    LambdaAccessService lambdaAccessService)
             : base(configuration, dbDataAccessService, fileDataAccessService)
         {
-
+            lambdaAccessService_ = lambdaAccessService;
         }
 
         [Authorize]
@@ -62,6 +67,8 @@ namespace api.Controllers.Model
             {
                 return BadRequest();
             }
+
+            await lambdaAccessService_.FinalizeProject(tutorialId);
 
             model.DurationMS = project.Duration;
             model.Status = BaseState.Active;

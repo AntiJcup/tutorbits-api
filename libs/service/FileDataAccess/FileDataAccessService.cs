@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using System.Text;
 using TutorBits.Models.Common;
+using System.IO.Compression;
 
 namespace TutorBits.FileDataAccess
 {
@@ -364,6 +365,56 @@ namespace TutorBits.FileDataAccess
 
             await SavePreviewCache(files, previewPath);
         }
+
+        public async Task<ICollection<string>> GetAllFilesRecursive(string parentPath)
+        {
+            var result = new List<string>();
+            var files = await dataLayer_.GetAllFiles(parentPath);
+            foreach (var file in files)
+            {
+                var isDirectory = await dataLayer_.IsDirectory(file);
+                if (isDirectory)
+                {
+                    var childFiles = await GetAllFilesRecursive(file);
+                    result.Concat(childFiles);
+                }
+                else
+                {
+                    result.Add(file);
+                }
+            }
+
+            return result;
+        }
+
+        public async Task PackagePreviewZIP(Guid projectId, string previewId)
+        {
+            var previewPath = GetPreviewPath(projectId.ToString(), previewId);
+            var previewFiles = await GetAllFilesRecursive(previewPath);
+
+            using (var memoryStream = new MemoryStream())
+            {
+                using (var zipArchive = new ZipArchive(memoryStream, ZipArchiveMode.Create))
+                {
+                    foreach (var previewFile in previewFiles)
+                    {
+                        using (var fileStream = await dataLayer_.ReadFile(previewFile))
+                        {
+                            var entry = zipArchive.CreateEntry(previewFile);
+                            using (var zipStream = entry.Open())
+                            {
+                                await fileStream.CopyToAsync(zipStream);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // public async Task<JToken> PackagePreviewJSON(Guid projectId, string previewId)
+        // {
+
+        // }
         #endregion
 
         #region Thumbnail

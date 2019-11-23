@@ -3,6 +3,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\service\LambdaAccess\LambdaAccess.csproj" />
     <ProjectReference Include="..\..\utils\Common\CommonUtils.csproj" />
+    <ProjectReference Include="..\..\service\FileDataAccess\FileDataAccess.csproj" />
+    <ProjectReference Include="..\..\storage\WindowsFileSystem\WindowsFileSystem.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -10,6 +12,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
   </ItemGroup>
 

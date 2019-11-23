@@ -29,6 +29,8 @@ public static class Constants
                 public static readonly string UserPoolAuthorityKey = "UserPoolAuthority";
 
                 public static readonly string LocalAdminKey = "LocalAdmin";
+                
+                public static readonly string FinalizeProjectLambdaNameKey = "FinalizeProjectLambdaName";
             }
 
             public static class Paths

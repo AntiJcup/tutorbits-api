@@ -14,6 +14,7 @@ using Newtonsoft.Json;
 using Amazon.ElasticTranscoder;
 using Amazon.ElasticTranscoder.Model;
 using System.Threading;
+using Amazon.Lambda.Model;
 
 namespace TutorBits.Lambda.AWSLambda
 {
@@ -35,6 +36,7 @@ namespace TutorBits.Lambda.AWSLambda
         public readonly string BucketName;
         public readonly string TranscoderPresetId;
         public readonly string TranscoderPipelineId;
+        public readonly string FinalizeProjectLambdaName;
 
         private readonly System.TimeSpan MaxWaitForTranscode = new System.TimeSpan(hours: 0, minutes: 5, seconds: 0);
 
@@ -50,6 +52,8 @@ namespace TutorBits.Lambda.AWSLambda
                     .GetValue<string>(Constants.Configuration.Sections.Settings.TranscoderPresetIdKey);
             TranscoderPipelineId = configuration_.GetSection(Constants.Configuration.Sections.SettingsKey)
                     .GetValue<string>(Constants.Configuration.Sections.Settings.TranscoderPipelineIdKey);
+            FinalizeProjectLambdaName = configuration_.GetSection(Constants.Configuration.Sections.SettingsKey)
+                    .GetValue<string>(Constants.Configuration.Sections.Settings.FinalizeProjectLambdaNameKey);
         }
 
         public async Task ConvertWebmToMp4(string webmPath, string outMp4Path)
@@ -98,6 +102,12 @@ namespace TutorBits.Lambda.AWSLambda
                 }
                 Thread.Sleep(100);
             }
+        }
+
+        public async Task SaveCompletedPreview(Guid projectId)
+        {
+            InvokeRequest request = new InvokeRequest() { FunctionName = FinalizeProjectLambdaName };
+            await lambdaClient_.InvokeAsync(request);
         }
     }
 }

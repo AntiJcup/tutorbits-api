@@ -10,7 +10,7 @@ namespace TutorBits.FileDataAccess
     public interface FileDataLayerInterface
     {
         string GetWorkingDirectory();
-        
+
         Task CreateFile(string path, Stream stream);
 
         Task<Stream> ReadFile(string path);
@@ -38,5 +38,7 @@ namespace TutorBits.FileDataAccess
         Task CreatePathForFile(string filePath);
 
         Task<string> ConvertToNativePath(string path);
+
+        Task<bool> IsDirectory(string path);
     }
 }

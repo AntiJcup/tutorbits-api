@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <AWSProjectType>Lambda</AWSProjectType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Amazon.Lambda.Core" Version="1.1.0" />
+    <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="1.7.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\service\FileDataAccess\FileDataAccess.csproj" />
+    <ProjectReference Include="..\..\..\..\..\storage\S3FileSystem\S3FileSystem.csproj" />
+    <ProjectReference Include="..\..\..\..\LambdaModels\LambdaModels.csproj" />
+    <ProjectReference Include="..\..\..\..\..\utils\Common\CommonUtils.csproj" />
+    <ProjectReference Include="..\..\..\..\..\constants\constants.csproj" />
+  </ItemGroup>
+</Project>

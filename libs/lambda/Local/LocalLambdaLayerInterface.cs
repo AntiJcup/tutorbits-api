@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using TutorBits.FileDataAccess;
 using TutorBits.LambdaAccess;
+using TutorBits.WindowsFileSystem;
 using Utils.Common;
 
 namespace TutorBits.Lambda.Local
@@ -32,6 +36,18 @@ namespace TutorBits.Lambda.Local
             process.StartInfo.Arguments = $"-y -i \"{webmPath}\" -crf 26 \"{outMp4Path}\"";
             process.Start();
             await process.WaitForExitAsync();
+        }
+
+        public async Task SaveCompletedPreview(Guid projectId)
+        {
+            var config = new ConfigurationBuilder()
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: false)
+                .Build();
+            var dataLayer = new FileDataAccessService(config, new WindowsFileDataLayerInterface());
+            var project = await dataLayer.GetProject(projectId);
+            var previewId = Guid.NewGuid().ToString();
+            await dataLayer.GeneratePreview(project, (int)project.Duration, previewId);
+            await dataLayer.PackagePreviewZIP(projectId, previewId);
         }
     }
 }
