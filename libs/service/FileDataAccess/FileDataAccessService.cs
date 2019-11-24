@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using System.Text;
 using TutorBits.Models.Common;
 using System.IO.Compression;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 
 namespace TutorBits.FileDataAccess
 {
@@ -23,6 +25,7 @@ namespace TutorBits.FileDataAccess
         public readonly string PreviewsDir;
         public readonly string ThumbnailFileName;
         public readonly string ProjectZipName;
+        public readonly string ProjectJsonName;
 
         private readonly FileDataLayerInterface dataLayer_;
 
@@ -59,6 +62,9 @@ namespace TutorBits.FileDataAccess
 
             ProjectZipName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                 .GetValue<string>(Constants.Configuration.Sections.Paths.ProjectZipNameKey);
+
+            ProjectJsonName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                .GetValue<string>(Constants.Configuration.Sections.Paths.ProjectJsonNameKey);
         }
 
         #region Paths
@@ -121,6 +127,11 @@ namespace TutorBits.FileDataAccess
         public string GetProjectZipFilePath(string directory)
         {
             return SanitizePath(Path.Combine(directory, ProjectZipName));
+        }
+
+        public string GetProjectJsonFilePath(string directory)
+        {
+            return SanitizePath(Path.Combine(directory, ProjectJsonName));
         }
         #endregion
 
@@ -291,7 +302,7 @@ namespace TutorBits.FileDataAccess
         #endregion
 
         #region Preview
-        public void GeneratePreviewForTransactionLog(TraceTransactionLog transactionLog, int end, Dictionary<string, StringBuilder> files)
+        public void GeneratePreviewForTransactionLog(TraceTransactionLog transactionLog, int end, Dictionary<string, PreviewItem> files)
         {
             foreach (var transaction in transactionLog.Transactions)
             {
@@ -300,67 +311,85 @@ namespace TutorBits.FileDataAccess
                     continue;
                 }
 
-                StringBuilder file = null;
-                if (files.ContainsKey(transaction.FilePath))
+                PreviewItem file = null;
+                var filePath = transaction.FilePath;
+                if (files.ContainsKey(filePath))
                 {
-                    file = files[transaction.FilePath];
+                    file = files[filePath];
                 }
                 else
                 {
-                    file = new StringBuilder();
-                    files[transaction.FilePath] = file;
+                    file = new PreviewItem
+                    {
+                        stringBuilder = new StringBuilder(),
+                        isFolder = false
+                    };
                 }
+                files[filePath] = file;
 
                 switch (transaction.Type)
                 {
+                    case TraceTransaction.Types.TraceTransactionType.CreateFile:
+                        var createFileData = transaction.CreateFile;
+                        file.isFolder = createFileData.IsFolder;
+                        break;
                     case TraceTransaction.Types.TraceTransactionType.DeleteFile:
-                        files.Remove(transaction.FilePath);
+                        files.Remove(filePath);
                         break;
                     case TraceTransaction.Types.TraceTransactionType.RenameFile:
                         var renameFileData = transaction.RenameFile;
                         files[renameFileData.NewFilePath] = file;
-                        files.Remove(transaction.FilePath);
+                        files.Remove(filePath);
+                        file.isFolder = renameFileData.IsFolder;
                         break;
                     case TraceTransaction.Types.TraceTransactionType.ModifyFile:
+                        file.isFolder = false;
                         var modifyFileData = transaction.ModifyFile;
-                        if (modifyFileData.OffsetStart < file.Length &&
+                        if (modifyFileData.OffsetStart < file.stringBuilder.Length &&
                         (modifyFileData.OffsetEnd != modifyFileData.OffsetStart))
                         {
                             var length = (int)(modifyFileData.OffsetEnd - modifyFileData.OffsetStart);
-                            files[transaction.FilePath] = file = file.Remove((int)modifyFileData.OffsetStart, length);
+                            file.stringBuilder = file.stringBuilder.Remove((int)modifyFileData.OffsetStart, length);
                         }
 
                         if (!string.IsNullOrEmpty(modifyFileData.Data))
                         {
-                            files[transaction.FilePath] = file = file.Insert((int)modifyFileData.OffsetStart, modifyFileData.Data);
+                            file.stringBuilder = file.stringBuilder.Insert((int)modifyFileData.OffsetStart, modifyFileData.Data);
                         }
                         break;
                 }
             }
         }
 
-        public async Task SavePreviewCache(Dictionary<string, StringBuilder> files, string previewFolder)
+        public async Task SavePreviewCache(Dictionary<string, PreviewItem> files, string previewFolder)
         {
             foreach (var file in files)
             {
                 var path = (await dataLayer_.ConvertToNativePath(file.Key)).Substring(1);
                 var fullPath = SanitizePath(Path.Combine(previewFolder, path));
                 await dataLayer_.CreatePathForFile(fullPath);
-                var fileBytes = Encoding.UTF8.GetBytes(file.Value.ToString());
+                var fileBytes = Encoding.UTF8.GetBytes(file.Value.stringBuilder.ToString());
                 using (var stream = new MemoryStream(fileBytes))
                 {
-                    await dataLayer_.CreateFile(fullPath, stream);
+                    if (file.Value.isFolder)
+                    {
+                        await dataLayer_.CreateDirectory(fullPath);
+                    }
+                    else
+                    {
+                        await dataLayer_.CreateFile(fullPath, stream);
+                    }
                 }
             }
         }
 
-        public async Task GeneratePreview(TraceProject project, int end, string previewId)
+        public async Task<Dictionary<string, PreviewItem>> GeneratePreview(TraceProject project, int end, string previewId)
         {
             var projectId = Guid.Parse(project.Id);
             var previewPath = GetPreviewPath(project.Id, previewId);
 
             var transactionLogPaths = await GetTransactionLogsForRange(projectId, 0, (uint)end);
-            var files = new Dictionary<string, StringBuilder>();
+            var files = new Dictionary<string, PreviewItem>();
             foreach (var transactionLogPath in transactionLogPaths.OrderBy(p => int.Parse(p.Key)))
             {
                 using (var transactionLogStream = await dataLayer_.ReadFile(transactionLogPath.Value))
@@ -371,13 +400,15 @@ namespace TutorBits.FileDataAccess
             }
 
             await SavePreviewCache(files, previewPath);
+
+            return files;
         }
 
         public async Task GeneratePreview(TraceProject project, int end, string previewId, TraceTransactionLogs traceTransactionLogs)
         {
             var projectId = Guid.Parse(project.Id);
             var previewPath = GetPreviewPath(project.Id, previewId);
-            var files = new Dictionary<string, StringBuilder>();
+            var files = new Dictionary<string, PreviewItem>();
             foreach (var transactionLog in traceTransactionLogs.Logs)
             {
                 GeneratePreviewForTransactionLog(transactionLog, end, files);
@@ -398,10 +429,8 @@ namespace TutorBits.FileDataAccess
                     var childFiles = await GetAllFilesRecursive(file);
                     result = result.Concat(childFiles).ToList();
                 }
-                else
-                {
-                    result.Add(file);
-                }
+
+                result.Add(file);
             }
 
             return result;
@@ -420,13 +449,21 @@ namespace TutorBits.FileDataAccess
                 {
                     foreach (var previewFile in previewFiles)
                     {
-                        using (var fileStream = await dataLayer_.ReadFile(previewFile))
+                        var previewFilePath = previewFile.Replace(previewPath, "").Replace("\\project", "project").Replace("/project", "project");
+                        if (!(await dataLayer_.IsDirectory(previewFile)))
                         {
-                            var entry = zipArchive.CreateEntry(previewFile.Replace(previewPath, "").Replace("\\project", "project").Replace("/project", "project"));
-                            using (var zipStream = entry.Open())
+                            using (var fileStream = await dataLayer_.ReadFile(previewFile))
                             {
-                                await fileStream.CopyToAsync(zipStream);
+                                var entry = zipArchive.CreateEntry(previewFilePath);
+                                using (var zipStream = entry.Open())
+                                {
+                                    await fileStream.CopyToAsync(zipStream);
+                                }
                             }
+                        }
+                        else
+                        {
+                            var entry = zipArchive.CreateEntry(previewFilePath);
                         }
                     }
                 }
@@ -436,10 +473,37 @@ namespace TutorBits.FileDataAccess
             }
         }
 
-        // public async Task<JToken> PackagePreviewJSON(Guid projectId, string previewId)
-        // {
+        public async Task PackagePreviewJSON(Guid projectId, Dictionary<string, PreviewItem> previewFiles)
+        {
+            var projectPath = GetProjectPath(projectId.ToString());
+            var projectJsonPath = GetProjectJsonFilePath(projectPath);
+            JObject output = new JObject();
+            
+            foreach (var file in previewFiles)
+            {
+                var filePath = file.Key;
+                if (file.Value.isFolder)
+                {
+                    filePath += "/";
+                }
 
-        // }
+                output[filePath] = file.Value.stringBuilder.ToString();
+            }
+
+            using (var stream = new MemoryStream())
+            {
+                using (StreamWriter writer = new StreamWriter(stream, encoding: Encoding.UTF8, bufferSize: 8092, leaveOpen: true))
+                {
+                    using (JsonTextWriter jsonWriter = new JsonTextWriter(writer))
+                    {
+                        await output.WriteToAsync(jsonWriter);
+                        await jsonWriter.FlushAsync();
+                    }
+                }
+                stream.Position = 0;
+                await dataLayer_.CreateFile(projectJsonPath, stream);
+            }
+        }
         #endregion
 
         #region Thumbnail

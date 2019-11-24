@@ -47,8 +47,9 @@ namespace TutorBits.Lambda.Local
             var dataLayer = new FileDataAccessService(config, new WindowsFileDataLayerInterface());
             var project = await dataLayer.GetProject(projectId);
             var previewId = Guid.NewGuid().ToString();
-            await dataLayer.GeneratePreview(project, (int)project.Duration, previewId);
+            var previewDictionary = await dataLayer.GeneratePreview(project, (int)project.Duration, previewId);
             await dataLayer.PackagePreviewZIP(projectId, previewId);
+            await dataLayer.PackagePreviewJSON(projectId, previewDictionary);
         }
     }
 }

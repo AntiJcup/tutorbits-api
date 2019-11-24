@@ -69,5 +69,38 @@ namespace tutorbits_api.Controllers
 
             return BadRequest();
         }
+
+
+        [ActionName("download")]
+        [HttpGet]
+        public IActionResult GetProjectDownloadUrl([FromQuery]Guid projectId)
+        {
+            try
+            {
+                return new JsonResult(ProjectUrlGenerator.GenerateProjectDownloadUrl(projectId, configuration_));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+            return BadRequest();
+        }
+
+        [ActionName("json")]
+        [HttpGet]
+        public IActionResult GetProjectJsonUrl([FromQuery]Guid projectId)
+        {
+            try
+            {
+                return new JsonResult(ProjectUrlGenerator.GenerateProjectJsonUrl(projectId, configuration_));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+            return BadRequest();
+        }
     }
 }

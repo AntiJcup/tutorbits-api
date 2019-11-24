@@ -29,7 +29,7 @@ public static class Constants
                 public static readonly string UserPoolAuthorityKey = "UserPoolAuthority";
 
                 public static readonly string LocalAdminKey = "LocalAdmin";
-                
+
                 public static readonly string FinalizeProjectLambdaNameKey = "FinalizeProjectLambdaName";
             }
 
@@ -54,6 +54,8 @@ public static class Constants
                 public static readonly string ThumbnailFileNameKey = "ThumbnailFileName";
 
                 public static readonly string ProjectZipNameKey = "ProjectZipName";
+
+                public static readonly string ProjectJsonNameKey = "ProjectJsonName";
             }
 
             public static class Urls
@@ -69,6 +71,10 @@ public static class Constants
                 public static readonly string ProjectPreviewPathKey = "ProjectPreviewPath";
 
                 public static readonly string ProjectThumbnailPathKey = "ProjectThumbnailPath";
+
+                public static readonly string ProjectZipPathKey = "ProjectZipPath";
+
+                public static readonly string ProjectJsonPathKey = "ProjectJsonPath";
             }
         }
     }

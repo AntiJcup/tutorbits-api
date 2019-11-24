@@ -43,13 +43,14 @@ namespace FinalizeProject
 
             var endpoint = config.GetSection(Constants.Configuration.Sections.PathsKey)
                     .GetValue<string>(Constants.Configuration.Sections.Paths.BucketKey);
-            
+
             var dataLayer = new FileDataAccessService(config,
                 new S3FileDataLayerInterface(config, new AmazonS3Client(Amazon.RegionEndpoint.GetBySystemName(endpoint))));
             var project = await dataLayer.GetProject(inputModel.ProjectId);
             var previewId = Guid.NewGuid().ToString();
-            await dataLayer.GeneratePreview(project, (int)project.Duration, previewId);
+            var previewDictionary = await dataLayer.GeneratePreview(project, (int)project.Duration, previewId);
             await dataLayer.PackagePreviewZIP(inputModel.ProjectId, previewId);
+            await dataLayer.PackagePreviewJSON(inputModel.ProjectId, previewDictionary);
         }
     }
 }
