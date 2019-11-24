@@ -166,6 +166,10 @@ namespace TutorBits
             {
                 filePath = RootPath(filePath);
                 var parentPath = Directory.GetParent(filePath).FullName;
+                if ((await DirectoryExists(parentPath)))
+                {
+                    return;
+                }
                 await CreateDirectory(parentPath);
             }
 

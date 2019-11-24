@@ -331,10 +331,16 @@ namespace TutorBits.FileDataAccess
                 {
                     case TraceTransaction.Types.TraceTransactionType.CreateFile:
                         var createFileData = transaction.CreateFile;
-                        file.isFolder = createFileData.IsFolder;
+                        files[createFileData.NewFilePath] = new PreviewItem
+                        {
+                            stringBuilder = new StringBuilder(),
+                            isFolder = createFileData.IsFolder
+                        };
                         break;
                     case TraceTransaction.Types.TraceTransactionType.DeleteFile:
                         files.Remove(filePath);
+                        var deleteFileData = transaction.RenameFile;
+                        file.isFolder = deleteFileData.IsFolder;
                         break;
                     case TraceTransaction.Types.TraceTransactionType.RenameFile:
                         var renameFileData = transaction.RenameFile;
@@ -478,7 +484,7 @@ namespace TutorBits.FileDataAccess
             var projectPath = GetProjectPath(projectId.ToString());
             var projectJsonPath = GetProjectJsonFilePath(projectPath);
             JObject output = new JObject();
-            
+
             foreach (var file in previewFiles)
             {
                 var filePath = file.Key;
