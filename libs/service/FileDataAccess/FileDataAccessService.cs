@@ -389,6 +389,44 @@ namespace TutorBits.FileDataAccess
             }
         }
 
+        public async Task<Dictionary<string, PreviewItem>> LoadProjectPreviewJson(Guid projectId)
+        {
+            var projectPath = GetProjectPath(projectId.ToString());
+            var projectJsonPath = GetProjectJsonFilePath(projectPath);
+            JObject input = null;
+
+            using (var stream = await dataLayer_.ReadFile(projectJsonPath))
+            {
+                using (StreamReader streamReader = new StreamReader(stream))
+                {
+                    using (JsonTextReader reader = new JsonTextReader(streamReader))
+                    {
+                        var serializer = new JsonSerializer();
+                        input = serializer.Deserialize<JObject>(reader);
+                    }
+                }
+            }
+
+            if (input == null)
+            {
+                return null;
+            }
+
+            var output = new Dictionary<string, PreviewItem>();
+            foreach (var item in input)
+            {
+                var previewItem = new PreviewItem();
+                previewItem.isFolder = item.Key.EndsWith("/");
+                var key = previewItem.isFolder ? item.Key.Substring(0, item.Key.Count() - 1) : item.Key;
+                previewItem.stringBuilder = new StringBuilder();
+                previewItem.stringBuilder.Insert(0, item.Value);
+                output[key] = previewItem;
+            }
+
+            return output;
+        }
+
+
         public async Task<Dictionary<string, PreviewItem>> GeneratePreview(TraceProject project, int end, string previewId)
         {
             var projectId = Guid.Parse(project.Id);
@@ -410,11 +448,11 @@ namespace TutorBits.FileDataAccess
             return files;
         }
 
-        public async Task GeneratePreview(TraceProject project, int end, string previewId, TraceTransactionLogs traceTransactionLogs)
+        public async Task GeneratePreview(TraceProject project, int end, string previewId, TraceTransactionLogs traceTransactionLogs, Guid? baseProjectId = null)
         {
             var projectId = Guid.Parse(project.Id);
             var previewPath = GetPreviewPath(project.Id, previewId);
-            var files = new Dictionary<string, PreviewItem>();
+            var files = baseProjectId.HasValue ? (await LoadProjectPreviewJson(baseProjectId.Value)) : new Dictionary<string, PreviewItem>();
             foreach (var transactionLog in traceTransactionLogs.Logs)
             {
                 GeneratePreviewForTransactionLog(transactionLog, end, files);
