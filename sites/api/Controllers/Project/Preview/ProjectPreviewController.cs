@@ -58,7 +58,7 @@ namespace tutorbits_api.Controllers
         {
             try
             {
-                if (Request.Body == null || Request.ContentLength <= 0)
+                if ((Request.Body == null || Request.ContentLength <= 0) && !baseProjectId.HasValue)
                 {
                     return BadRequest();
                 }
@@ -66,7 +66,7 @@ namespace tutorbits_api.Controllers
                 var previewId = Guid.NewGuid().ToString();
 
                 var transactionLogs = TraceTransactionLogs.Parser.ParseFrom(Request.Body);
-                if (transactionLogs == null || transactionLogs.CalculateSize() == 0)
+                if ((transactionLogs == null || transactionLogs.CalculateSize() == 0) && !baseProjectId.HasValue)
                 {
                     return BadRequest();
                 }
@@ -78,6 +78,43 @@ namespace tutorbits_api.Controllers
                 };
                 await fileDataAccessService_.GeneratePreview(tempProject, (int)offsetEnd, previewId, transactionLogs, baseProjectId);
                 return new JsonResult(ProjectUrlGenerator.GenerateProjectPreviewUrl(previewId, tempID, configuration_));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+            return BadRequest();
+        }
+
+        [ActionName("download")]
+        [HttpPost]
+        public async Task<IActionResult> DownloadPreview([FromQuery]uint offsetEnd, [FromQuery]Guid? baseProjectId)
+        {
+            try
+            {
+                if ((Request.Body == null || Request.ContentLength <= 0) && !baseProjectId.HasValue)
+                {
+                    return BadRequest();
+                }
+
+                var previewId = Guid.NewGuid().ToString();
+
+                var transactionLogs = TraceTransactionLogs.Parser.ParseFrom(Request.Body);
+                if ((transactionLogs == null || transactionLogs.CalculateSize() == 0) && !baseProjectId.HasValue)
+                {
+                    return BadRequest();
+                }
+
+                var tempID = Guid.NewGuid();
+                var tempProject = new TraceProject()
+                {
+                    Id = tempID.ToString()
+                };
+                await fileDataAccessService_.GeneratePreview(tempProject, (int)offsetEnd, previewId, transactionLogs, baseProjectId);
+                await fileDataAccessService_.PackagePreviewZIP(tempID, previewId);
+
+                return new JsonResult(ProjectUrlGenerator.GenerateProjectDownloadUrl(tempID, configuration_));
             }
             catch (Exception e)
             {

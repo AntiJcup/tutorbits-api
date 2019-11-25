@@ -26,6 +26,7 @@ namespace TutorBits.FileDataAccess
         public readonly string ThumbnailFileName;
         public readonly string ProjectZipName;
         public readonly string ProjectJsonName;
+        public readonly string TempDirectory;
 
         private readonly FileDataLayerInterface dataLayer_;
 
@@ -65,6 +66,8 @@ namespace TutorBits.FileDataAccess
 
             ProjectJsonName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                 .GetValue<string>(Constants.Configuration.Sections.Paths.ProjectJsonNameKey);
+
+            TempDirectory = Path.GetTempPath();
         }
 
         #region Paths
@@ -480,47 +483,65 @@ namespace TutorBits.FileDataAccess
             return result;
         }
 
-        public async Task PackagePreviewZIP(Guid projectId, string previewId)
+        public async Task PackagePreviewZIP(string previewPath, string outputZipPath)
         {
-            var projectPath = GetProjectPath(projectId.ToString());
-            var projectZipPath = GetProjectZipFilePath(projectPath);
-            var previewPath = await dataLayer_.ConvertToNativePath(GetPreviewPath(projectId.ToString(), previewId));
             var previewFiles = await GetAllFilesRecursive(previewPath);
+            var tempZipPath = Path.Combine(TempDirectory, Guid.NewGuid().ToString());
 
-            using (var memoryStream = new MemoryStream())
+            using (var outFileStream = File.Create(tempZipPath))
             {
-                using (var zipArchive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                using (var zipArchive = new ZipArchive(outFileStream, ZipArchiveMode.Create, true))
                 {
                     foreach (var previewFile in previewFiles)
                     {
                         var previewFilePath = previewFile.Replace(previewPath, "").Replace("\\project", "project").Replace("/project", "project");
                         if (!(await dataLayer_.IsDirectory(previewFile)))
                         {
-                            using (var fileStream = await dataLayer_.ReadFile(previewFile))
+                            using (var resourceFileStream = await dataLayer_.ReadFile(previewFile))
                             {
                                 var entry = zipArchive.CreateEntry(previewFilePath);
                                 using (var zipStream = entry.Open())
                                 {
-                                    await fileStream.CopyToAsync(zipStream);
+                                    await resourceFileStream.CopyToAsync(zipStream);
                                 }
                             }
                         }
                         else
                         {
-                            var entry = zipArchive.CreateEntry(previewFilePath);
+                            // var entry = zipArchive.CreateEntry(previewFilePath);
                         }
                     }
                 }
+            }
 
-                memoryStream.Position = 0;
-                await dataLayer_.CreateFile(projectZipPath, memoryStream);
+            using (var zipFileStream = File.OpenRead(tempZipPath))
+            {
+                await dataLayer_.CreatePathForFile(outputZipPath);
+                await dataLayer_.CreateFile(outputZipPath, zipFileStream);
             }
         }
 
-        public async Task PackagePreviewJSON(Guid projectId, Dictionary<string, PreviewItem> previewFiles)
+        public async Task PackagePreviewZIP(Guid projectId, string previewId)
         {
             var projectPath = GetProjectPath(projectId.ToString());
-            var projectJsonPath = GetProjectJsonFilePath(projectPath);
+            var projectZipPath = GetProjectZipFilePath(projectPath);
+            var previewPath = await dataLayer_.ConvertToNativePath(GetPreviewPath(projectId.ToString(), previewId));
+
+            await PackagePreviewZIP(previewPath, projectZipPath);
+        }
+
+        public async Task<Stream> DownloadPreview(Guid projectId, string previewId)
+        {
+            var projectPath = GetProjectPath(projectId.ToString());
+            var projectZipPath = GetProjectZipFilePath(projectPath);
+            var previewPath = await dataLayer_.ConvertToNativePath(GetPreviewPath(projectId.ToString(), previewId));
+            await PackagePreviewZIP(previewPath, projectZipPath);
+
+            return await dataLayer_.ReadFile(projectZipPath);
+        }
+
+        public async Task PackagePreviewJSON(string outputJsonPath, Dictionary<string, PreviewItem> previewFiles)
+        {
             JObject output = new JObject();
 
             foreach (var file in previewFiles)
@@ -545,8 +566,16 @@ namespace TutorBits.FileDataAccess
                     }
                 }
                 stream.Position = 0;
-                await dataLayer_.CreateFile(projectJsonPath, stream);
+                await dataLayer_.CreateFile(outputJsonPath, stream);
             }
+        }
+
+        public async Task PackagePreviewJSON(Guid projectId, Dictionary<string, PreviewItem> previewFiles)
+        {
+            var projectPath = GetProjectPath(projectId.ToString());
+            var projectJsonPath = GetProjectJsonFilePath(projectPath);
+
+            await PackagePreviewJSON(projectJsonPath, previewFiles);
         }
         #endregion
 

@@ -68,8 +68,13 @@ namespace api.Controllers.Model
                 return BadRequest();
             }
 
-            await lambdaAccessService_.FinalizeProject(tutorialId);
+            //Finalize project
+            var previewId = Guid.NewGuid().ToString();
+            var previewDictionary = await fileDataAccessService_.GeneratePreview(project, (int)project.Duration, previewId);
+            await fileDataAccessService_.PackagePreviewZIP(tutorialId, previewId);
+            await fileDataAccessService_.PackagePreviewJSON(tutorialId, previewDictionary);
 
+            //Update tutorial model
             model.DurationMS = project.Duration;
             model.Status = BaseState.Active;
             await dbDataAccessService_.UpdateBaseModel(model);
