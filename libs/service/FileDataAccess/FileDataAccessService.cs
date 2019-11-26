@@ -150,9 +150,9 @@ namespace TutorBits.FileDataAccess
             return SanitizePath(Path.Combine(directory, ProjectResourceDir));
         }
 
-        public string GetProjectResourceFilePath(string resourceDirectory, string resourceFileName, string resourceId)
+        public string GetProjectResourceFilePath(string resourceDirectory, string resourcePath, string resourceId)
         {
-            return SanitizePath(Path.Combine(resourceDirectory, string.Format(resourceFileName, resourceId)));
+            return SanitizePath(Path.Combine(resourceDirectory, string.Format(ProjectResourceFileName, resourceId, resourcePath)));
         }
         #endregion
 
@@ -310,7 +310,7 @@ namespace TutorBits.FileDataAccess
         #endregion
 
         #region Resource
-        public async Task<string> AddResource(Guid projectId, Stream resourceStream, string resourceFileName, Guid resourceId)
+        public async Task<string> AddResource(Guid projectId, Stream resourceStream, string resourcePath, Guid resourceId)
         {
             var project = await GetProject(projectId);
             if (project == null)
@@ -320,7 +320,7 @@ namespace TutorBits.FileDataAccess
 
             var projectDirectoryPath = GetProjectPath(projectId.ToString());
             var projectResourcePath = GetProjectResourceDir(projectDirectoryPath);
-            var projectResourceFilePath = GetProjectResourceFilePath(projectDirectoryPath, resourceFileName, resourceId.ToString());
+            var projectResourceFilePath = GetProjectResourceFilePath(projectDirectoryPath, resourcePath, resourceId.ToString());
 
             var projectResourcePathExists = await dataLayer_.DirectoryExists(projectResourcePath);
             if (!projectResourcePathExists)

@@ -154,11 +154,11 @@ namespace tutorbits_api.Controllers
 
         [ActionName("addResource")]
         [HttpPost]
-        public async Task<IActionResult> AddResource([FromQuery]Guid projectId, [FromQuery]string resourceName)
+        public async Task<IActionResult> AddResource([FromQuery]Guid projectId, [FromQuery]string resourcePath)
         {
             try
             {
-                if (Request.Body == null || Request.ContentLength <= 0 || string.IsNullOrWhiteSpace(resourceName))
+                if (Request.Body == null || Request.ContentLength <= 0 || string.IsNullOrWhiteSpace(resourcePath))
                 {
                     return BadRequest();
                 }
@@ -180,9 +180,9 @@ namespace tutorbits_api.Controllers
                 }
 
                 var resourceId = Guid.NewGuid();
-                await fileDataAccessService_.AddResource(projectId, Request.Body, resourceName, resourceId);
+                await fileDataAccessService_.AddResource(projectId, Request.Body, resourcePath, resourceId);
 
-                return new JsonResult(ProjectUrlGenerator.GenerateResourceUrl(resourceName, resourceId, projectId, configuration_));
+                return new JsonResult(ProjectUrlGenerator.GenerateResourceUrl(resourcePath, resourceId, projectId, configuration_));
             }
             catch (Exception e)
             {
