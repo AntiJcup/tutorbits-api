@@ -151,5 +151,45 @@ namespace tutorbits_api.Controllers
 
             return BadRequest();
         }
+
+        [ActionName("addResource")]
+        [HttpPost]
+        public async Task<IActionResult> AddResource([FromQuery]Guid projectId, [FromQuery]string resourceName)
+        {
+            try
+            {
+                if (Request.Body == null || Request.ContentLength <= 0 || string.IsNullOrWhiteSpace(resourceName))
+                {
+                    return BadRequest();
+                }
+
+                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(projectId);
+                if (tutorial == null)
+                {
+                    return NotFound();
+                }
+
+                if (!HasAccessToModel(tutorial))
+                {
+                    return Forbid(); //Only the owner and admins can modify this data
+                }
+
+                if (tutorial.Status != BaseState.Inactive)
+                {
+                    return BadRequest();
+                }
+
+                var resourceId = Guid.NewGuid();
+                await fileDataAccessService_.AddResource(projectId, Request.Body, resourceName, resourceId);
+
+                return new JsonResult(ProjectUrlGenerator.GenerateResourceUrl(resourceName, resourceId, projectId, configuration_));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+            return BadRequest();
+        }
     }
 }

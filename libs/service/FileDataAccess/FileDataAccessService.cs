@@ -26,6 +26,8 @@ namespace TutorBits.FileDataAccess
         public readonly string ThumbnailFileName;
         public readonly string ProjectZipName;
         public readonly string ProjectJsonName;
+        public readonly string ProjectResourceDir;
+        public readonly string ProjectResourceFileName;
         public readonly string TempDirectory;
 
         private readonly FileDataLayerInterface dataLayer_;
@@ -66,6 +68,12 @@ namespace TutorBits.FileDataAccess
 
             ProjectJsonName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                 .GetValue<string>(Constants.Configuration.Sections.Paths.ProjectJsonNameKey);
+
+            ProjectResourceDir = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                .GetValue<string>(Constants.Configuration.Sections.Paths.ProjectResourceDirKey);
+
+            ProjectResourceFileName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                .GetValue<string>(Constants.Configuration.Sections.Paths.ProjectResourceFileNameKey);
 
             TempDirectory = Path.GetTempPath();
         }
@@ -136,6 +144,16 @@ namespace TutorBits.FileDataAccess
         {
             return SanitizePath(Path.Combine(directory, ProjectJsonName));
         }
+
+        public string GetProjectResourceDir(string directory)
+        {
+            return SanitizePath(Path.Combine(directory, ProjectResourceDir));
+        }
+
+        public string GetProjectResourceFilePath(string resourceDirectory, string resourceFileName, string resourceId)
+        {
+            return SanitizePath(Path.Combine(resourceDirectory, string.Format(resourceFileName, resourceId)));
+        }
         #endregion
 
         #region Project
@@ -189,6 +207,7 @@ namespace TutorBits.FileDataAccess
             var transactionLogPath = GetTransactionLogPath(projectDirectoryPath);
             var projectFilePath = GetProjectFilePath(projectDirectoryPath);
             var videoPath = GetVideoPath(id.ToString());
+            var resourcePath = GetProjectResourceDir(projectDirectoryPath);
 
             if ((await dataLayer_.DirectoryExists(transactionLogPath)))
             {
@@ -198,6 +217,16 @@ namespace TutorBits.FileDataAccess
             if ((await dataLayer_.DirectoryExists(videoPath)))
             {
                 await dataLayer_.DeleteDirectory(videoPath);
+            }
+
+            if ((await dataLayer_.DirectoryExists(videoPath)))
+            {
+                await dataLayer_.DeleteDirectory(videoPath);
+            }
+
+            if ((await dataLayer_.DirectoryExists(resourcePath)))
+            {
+                await dataLayer_.DeleteDirectory(resourcePath);
             }
 
             if ((await dataLayer_.FileExists(projectFilePath)))
@@ -277,6 +306,31 @@ namespace TutorBits.FileDataAccess
             }
 
             return partitionDictionary;
+        }
+        #endregion
+
+        #region Resource
+        public async Task<string> AddResource(Guid projectId, Stream resourceStream, string resourceFileName, Guid resourceId)
+        {
+            var project = await GetProject(projectId);
+            if (project == null)
+            {
+                return null;
+            }
+
+            var projectDirectoryPath = GetProjectPath(projectId.ToString());
+            var projectResourcePath = GetProjectResourceDir(projectDirectoryPath);
+            var projectResourceFilePath = GetProjectResourceFilePath(projectDirectoryPath, resourceFileName, resourceId.ToString());
+
+            var projectResourcePathExists = await dataLayer_.DirectoryExists(projectResourcePath);
+            if (!projectResourcePathExists)
+            {
+                await dataLayer_.CreateDirectory(projectResourcePath);
+            }
+
+            await dataLayer_.CreateFile(projectResourcePath, resourceStream);
+
+            return projectResourceFilePath;
         }
         #endregion
 

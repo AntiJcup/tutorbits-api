@@ -56,6 +56,10 @@ public static class Constants
                 public static readonly string ProjectZipNameKey = "ProjectZipName";
 
                 public static readonly string ProjectJsonNameKey = "ProjectJsonName";
+
+                public static readonly string ProjectResourceDirKey = "ProjectResourceDir";
+
+                public static readonly string ProjectResourceFileNameKey = "ProjectResourceFileName";
             }
 
             public static class Urls
@@ -75,6 +79,8 @@ public static class Constants
                 public static readonly string ProjectZipPathKey = "ProjectZipPath";
 
                 public static readonly string ProjectJsonPathKey = "ProjectJsonPath";
+
+                public static readonly string ProjectResourcePathKey = "ProjectResourcePath";
             }
         }
     }
