@@ -70,7 +70,7 @@ namespace Utils.Common
             return string.Format("{0}/{1}", host, string.Format(path, projectId.ToString()));
         }
 
-        public static string GenerateResourceUrl(string resourceFileName, Guid resourceId, Guid projectId, IConfiguration configuration)
+        public static string GenerateResourceUrl(Guid resourceId, Guid projectId, IConfiguration configuration)
         {
             var host = configuration.GetSection(Constants.Configuration.Sections.UrlsKey)
                                                 .GetValue<string>(Constants.Configuration.Sections.Urls.ProjectHostKey);
@@ -78,7 +78,7 @@ namespace Utils.Common
                                                 .GetValue<string>(Constants.Configuration.Sections.Urls.ProjectResourcePathKey);
             var resourceName = string.Format(configuration.GetSection(Constants.Configuration.Sections.PathsKey)
                                                 .GetValue<string>(Constants.Configuration.Sections.Paths.ProjectResourceFileNameKey),
-                                                resourceId.ToString(), resourceFileName);
+                                                resourceId.ToString());
 
             return string.Format("{0}/{1}", host, string.Format(path, projectId.ToString(), resourceName));
         }

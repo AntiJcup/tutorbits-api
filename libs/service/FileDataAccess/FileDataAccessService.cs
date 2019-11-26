@@ -150,9 +150,9 @@ namespace TutorBits.FileDataAccess
             return SanitizePath(Path.Combine(directory, ProjectResourceDir));
         }
 
-        public string GetProjectResourceFilePath(string resourceDirectory, string resourcePath, string resourceId)
+        public string GetProjectResourceFilePath(string resourceDirectory, string resourceId)
         {
-            return SanitizePath(Path.Combine(resourceDirectory, string.Format(ProjectResourceFileName, resourceId, resourcePath)));
+            return SanitizePath(Path.Combine(resourceDirectory, string.Format(ProjectResourceFileName, resourceId)));
         }
         #endregion
 
@@ -310,17 +310,11 @@ namespace TutorBits.FileDataAccess
         #endregion
 
         #region Resource
-        public async Task<string> AddResource(Guid projectId, Stream resourceStream, string resourcePath, Guid resourceId)
+        public async Task<string> AddResource(Guid projectId, Stream resourceStream, Guid resourceId)
         {
-            var project = await GetProject(projectId);
-            if (project == null)
-            {
-                return null;
-            }
-
             var projectDirectoryPath = GetProjectPath(projectId.ToString());
             var projectResourcePath = GetProjectResourceDir(projectDirectoryPath);
-            var projectResourceFilePath = GetProjectResourceFilePath(projectDirectoryPath, resourcePath, resourceId.ToString());
+            var projectResourceFilePath = GetProjectResourceFilePath(projectResourcePath, resourceId.ToString());
 
             var projectResourcePathExists = await dataLayer_.DirectoryExists(projectResourcePath);
             if (!projectResourcePathExists)
@@ -328,7 +322,7 @@ namespace TutorBits.FileDataAccess
                 await dataLayer_.CreateDirectory(projectResourcePath);
             }
 
-            await dataLayer_.CreateFile(projectResourcePath, resourceStream);
+            await dataLayer_.CreateFile(projectResourceFilePath, resourceStream);
 
             return projectResourceFilePath;
         }

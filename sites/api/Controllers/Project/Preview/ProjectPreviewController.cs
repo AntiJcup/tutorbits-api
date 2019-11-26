@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Tracer;
 using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
+using TutorBits.Models.Common;
 using Utils.Common;
 
 namespace tutorbits_api.Controllers
@@ -89,13 +90,22 @@ namespace tutorbits_api.Controllers
 
         [ActionName("download")]
         [HttpPost]
-        public async Task<IActionResult> DownloadPreview([FromQuery]uint offsetEnd, [FromQuery]Guid? baseProjectId)
+        public async Task<IActionResult> DownloadPreview([FromQuery]Guid projectId, [FromQuery]uint offsetEnd, [FromQuery]Guid? baseProjectId)
         {
             try
             {
                 if ((Request.Body == null || Request.ContentLength <= 0) && !baseProjectId.HasValue)
                 {
                     return BadRequest();
+                }
+
+                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(projectId);
+                if (tutorial != null)
+                {
+                    if (tutorial.Status != BaseState.Inactive)
+                    {
+                        return BadRequest();
+                    }
                 }
 
                 var previewId = Guid.NewGuid().ToString();
@@ -106,15 +116,14 @@ namespace tutorbits_api.Controllers
                     return BadRequest();
                 }
 
-                var tempID = Guid.NewGuid();
                 var tempProject = new TraceProject()
                 {
-                    Id = tempID.ToString()
+                    Id = projectId.ToString()
                 };
                 await fileDataAccessService_.GeneratePreview(tempProject, (int)offsetEnd, previewId, transactionLogs, baseProjectId);
-                await fileDataAccessService_.PackagePreviewZIP(tempID, previewId);
+                await fileDataAccessService_.PackagePreviewZIP(projectId, previewId);
 
-                return new JsonResult(ProjectUrlGenerator.GenerateProjectDownloadUrl(tempID, configuration_));
+                return new JsonResult(ProjectUrlGenerator.GenerateProjectDownloadUrl(projectId, configuration_));
             }
             catch (Exception e)
             {

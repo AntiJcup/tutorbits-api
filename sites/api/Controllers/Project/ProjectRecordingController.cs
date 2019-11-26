@@ -16,7 +16,6 @@ using Utils.Common;
 
 namespace tutorbits_api.Controllers
 {
-    [Authorize]
     [Route("api/project/recording/[action]")]
     [ApiController]
     public class ProjectRecordingController : TutorBitsController
@@ -31,6 +30,7 @@ namespace tutorbits_api.Controllers
             fileDataAccessService_ = fileDataAccessService;
         }
 
+        [Authorize]
         [ActionName("create")]
         [HttpPost]
         public async Task<IActionResult> CreateProject([FromQuery]Guid tutorialId)
@@ -72,6 +72,7 @@ namespace tutorbits_api.Controllers
             return BadRequest();
         }
 
+        [Authorize]
         [ActionName("delete")]
         [HttpPost]
         public async Task<IActionResult> DeleteProject([FromQuery]Guid tutorialId)
@@ -107,6 +108,7 @@ namespace tutorbits_api.Controllers
             return BadRequest();
         }
 
+        [Authorize]
         [ActionName("add")]
         [HttpPost]
         public async Task<IActionResult> AddTransactionLog([FromQuery]Guid projectId)
@@ -154,35 +156,33 @@ namespace tutorbits_api.Controllers
 
         [ActionName("addResource")]
         [HttpPost]
-        public async Task<IActionResult> AddResource([FromQuery]Guid projectId, [FromQuery]string resourcePath)
+        public async Task<IActionResult> AddResource([FromQuery]Guid projectId, [FromQuery]string resourceFileName)
         {
             try
             {
-                if (Request.Body == null || Request.ContentLength <= 0 || string.IsNullOrWhiteSpace(resourcePath))
+                if (Request.Body == null || Request.ContentLength <= 0 || string.IsNullOrWhiteSpace(resourceFileName))
                 {
                     return BadRequest();
                 }
 
                 var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(projectId);
-                if (tutorial == null)
+                if (tutorial != null)
                 {
-                    return NotFound();
-                }
+                    if (!HasAccessToModel(tutorial))
+                    {
+                        return Forbid(); //Only the owner and admins can modify this data
+                    }
 
-                if (!HasAccessToModel(tutorial))
-                {
-                    return Forbid(); //Only the owner and admins can modify this data
-                }
-
-                if (tutorial.Status != BaseState.Inactive)
-                {
-                    return BadRequest();
+                    if (tutorial.Status != BaseState.Inactive)
+                    {
+                        return BadRequest();
+                    }
                 }
 
                 var resourceId = Guid.NewGuid();
-                await fileDataAccessService_.AddResource(projectId, Request.Body, resourcePath, resourceId);
+                await fileDataAccessService_.AddResource(projectId, Request.Body, resourceId);
 
-                return new JsonResult(ProjectUrlGenerator.GenerateResourceUrl(resourcePath, resourceId, projectId, configuration_));
+                return new JsonResult(resourceId.ToString());
             }
             catch (Exception e)
             {
