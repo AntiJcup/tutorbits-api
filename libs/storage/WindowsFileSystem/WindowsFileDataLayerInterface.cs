@@ -182,6 +182,11 @@ namespace TutorBits
             {
                 return await DirectoryExists(path);
             }
+
+            public async Task CopyFile(string sourcePath, string destinationPath)
+            {
+                File.Copy(sourcePath, destinationPath);
+            }
         }
     }
 }

@@ -40,5 +40,7 @@ namespace TutorBits.FileDataAccess
         Task<string> ConvertToNativePath(string path);
 
         Task<bool> IsDirectory(string path);
+
+        Task CopyFile(string sourcePath, string destinationPath);
     }
 }

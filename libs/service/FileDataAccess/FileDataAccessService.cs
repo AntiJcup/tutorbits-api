@@ -353,7 +353,7 @@ namespace TutorBits.FileDataAccess
         #endregion
 
         #region Preview
-        public void GeneratePreviewForTransactionLog(TraceTransactionLog transactionLog, int end, Dictionary<string, PreviewItem> files)
+        public void GeneratePreviewForTransactionLog(string projectId, TraceTransactionLog transactionLog, int end, Dictionary<string, PreviewItem> files)
         {
             foreach (var transaction in transactionLog.Transactions)
             {
@@ -380,6 +380,14 @@ namespace TutorBits.FileDataAccess
 
                 switch (transaction.Type)
                 {
+                    case TraceTransaction.Types.TraceTransactionType.UploadFile:
+                        var uploadFileData = transaction.UploadFile;
+                        var resourceDirectory = GetProjectResourceDir(GetProjectPath(projectId));
+                        files[uploadFileData.NewFilePath] = new PreviewItem
+                        {
+                            resourcePath = GetProjectResourceFilePath(resourceDirectory, uploadFileData.ResourceId)
+                        };
+                        break;
                     case TraceTransaction.Types.TraceTransactionType.CreateFile:
                         var createFileData = transaction.CreateFile;
                         files[createFileData.NewFilePath] = new PreviewItem
@@ -428,7 +436,11 @@ namespace TutorBits.FileDataAccess
                 var fileBytes = Encoding.UTF8.GetBytes(file.Value.stringBuilder.ToString());
                 using (var stream = new MemoryStream(fileBytes))
                 {
-                    if (file.Value.isFolder)
+                    if (!string.IsNullOrWhiteSpace(file.Value.resourcePath))
+                    {
+                        await dataLayer_.CopyFile(file.Value.resourcePath, fullPath);
+                    }
+                    else if (file.Value.isFolder)
                     {
                         await dataLayer_.CreateDirectory(fullPath);
                     }
@@ -490,7 +502,7 @@ namespace TutorBits.FileDataAccess
                 using (var transactionLogStream = await dataLayer_.ReadFile(transactionLogPath.Value))
                 {
                     var transactionLog = TraceTransactionLog.Parser.ParseFrom(transactionLogStream);
-                    GeneratePreviewForTransactionLog(transactionLog, end, files);
+                    GeneratePreviewForTransactionLog(project.Id, transactionLog, end, files);
                 }
             }
 
@@ -506,7 +518,7 @@ namespace TutorBits.FileDataAccess
             var files = baseProjectId.HasValue ? (await LoadProjectPreviewJson(baseProjectId.Value)) : new Dictionary<string, PreviewItem>();
             foreach (var transactionLog in traceTransactionLogs.Logs)
             {
-                GeneratePreviewForTransactionLog(transactionLog, end, files);
+                GeneratePreviewForTransactionLog(project.Id, transactionLog, end, files);
             }
 
             await SavePreviewCache(files, previewPath);
@@ -556,7 +568,7 @@ namespace TutorBits.FileDataAccess
                         }
                         else
                         {
-                            // var entry = zipArchive.CreateEntry(previewFilePath);
+                            // var entry = zipArchive.CreateEntry(previewFilePath); Adds an extra file
                         }
                     }
                 }

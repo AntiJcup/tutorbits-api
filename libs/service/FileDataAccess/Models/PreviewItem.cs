@@ -6,5 +6,6 @@ namespace TutorBits.FileDataAccess
     {
         public StringBuilder stringBuilder { get; set; }
         public bool isFolder { get; set; }
+        public string resourcePath { get; set; }
     }
 }

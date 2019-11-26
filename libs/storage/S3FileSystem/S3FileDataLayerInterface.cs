@@ -242,6 +242,14 @@ namespace TutorBits
             {
                 return path.EndsWith("/");
             }
+
+            public async Task CopyFile(string sourcePath, string destinationPath)
+            {
+                using (var sourceStream = await ReadFile(sourcePath))
+                {
+                    await CreateFile(destinationPath, sourceStream);
+                }
+            }
         }
     }
 }
