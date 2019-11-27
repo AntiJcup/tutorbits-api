@@ -102,5 +102,21 @@ namespace tutorbits_api.Controllers
 
             return BadRequest();
         }
+
+        [ActionName("resource")]
+        [HttpGet]
+        public IActionResult GetProjectResourceUrl([FromQuery]Guid projectId, [FromQuery]Guid resourceId)
+        {
+            try
+            {
+                return new JsonResult(ProjectUrlGenerator.GenerateResourceUrl(resourceId, projectId, configuration_));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+            return BadRequest();
+        }
     }
 }
