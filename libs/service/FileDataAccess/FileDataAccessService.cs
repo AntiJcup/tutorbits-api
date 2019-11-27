@@ -385,7 +385,9 @@ namespace TutorBits.FileDataAccess
                         var resourceDirectory = GetProjectResourceDir(GetProjectPath(projectId));
                         files[uploadFileData.NewFilePath] = new PreviewItem
                         {
-                            resourcePath = GetProjectResourceFilePath(resourceDirectory, uploadFileData.ResourceId)
+                            resourcePath = GetProjectResourceFilePath(resourceDirectory, uploadFileData.ResourceId),
+                            stringBuilder = new StringBuilder(),
+                            resourceId = uploadFileData.ResourceId
                         };
                         break;
                     case TraceTransaction.Types.TraceTransactionType.CreateFile:
@@ -430,12 +432,11 @@ namespace TutorBits.FileDataAccess
         {
             foreach (var file in files)
             {
-                if (string.IsNullOrWhiteSpace(file.Key))
+                if (string.IsNullOrWhiteSpace(file.Key) || file.Key == "/project")
                 {
                     continue;
                 }
-                var path = (await dataLayer_.ConvertToNativePath(file.Key)).Substring(1);
-                var fullPath = SanitizePath(Path.Combine(previewFolder, path));
+                var fullPath = (await dataLayer_.ConvertToNativePath(SanitizePath(Path.Combine(previewFolder, file.Key.Substring(1)))));
                 await dataLayer_.CreatePathForFile(fullPath);
                 var fileBytes = Encoding.UTF8.GetBytes(file.Value.stringBuilder.ToString());
                 using (var stream = new MemoryStream(fileBytes))
@@ -619,9 +620,12 @@ namespace TutorBits.FileDataAccess
                 if (!string.IsNullOrWhiteSpace(file.Value.resourcePath))
                 {
                     filePath = "res:" + filePath;
+                    output[filePath] = file.Value.resourceId;
                 }
-
-                output[filePath] = file.Value.stringBuilder.ToString();
+                else
+                {
+                    output[filePath] = file.Value.stringBuilder.ToString();
+                }
             }
 
             using (var stream = new MemoryStream())
