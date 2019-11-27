@@ -357,7 +357,7 @@ namespace TutorBits.FileDataAccess
         {
             foreach (var transaction in transactionLog.Transactions)
             {
-                if (transaction.TimeOffsetMs > end || string.IsNullOrWhiteSpace(transaction.FilePath))
+                if (transaction.TimeOffsetMs > end)
                 {
                     continue;
                 }
@@ -430,6 +430,10 @@ namespace TutorBits.FileDataAccess
         {
             foreach (var file in files)
             {
+                if (string.IsNullOrWhiteSpace(file.Key))
+                {
+                    continue;
+                }
                 var path = (await dataLayer_.ConvertToNativePath(file.Key)).Substring(1);
                 var fullPath = SanitizePath(Path.Combine(previewFolder, path));
                 await dataLayer_.CreatePathForFile(fullPath);
@@ -610,6 +614,11 @@ namespace TutorBits.FileDataAccess
                 if (file.Value.isFolder)
                 {
                     filePath += "/";
+                }
+
+                if (!string.IsNullOrWhiteSpace(file.Value.resourcePath))
+                {
+                    filePath = "res:" + filePath;
                 }
 
                 output[filePath] = file.Value.stringBuilder.ToString();
