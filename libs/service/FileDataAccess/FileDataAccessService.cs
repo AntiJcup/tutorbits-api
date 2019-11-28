@@ -400,7 +400,7 @@ namespace TutorBits.FileDataAccess
                         break;
                     case TraceTransaction.Types.TraceTransactionType.DeleteFile:
                         files.Remove(filePath);
-                        var deleteFileData = transaction.RenameFile;
+                        var deleteFileData = transaction.DeleteFile;
                         file.isFolder = deleteFileData.IsFolder;
                         break;
                     case TraceTransaction.Types.TraceTransactionType.RenameFile:
