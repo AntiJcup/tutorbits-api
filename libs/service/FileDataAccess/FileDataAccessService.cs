@@ -481,13 +481,25 @@ namespace TutorBits.FileDataAccess
             }
 
             var output = new Dictionary<string, PreviewItem>();
+            var resourceDirectory = GetProjectResourceDir(projectPath);
             foreach (var item in input)
             {
+                string key = item.Key;
                 var previewItem = new PreviewItem();
                 previewItem.isFolder = item.Key.EndsWith("/");
-                var key = previewItem.isFolder ? item.Key.Substring(0, item.Key.Count() - 1) : item.Key;
                 previewItem.stringBuilder = new StringBuilder();
-                previewItem.stringBuilder.Insert(0, item.Value);
+                if (!previewItem.isFolder && item.Key.StartsWith("res:"))
+                {
+                    key = key.Replace("res:", "");
+                    previewItem.resourceId = item.Value.ToString();
+                    previewItem.resourcePath = GetProjectResourceFilePath(resourceDirectory, previewItem.resourceId);
+                }
+                else
+                {
+                    key = previewItem.isFolder ? item.Key.Substring(0, item.Key.Count() - 1) : key;
+
+                    previewItem.stringBuilder.Insert(0, item.Value);
+                }
                 output[key] = previewItem;
             }
 
