@@ -154,6 +154,7 @@ namespace tutorbits_api.Controllers
             return BadRequest();
         }
 
+        [Authorize]
         [ActionName("addResource")]
         [HttpPost]
         public async Task<IActionResult> AddResource([FromQuery]Guid projectId, [FromQuery]string resourceFileName)
@@ -166,17 +167,49 @@ namespace tutorbits_api.Controllers
                 }
 
                 var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(projectId);
+                if (tutorial == null)
+                {
+                    return BadRequest();
+                }
+
+                if (!HasAccessToModel(tutorial))
+                {
+                    return Forbid(); //Only the owner and admins can modify this data
+                }
+
+                if (tutorial.Status != BaseState.Inactive)
+                {
+                    return BadRequest();
+                }
+
+                var resourceId = Guid.NewGuid();
+                await fileDataAccessService_.AddResource(projectId, Request.Body, resourceId);
+
+                return new JsonResult(resourceId.ToString());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+            return BadRequest();
+        }
+
+        [ActionName("addResourceAnon")]
+        [HttpPost]
+        public async Task<IActionResult> AddResourceAnon([FromQuery]Guid projectId, [FromQuery]string resourceFileName)
+        {
+            try
+            {
+                if (Request.Body == null || Request.ContentLength <= 0 || string.IsNullOrWhiteSpace(resourceFileName))
+                {
+                    return BadRequest();
+                }
+
+                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(projectId);
                 if (tutorial != null)
                 {
-                    if (!HasAccessToModel(tutorial))
-                    {
-                        return Forbid(); //Only the owner and admins can modify this data
-                    }
-
-                    if (tutorial.Status != BaseState.Inactive)
-                    {
-                        return BadRequest();
-                    }
+                    return Forbid();
                 }
 
                 var resourceId = Guid.NewGuid();
