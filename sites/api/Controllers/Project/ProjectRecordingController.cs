@@ -183,7 +183,12 @@ namespace tutorbits_api.Controllers
                 }
 
                 var resourceId = Guid.NewGuid();
-                await fileDataAccessService_.AddResource(projectId, Request.Body, resourceId);
+                using (var memoryStream = new MemoryStream())
+                {
+                    await Request.Body.CopyToAsync(memoryStream);
+                    memoryStream.Position = 0;
+                    await fileDataAccessService_.AddResource(projectId, memoryStream, resourceId);
+                }
 
                 return new JsonResult(resourceId.ToString());
             }
@@ -213,7 +218,12 @@ namespace tutorbits_api.Controllers
                 }
 
                 var resourceId = Guid.NewGuid();
-                await fileDataAccessService_.AddResource(projectId, Request.Body, resourceId);
+                using (var memoryStream = new MemoryStream())
+                {
+                    await Request.Body.CopyToAsync(memoryStream);
+                    memoryStream.Position = 0;
+                    await fileDataAccessService_.AddResource(projectId, memoryStream, resourceId);
+                }
 
                 return new JsonResult(resourceId.ToString());
             }

@@ -230,7 +230,7 @@ namespace TutorBits
 
             public async Task<string> ConvertToNativePath(string path)
             {
-                return path.Replace('/', '\\');
+                return path.Replace('\\', '/');
             }
 
             public string GetWorkingDirectory()
