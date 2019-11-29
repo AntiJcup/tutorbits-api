@@ -33,6 +33,29 @@ namespace TutorBits
                     dbContext_ = dbContext;
                 }
 
+                protected Expression<Func<T, bool>> GetKeyLambda<T>(params object[] keys) where T : class, new()
+                {
+                    var modelKeys = dbContext_.Model.FindEntityType(typeof(T)).GetKeys();
+                    Expression previousExpression = null;
+                    var keyIndex = 0;
+                    var param = Expression.Parameter(typeof(T), "entity");
+
+                    foreach (var modelKey in modelKeys)
+                    {
+                        var property = Expression.Property(param, modelKey.Properties[0].PropertyInfo);
+                        dynamic val = keys[keyIndex++];
+                        if (previousExpression == null)
+                        {
+                            previousExpression = Expression.Equal(property, Expression.Constant(val));
+                            continue;
+                        }
+
+                        previousExpression = Expression.Or(previousExpression, Expression.Equal(property, Expression.Constant(val)));
+                    }
+
+                    return Expression.Lambda<Func<T, bool>>(previousExpression, param);
+                }
+
                 public async Task<T> Create<T>(T entity) where T : class, new()
                 {
                     var dbEntity = (await dbContext_.AddAsync(entity)).Entity;
@@ -66,12 +89,17 @@ namespace TutorBits
 
                 public async Task<T> Get<T>(params object[] keys) where T : class, new()
                 {
-                    return await dbContext_.FindAsync<T>(keys);
+                    var dbSet = dbContext_.Set<T>();
+                    var query = dbSet.AsNoTracking();
+
+                    return await query.Where(GetKeyLambda<T>(keys)).FirstOrDefaultAsync();
                 }
 
                 public async Task<T> Get<T>(ICollection<object> keys) where T : class, new()
                 {
-                    return await dbContext_.FindAsync<T>(keys.ToArray(), null);
+                    var dbSet = dbContext_.Set<T>();
+                    var query = dbSet.AsNoTracking();
+                    return await query.Where(GetKeyLambda<T>(keys.ToArray())).FirstOrDefaultAsync();
                 }
 
                 public async Task<T> Get<T, TProperty>(ICollection<Expression<Func<T, TProperty>>> includes, params object[] keys) where T : class, new()
@@ -84,25 +112,7 @@ namespace TutorBits
                         query = dbSet.Include(include);
                     }
 
-                    var modelKeys = dbContext_.Model.FindEntityType(typeof(T)).GetKeys();
-                    Expression previousExpression = null;
-                    var keyIndex = 0;
-                    foreach (var modelKey in modelKeys)
-                    {
-                        var param = Expression.Parameter(typeof(T), modelKey.Properties[0].Name);
-                        dynamic val = keys[keyIndex++];
-                        if (previousExpression == null)
-                        {
-                            previousExpression = Expression.Equal(param, Expression.Constant(val));
-                            continue;
-                        }
-
-                        previousExpression = Expression.Or(previousExpression, Expression.Equal(param, Expression.Constant(val)));
-                    }
-
-                    var lambda = Expression.Lambda<Func<T, bool>>(previousExpression);
-
-                    return await query.Where(lambda).FirstOrDefaultAsync();
+                    return await query.Where(GetKeyLambda<T>(keys)).FirstOrDefaultAsync();
                 }
 
                 public async Task<ICollection<T>> GetAll<T>(Expression<Func<T, bool>> where = null, int? skip = null, int? take = null) where T : class, new()

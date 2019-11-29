@@ -98,6 +98,31 @@ namespace api.Controllers.Model
         }
 
         [Authorize]
+        [HttpGet]
+        public virtual async Task<IActionResult> GetAllByOwner([FromQuery] int? skip = null, [FromQuery] int? take = null)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var entities = await dbDataAccessService_.GetAllBaseModel(
+                (Expression<Func<TModel, Boolean>>)(m => m.Owner == UserName && m.Status != BaseState.Deleted),
+                skip,
+                take);
+            var viewModels = new List<TViewModel>();
+
+            foreach (var entity in entities)
+            {
+                var viewModel = new TViewModel();
+                viewModel.Convert(entity);
+                await EnrichViewModel(viewModel);
+                viewModels.Add(viewModel);
+            }
+            return new JsonResult(viewModels);
+        }
+
+        [Authorize]
         [HttpPost]
         public virtual async Task<IActionResult> Create([FromBody] TCreateModel createModel)
         {
@@ -194,18 +219,12 @@ namespace api.Controllers.Model
         [HttpPost]
         public virtual async Task<IActionResult> DeleteById([FromQuery] Guid id)
         {
-            var keys = await GetKeysFromRequest();
-            if (keys.Count() > 1)
-            {
-                return BadRequest("Error: Object has more than one key use Delete");
-            }
-
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var oldModel = await dbDataAccessService_.GetBaseModel<TModel>(keys);
+            var oldModel = await dbDataAccessService_.GetBaseModel<TModel>(id);
 
             if (oldModel == null)
             {
