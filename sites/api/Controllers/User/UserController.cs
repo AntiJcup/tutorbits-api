@@ -34,7 +34,7 @@ namespace tutorbits_api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCurrentUser()
         {
-            var user = authService_.GetUser(UserName);
+            var user = await authService_.GetUser(UserName);
 
             return new JsonResult(user);
         }
@@ -43,7 +43,7 @@ namespace tutorbits_api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetOtherUser([FromQuery] string userName)
         {
-            var user = authService_.GetUser(userName);
+            var user = await authService_.GetUser(userName);
 
             return new JsonResult(user);
         }
