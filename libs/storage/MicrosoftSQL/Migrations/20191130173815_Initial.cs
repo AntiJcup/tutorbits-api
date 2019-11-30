@@ -8,6 +8,25 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "Accounts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    DateModified = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    Notes = table.Column<string>(maxLength: 1028, nullable: true),
+                    Status = table.Column<string>(maxLength: 64, nullable: false),
+                    Owner = table.Column<string>(maxLength: 1028, nullable: true),
+                    Email = table.Column<string>(maxLength: 1028, nullable: false),
+                    NickName = table.Column<string>(maxLength: 256, nullable: false),
+                    AcceptOffers = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Accounts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tutorials",
                 columns: table => new
                 {
@@ -30,6 +49,9 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Accounts");
+
             migrationBuilder.DropTable(
                 name: "Tutorials");
         }

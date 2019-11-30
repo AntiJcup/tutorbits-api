@@ -19,6 +19,44 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("TutorBits.Models.Common.Account", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("AcceptOffers");
+
+                    b.Property<DateTime>("DateCreated")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime>("DateModified")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(1028);
+
+                    b.Property<string>("NickName")
+                        .IsRequired()
+                        .HasMaxLength(256);
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1028);
+
+                    b.Property<string>("Owner")
+                        .HasMaxLength(1028);
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Accounts");
+                });
+
             modelBuilder.Entity("TutorBits.Models.Common.Tutorial", b =>
                 {
                     b.Property<Guid>("Id")

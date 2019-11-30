@@ -9,6 +9,21 @@ END;
 
 GO
 
+CREATE TABLE [Accounts] (
+    [Id] uniqueidentifier NOT NULL,
+    [DateCreated] datetime2 NOT NULL DEFAULT (GETUTCDATE()),
+    [DateModified] datetime2 NOT NULL DEFAULT (GETUTCDATE()),
+    [Notes] nvarchar(1028) NULL,
+    [Status] nvarchar(64) NOT NULL,
+    [Owner] nvarchar(1028) NULL,
+    [Email] nvarchar(1028) NOT NULL,
+    [NickName] nvarchar(256) NOT NULL,
+    [AcceptOffers] bit NOT NULL,
+    CONSTRAINT [PK_Accounts] PRIMARY KEY ([Id])
+);
+
+GO
+
 CREATE TABLE [Tutorials] (
     [Id] uniqueidentifier NOT NULL,
     [DateCreated] datetime2 NOT NULL DEFAULT (GETUTCDATE()),
@@ -26,7 +41,7 @@ CREATE TABLE [Tutorials] (
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20191121161038_Initial', N'2.2.6-servicing-10079');
+VALUES (N'20191130173815_Initial', N'2.2.6-servicing-10079');
 
 GO
 
