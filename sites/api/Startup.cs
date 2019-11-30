@@ -34,6 +34,7 @@ using Microsoft.AspNetCore.Identity;
 using Amazon.AspNetCore.Identity.Cognito;
 using TutorBits.Auth.AWSAuth;
 using LocalAuth;
+using TutorBits.AccountAccess;
 
 namespace tutorbits_api
 {
@@ -97,6 +98,7 @@ namespace tutorbits_api
                 );
 
             services.AddMicrosoftSQLDBDataAccessLayer();
+            services.AddAccountService();
 
             var useAWS = Configuration.GetSection(Constants.Configuration.Sections.SettingsKey)
                         .GetValue<bool>(Constants.Configuration.Sections.Settings.UseAWSKey, false);

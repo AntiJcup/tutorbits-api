@@ -36,6 +36,7 @@
     <ProjectReference Include="..\..\libs\storage\MicrosoftSQL\MicrosoftSQL.csproj" />
     <ProjectReference Include="..\..\libs\service\DBDataAccess\DBDataAccess.csproj" />
     <ProjectReference Include="..\..\libs\service\FileDataAccess\FileDataAccess.csproj" />
+    <ProjectReference Include="..\..\libs\service\AccountAccess\AccountAccess.csproj" />
     <ProjectReference Include="..\..\libs\storage\WindowsFileSystem\WindowsFileSystem.csproj" />
     <ProjectReference Include="..\..\libs\storage\S3FileSystem\S3FileSystem.csproj" />
     <ProjectReference Include="..\..\libs\constants\constants.csproj" />

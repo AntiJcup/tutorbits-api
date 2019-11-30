@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\models\Common\CommonModels.csproj" />
+    <ProjectReference Include="..\AuthAccess\AuthAccess.csproj" />
+    <ProjectReference Include="..\DBDataAccess\DBDataAccess.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+</Project>

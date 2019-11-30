@@ -23,6 +23,8 @@ namespace TutorBits
 
                 public DbSet<Tutorial> Tutorials { get; set; }
 
+                public DbSet<Account> Accounts { get; set; }
+
                 protected override void OnModelCreating(ModelBuilder modelBuilder)
                 {
                     //Auto generates tables that are of base type

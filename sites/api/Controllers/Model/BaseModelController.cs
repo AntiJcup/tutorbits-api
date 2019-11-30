@@ -14,8 +14,7 @@ using TutorBits.Models.Common;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Amazon.Extensions.CognitoAuthentication;
+using TutorBits.AccountAccess;
 
 namespace api.Controllers.Model
 {
@@ -34,11 +33,18 @@ namespace api.Controllers.Model
         protected readonly DBDataAccessService dbDataAccessService_;
         protected readonly FileDataAccessService fileDataAccessService_;
 
-        public BaseModelController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
+        protected readonly AccountAccessService accountAccessService_;
+
+        public BaseModelController(
+            IConfiguration configuration,
+            DBDataAccessService dbDataAccessService,
+            FileDataAccessService fileDataAccessService,
+            AccountAccessService accountAccessService)
          : base(configuration)
         {
             dbDataAccessService_ = dbDataAccessService;
             fileDataAccessService_ = fileDataAccessService;
+            accountAccessService_ = accountAccessService;
         }
 
         [HttpGet]
@@ -48,7 +54,7 @@ namespace api.Controllers.Model
             var entity = await dbDataAccessService_.GetBaseModel<TModel>(keys);
             var viewModel = new TViewModel();
             viewModel.Convert(entity);
-            await EnrichViewModel(viewModel);
+            await EnrichViewModel(viewModel, entity);
             return new JsonResult(viewModel);
         }
 
@@ -69,7 +75,7 @@ namespace api.Controllers.Model
             var entity = await dbDataAccessService_.GetBaseModel<TModel>(id);
             var viewModel = new TViewModel();
             viewModel.Convert(entity);
-            await EnrichViewModel(viewModel);
+            await EnrichViewModel(viewModel, entity);
             return new JsonResult(viewModel);
         }
 
@@ -91,7 +97,7 @@ namespace api.Controllers.Model
             {
                 var viewModel = new TViewModel();
                 viewModel.Convert(entity);
-                await EnrichViewModel(viewModel);
+                await EnrichViewModel(viewModel, entity);
                 viewModels.Add(viewModel);
             }
             return new JsonResult(viewModels);
@@ -106,8 +112,8 @@ namespace api.Controllers.Model
                 return BadRequest(ModelState);
             }
 
-            var entities = await dbDataAccessService_.GetAllBaseModel(
-                (Expression<Func<TModel, Boolean>>)(m => m.Owner == UserName && m.Status != BaseState.Deleted),
+            var entities = await dbDataAccessService_.GetAllOwnedModel<TModel>(
+                UserName,
                 skip,
                 take);
             var viewModels = new List<TViewModel>();
@@ -116,7 +122,7 @@ namespace api.Controllers.Model
             {
                 var viewModel = new TViewModel();
                 viewModel.Convert(entity);
-                await EnrichViewModel(viewModel);
+                await EnrichViewModel(viewModel, entity);
                 viewModels.Add(viewModel);
             }
             return new JsonResult(viewModels);
@@ -136,7 +142,7 @@ namespace api.Controllers.Model
             var entity = await dbDataAccessService_.CreateBaseModel(model);
             var viewModel = new TViewModel();
             viewModel.Convert(entity);
-            await EnrichViewModel(viewModel);
+            await EnrichViewModel(viewModel, entity);
             return new JsonResult(viewModel);
         }
 
@@ -312,9 +318,10 @@ namespace api.Controllers.Model
             }
         }
 
-        protected virtual async Task EnrichViewModel(TViewModel viewModel)
+        protected virtual async Task EnrichViewModel(TViewModel viewModel, TModel entity)
         {
-
+            var account = (await accountAccessService_.GetAccount(entity.Owner));
+            viewModel.Owner = account != null ? account.NickName : "Unknown";
         }
     }
 }

@@ -1,20 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using Amazon.CognitoIdentityProvider;
-using Amazon.Extensions.CognitoAuthentication;
-using api.Controllers.Model;
-using api.Models;
 using api.Models.Requests;
 using api.Models.Views;
-using GenericServices;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
-using Tracer;
+using TutorBits.AccountAccess;
 using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
 using TutorBits.LambdaAccess;
@@ -31,8 +22,9 @@ namespace api.Controllers.Model
         public TutorialController(IConfiguration configuration,
                                     DBDataAccessService dbDataAccessService,
                                     FileDataAccessService fileDataAccessService,
-                                    LambdaAccessService lambdaAccessService)
-            : base(configuration, dbDataAccessService, fileDataAccessService)
+                                    LambdaAccessService lambdaAccessService,
+                                    AccountAccessService accountAccessService)
+            : base(configuration, dbDataAccessService, fileDataAccessService, accountAccessService)
         {
             lambdaAccessService_ = lambdaAccessService;
         }
@@ -81,8 +73,9 @@ namespace api.Controllers.Model
             return Ok();
         }
 
-        protected override async Task EnrichViewModel(TutorialViewModel viewModel)
+        protected override async Task EnrichViewModel(TutorialViewModel viewModel, Tutorial entity)
         {
+            await base.EnrichViewModel(viewModel, entity);
             viewModel.ThumbnailUrl = ProjectUrlGenerator.GenerateProjectThumbnailUrl(Guid.Parse(viewModel.Id), configuration_);
         }
     }
