@@ -14,8 +14,6 @@ namespace api.Models.Views
 
         public string Description { get; set; }
 
-        public string Owner { get; set; }
-
         public string Status { get; set; }
 
         public UInt64 DurationMS { get; set; }
