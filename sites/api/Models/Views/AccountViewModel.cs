@@ -12,11 +12,14 @@ namespace api.Models.Views
 
         public string Email { get; set; }
 
+        public DateTime AccountCreated { get; set; }
+
         public override void Convert(Account baseModel)
         {
             UserId = baseModel.Owner;
             NickName = baseModel.NickName;
             Email = baseModel.Email;
+            AccountCreated = baseModel.DateCreated;
         }
     }
 }

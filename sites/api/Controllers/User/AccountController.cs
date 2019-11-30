@@ -40,15 +40,14 @@ namespace tutorbits_api.Controllers
         public async Task<IActionResult> Login()
         {
             var account = await accountAccessService_.GetAccount(UserName);
-
             if (account == null) //If user didnt exist before this create an account
             {
                 account = await accountAccessService_.CreateAccount(await authService_.GetUser(UserName));
-            }
 
-            if (account == null)
-            {
-                return BadRequest();
+                if (account == null)
+                {
+                    return BadRequest();
+                }
             }
 
             var accountView = new AccountViewModel();
