@@ -43,7 +43,7 @@ namespace TutorBits.AccountAccess
             {
                 Owner = user.Name,
                 Email = user.Email,
-                NickName = string.IsNullOrWhiteSpace(nickName) ? nickName : "",
+                NickName = !string.IsNullOrWhiteSpace(nickName) ? nickName : "",
                 AcceptOffers = false
             };
 
