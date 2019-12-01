@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using api.Controllers.Model;
 using api.Models.Requests;
@@ -58,6 +59,21 @@ namespace tutorbits_api.Controllers
             return new JsonResult(accountView);
         }
 
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> UpdateNickName([FromQuery]string nickName)
+        {
+            try
+            {
+                var account = (await accountAccessService_.GetAccount(UserName));
+                account = await accountAccessService_.UpdateNickName(account, nickName);
+                return new JsonResult(account);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
         [Authorize(Policy = "IsAdmin")]
         [HttpPost]
@@ -85,6 +101,20 @@ namespace tutorbits_api.Controllers
         public override async Task<IActionResult> GetById([FromQuery] Guid id)
         {
             return await base.GetById(id);
+        }
+
+        [Authorize(Policy = "IsAdmin")]
+        [HttpPost]
+        public override async Task<IActionResult> Update([FromBody] CreateUpdateAccountModel updateModel)
+        {
+            return await base.Update(updateModel);
+        }
+
+        [Authorize(Policy = "IsAdmin")]
+        [HttpPost]
+        public override async Task<IActionResult> UpdateStatusById([FromQuery] Guid id, [FromQuery] BaseState status)
+        {
+            return await base.UpdateStatusById(id, status);
         }
     }
 }

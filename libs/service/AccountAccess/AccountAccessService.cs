@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using TutorBits.AuthAccess;
@@ -44,10 +45,28 @@ namespace TutorBits.AccountAccess
                 Owner = user.Name,
                 Email = user.Email,
                 NickName = !string.IsNullOrWhiteSpace(nickName) ? nickName : "",
-                AcceptOffers = false
+                AcceptOffers = false,
+                Status = BaseState.Active
             };
 
-            return await dbService_.CreateBaseModel(account); ;
+            return await dbService_.CreateBaseModel(account);
+        }
+
+        public async Task<Account> UpdateNickName(Account account, string nickName)
+        {
+            if (account == null)
+            {
+                throw new Exception("Account not found");
+            }
+
+            account.NickName = nickName;
+            if ((await dbService_.GetAllBaseModel((Expression<Func<Account, Boolean>>)(m => m.NickName == nickName && m.Status != BaseState.Deleted))).Any())
+            {
+                throw new Exception("Account name already taken");
+            }
+
+            await dbService_.UpdateBaseModel(account);
+            return account;
         }
     }
 }
