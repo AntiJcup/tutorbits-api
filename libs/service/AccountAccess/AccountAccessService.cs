@@ -45,7 +45,7 @@ namespace TutorBits.AccountAccess
             {
                 Owner = user.Name,
                 Email = user.Email,
-                NickName = !string.IsNullOrWhiteSpace(nickName) ? nickName : "",
+                NickName = !string.IsNullOrWhiteSpace(nickName) ? nickName : $"TBit_{Guid.NewGuid().GetHashCode().ToString()}",
                 AcceptOffers = false,
                 Status = BaseState.Active
             };
