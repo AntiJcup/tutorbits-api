@@ -25,9 +25,25 @@ namespace api.Controllers
             }
         }
 
+        protected bool IsExternalLogin
+        {
+            get
+            {
+                if (!useAWS || string.IsNullOrWhiteSpace(googleUserGroup_))
+                {
+                    return false;
+                }
+
+                //TODO Other external logins need to be checked here when added
+                return this.User.HasClaim(c => c.Type == "cognito:groups" && (c.Value == googleUserGroup_));
+            }
+        }
+
         protected readonly IConfiguration configuration_;
         protected readonly bool useAWS;
         protected readonly bool localAdmin;
+
+        private readonly string googleUserGroup_;
 
         public TutorBitsController(IConfiguration configuration)
         {
@@ -37,6 +53,9 @@ namespace api.Controllers
 
             localAdmin = configuration_.GetSection(Constants.Configuration.Sections.SettingsKey)
                         .GetValue<bool>(Constants.Configuration.Sections.Settings.LocalAdminKey, false);
+
+            googleUserGroup_ = configuration_.GetSection(Constants.Configuration.Sections.SettingsKey)
+                        .GetValue<string>(Constants.Configuration.Sections.Settings.GoogleExternalGroupNameKey);
         }
 
         protected bool IsAdmin()

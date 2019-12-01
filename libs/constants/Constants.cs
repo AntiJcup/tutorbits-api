@@ -31,6 +31,8 @@ public static class Constants
                 public static readonly string LocalAdminKey = "LocalAdmin";
 
                 public static readonly string FinalizeProjectLambdaNameKey = "FinalizeProjectLambdaName";
+
+                public static readonly string GoogleExternalGroupNameKey = "GoogleExternalGroupName";
             }
 
             public static class Paths
