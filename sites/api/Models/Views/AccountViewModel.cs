@@ -1,5 +1,4 @@
 using System;
-using System.ComponentModel.DataAnnotations;
 using TutorBits.Models.Common;
 
 namespace api.Models.Views
