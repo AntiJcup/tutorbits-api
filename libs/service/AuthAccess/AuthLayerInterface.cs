@@ -8,6 +8,6 @@ namespace TutorBits.AuthAccess
 {
     public interface AuthLayerInterface
     {
-        Task<User> GetUser(string userName);
+        Task<User> GetUser(string accountToken);
     }
 }

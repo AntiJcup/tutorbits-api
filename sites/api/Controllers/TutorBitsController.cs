@@ -39,6 +39,32 @@ namespace api.Controllers
             }
         }
 
+        protected string AccessToken
+        {
+            get
+            {
+                if (!Request.Headers.ContainsKey("Authorization"))
+                {
+                    return null;
+                }
+
+                var authorizationHeaderValues = Request.Headers["Authorization"];
+                if (!authorizationHeaderValues.Any())
+                {
+                    return null;
+                }
+
+                var authorizationHeader = authorizationHeaderValues.FirstOrDefault();
+                if (string.IsNullOrWhiteSpace(authorizationHeader))
+                {
+                    return null;
+                }
+
+                var accessToken = authorizationHeader.Split(' ').Skip(1).FirstOrDefault();
+                return accessToken;
+            }
+        }
+
         protected readonly IConfiguration configuration_;
         protected readonly bool useAWS;
         protected readonly bool localAdmin;

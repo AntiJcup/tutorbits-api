@@ -34,16 +34,7 @@ namespace tutorbits_api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCurrentUser()
         {
-            var user = await authService_.GetUser(UserName);
-
-            return new JsonResult(user);
-        }
-
-        [Authorize(Policy = "IsAdmin")]
-        [HttpGet]
-        public async Task<IActionResult> GetOtherUser([FromQuery] string userName)
-        {
-            var user = await authService_.GetUser(userName);
+            var user = await authService_.GetUser(AccessToken);
 
             return new JsonResult(user);
         }

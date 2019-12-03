@@ -23,7 +23,7 @@ namespace LocalAuth
             configuration_ = config;
         }
 
-        public async Task<User> GetUser(string userName)
+        public async Task<User> GetUser(string accessToken)
         {
             return new User()
             {

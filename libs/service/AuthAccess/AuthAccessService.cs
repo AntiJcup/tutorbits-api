@@ -13,9 +13,9 @@ namespace TutorBits.AuthAccess
             authLayer_ = authLayer;
         }
 
-        public async Task<User> GetUser(string userName)
+        public async Task<User> GetUser(string accountToken)
         {
-            return await authLayer_.GetUser(userName);
+            return await authLayer_.GetUser(accountToken);
         }
     }
 }

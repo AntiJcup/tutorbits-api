@@ -44,7 +44,7 @@ namespace tutorbits_api.Controllers
             if (account == null) //If user didnt exist before this create an account
             {
                 //Use user name for nick name when it isn't an external login
-                account = await accountAccessService_.CreateAccount(await authService_.GetUser(UserName), this.IsExternalLogin ? null : UserName);
+                account = await accountAccessService_.CreateAccount(await authService_.GetUser(AccessToken), this.IsExternalLogin ? null : UserName);
 
                 if (account == null)
                 {

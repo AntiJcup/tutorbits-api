@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Amazon.CognitoIdentityProvider;
 using Amazon.Extensions.CognitoAuthentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,16 +23,21 @@ namespace TutorBits.Auth.AWSAuth
     {
         private readonly CognitoUserPool userPool_;
         private readonly IConfiguration configuration_;
-        public AWSAuthAccessLayerInterface(IConfiguration config, CognitoUserPool userPool)
+        private readonly IAmazonCognitoIdentityProvider identity_;
+
+        public AWSAuthAccessLayerInterface(IConfiguration config, CognitoUserPool userPool, IAmazonCognitoIdentityProvider identity)
         {
             configuration_ = config;
             userPool_ = userPool;
+            identity_ = identity;
         }
 
-        public async Task<User> GetUser(string userName)
+        public async Task<User> GetUser(string accessToken)
         {
-            var user = userPool_.GetUser(userName);
-            var userDetails = await user.GetUserDetailsAsync();
+            var userDetails = await identity_.GetUserAsync(new Amazon.CognitoIdentityProvider.Model.GetUserRequest()
+            {
+                AccessToken = accessToken
+            });
 
             return new User()
             {
