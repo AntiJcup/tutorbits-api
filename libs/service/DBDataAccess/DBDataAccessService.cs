@@ -29,14 +29,14 @@ namespace TutorBits.DBDataAccess
 
         public async Task<TModel> GetBaseModel<TModel>(params object[] keys) where TModel : BaseModel, new()
         {
-            return await dataLayer_.Get<TModel>(new List<Expression<Func<TModel, object>>>{
+            return await dataLayer_.Get<TModel, object>(new List<Expression<Func<TModel, object>>>{
                 p => p.OwnerAccount
             }, keys);
         }
 
         public async Task<TModel> GetBaseModel<TModel>(ICollection<object> keys) where TModel : BaseModel, new()
         {
-            return await dataLayer_.Get<TModel>(new List<Expression<Func<TModel, object>>>{
+            return await dataLayer_.Get<TModel, object>(new List<Expression<Func<TModel, object>>>{
                 p => p.OwnerAccount
             }, keys);
         }
