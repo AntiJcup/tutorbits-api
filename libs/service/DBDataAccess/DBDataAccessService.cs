@@ -17,7 +17,9 @@ namespace TutorBits.DBDataAccess
 
         public async Task<ICollection<TModel>> GetAllBaseModel<TModel>(Expression<Func<TModel, Boolean>> where = null, int? skip = null, int? take = null) where TModel : BaseModel, new()
         {
-            return await dataLayer_.GetAll<TModel>(where, skip, take);
+            return await dataLayer_.GetAll<TModel, object>(new List<Expression<Func<TModel, object>>>{
+                p => p.OwnerAccount
+            }, where, skip, take);
         }
 
         public async Task<ICollection<TModel>> GetAllOwnedModel<TModel>(string userName, int? skip = null, int? take = null) where TModel : BaseModel, new()
@@ -27,12 +29,16 @@ namespace TutorBits.DBDataAccess
 
         public async Task<TModel> GetBaseModel<TModel>(params object[] keys) where TModel : BaseModel, new()
         {
-            return await dataLayer_.Get<TModel>(keys);
+            return await dataLayer_.Get<TModel>(new List<Expression<Func<TModel, object>>>{
+                p => p.OwnerAccount
+            }, keys);
         }
 
         public async Task<TModel> GetBaseModel<TModel>(ICollection<object> keys) where TModel : BaseModel, new()
         {
-            return await dataLayer_.Get<TModel>(keys);
+            return await dataLayer_.Get<TModel>(new List<Expression<Func<TModel, object>>>{
+                p => p.OwnerAccount
+            }, keys);
         }
 
         public async Task<TModel> CreateBaseModel<TModel>(TModel model) where TModel : BaseModel, new()

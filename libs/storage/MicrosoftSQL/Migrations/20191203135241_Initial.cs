@@ -17,6 +17,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     Notes = table.Column<string>(maxLength: 1028, nullable: true),
                     Status = table.Column<string>(maxLength: 64, nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
+                    OwnerAccountId = table.Column<Guid>(nullable: true),
                     Email = table.Column<string>(maxLength: 1028, nullable: false),
                     NickName = table.Column<string>(maxLength: 256, nullable: false),
                     AcceptOffers = table.Column<bool>(nullable: false)
@@ -24,6 +25,12 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Accounts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Accounts_Accounts_OwnerAccountId",
+                        column: x => x.OwnerAccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -36,6 +43,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     Notes = table.Column<string>(maxLength: 1028, nullable: true),
                     Status = table.Column<string>(maxLength: 64, nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
+                    OwnerAccountId = table.Column<Guid>(nullable: true),
                     Title = table.Column<string>(maxLength: 64, nullable: true),
                     Language = table.Column<string>(maxLength: 64, nullable: true),
                     Description = table.Column<string>(maxLength: 1028, nullable: true),
@@ -44,16 +52,32 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tutorials", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tutorials_Accounts_OwnerAccountId",
+                        column: x => x.OwnerAccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Accounts_OwnerAccountId",
+                table: "Accounts",
+                column: "OwnerAccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Tutorials_OwnerAccountId",
+                table: "Tutorials",
+                column: "OwnerAccountId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Accounts");
+                name: "Tutorials");
 
             migrationBuilder.DropTable(
-                name: "Tutorials");
+                name: "Accounts");
         }
     }
 }

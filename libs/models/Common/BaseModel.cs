@@ -35,5 +35,10 @@ namespace TutorBits.Models.Common
         [MinLength(1)]
         [MaxLength(1028)]
         public string Owner { get; set; }
+
+        [ForeignKey("OwnerAccount")]
+        public Guid? OwnerAccountId { get; set; }
+
+        public virtual Account OwnerAccount { get; set; }
     }
 }

@@ -314,14 +314,14 @@ namespace api.Controllers.Model
             {
                 case Action.Create:
                     model.Owner = UserName;
+                    model.OwnerAccountId = (await accountAccessService_.GetAccount(UserName)).Id;
                     break;
             }
         }
 
         protected virtual async Task EnrichViewModel(TViewModel viewModel, TModel entity)
         {
-            var account = (await accountAccessService_.GetAccount(entity.Owner));
-            viewModel.Owner = account != null ? account.NickName : "Unknown";
+            viewModel.Owner = entity.OwnerAccount == null ? null : entity.OwnerAccount.NickName;
         }
     }
 }

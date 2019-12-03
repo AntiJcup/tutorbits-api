@@ -16,10 +16,12 @@ CREATE TABLE [Accounts] (
     [Notes] nvarchar(1028) NULL,
     [Status] nvarchar(64) NOT NULL,
     [Owner] nvarchar(1028) NULL,
+    [OwnerAccountId] uniqueidentifier NULL,
     [Email] nvarchar(1028) NOT NULL,
     [NickName] nvarchar(256) NOT NULL,
     [AcceptOffers] bit NOT NULL,
-    CONSTRAINT [PK_Accounts] PRIMARY KEY ([Id])
+    CONSTRAINT [PK_Accounts] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Accounts_Accounts_OwnerAccountId] FOREIGN KEY ([OwnerAccountId]) REFERENCES [Accounts] ([Id]) ON DELETE NO ACTION
 );
 
 GO
@@ -31,17 +33,27 @@ CREATE TABLE [Tutorials] (
     [Notes] nvarchar(1028) NULL,
     [Status] nvarchar(64) NOT NULL,
     [Owner] nvarchar(1028) NULL,
+    [OwnerAccountId] uniqueidentifier NULL,
     [Title] nvarchar(64) NULL,
     [Language] nvarchar(64) NULL,
     [Description] nvarchar(1028) NULL,
     [DurationMS] decimal(20,0) NOT NULL,
-    CONSTRAINT [PK_Tutorials] PRIMARY KEY ([Id])
+    CONSTRAINT [PK_Tutorials] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Tutorials_Accounts_OwnerAccountId] FOREIGN KEY ([OwnerAccountId]) REFERENCES [Accounts] ([Id]) ON DELETE NO ACTION
 );
 
 GO
 
+CREATE INDEX [IX_Accounts_OwnerAccountId] ON [Accounts] ([OwnerAccountId]);
+
+GO
+
+CREATE INDEX [IX_Tutorials_OwnerAccountId] ON [Tutorials] ([OwnerAccountId]);
+
+GO
+
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20191130173815_Initial', N'2.2.6-servicing-10079');
+VALUES (N'20191203135241_Initial', N'2.2.6-servicing-10079');
 
 GO
 

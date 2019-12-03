@@ -10,7 +10,7 @@ using TutorBits.Storage.MicrosoftSQL;
 namespace TutorBits.Storage.MicrosoftSQL.Migrations
 {
     [DbContext(typeof(TutorBitsSQLDbContext))]
-    [Migration("20191130173815_Initial")]
+    [Migration("20191203135241_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,11 +50,15 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     b.Property<string>("Owner")
                         .HasMaxLength(1028);
 
+                    b.Property<Guid?>("OwnerAccountId");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(64);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OwnerAccountId");
 
                     b.ToTable("Accounts");
                 });
@@ -87,6 +91,8 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     b.Property<string>("Owner")
                         .HasMaxLength(1028);
 
+                    b.Property<Guid?>("OwnerAccountId");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(64);
@@ -96,7 +102,23 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OwnerAccountId");
+
                     b.ToTable("Tutorials");
+                });
+
+            modelBuilder.Entity("TutorBits.Models.Common.Account", b =>
+                {
+                    b.HasOne("TutorBits.Models.Common.Account", "OwnerAccount")
+                        .WithMany()
+                        .HasForeignKey("OwnerAccountId");
+                });
+
+            modelBuilder.Entity("TutorBits.Models.Common.Tutorial", b =>
+                {
+                    b.HasOne("TutorBits.Models.Common.Account", "OwnerAccount")
+                        .WithMany()
+                        .HasForeignKey("OwnerAccountId");
                 });
 #pragma warning restore 612, 618
         }

@@ -115,6 +115,19 @@ namespace TutorBits
                     return await query.Where(GetKeyLambda<T>(keys)).FirstOrDefaultAsync();
                 }
 
+                public async Task<T> Get<T, TProperty>(ICollection<Expression<Func<T, TProperty>>> includes, ICollection<object> keys) where T : class, new()
+                {
+                    var dbSet = dbContext_.Set<T>();
+                    var query = dbSet.AsNoTracking();
+
+                    foreach (var include in includes)
+                    {
+                        query = dbSet.Include(include);
+                    }
+
+                    return await query.Where(GetKeyLambda<T>(keys.ToArray())).FirstOrDefaultAsync();
+                }
+
                 public async Task<ICollection<T>> GetAll<T>(Expression<Func<T, bool>> where = null, int? skip = null, int? take = null) where T : class, new()
                 {
                     var dbSet = dbContext_.Set<T>();
@@ -163,7 +176,7 @@ namespace TutorBits
                         query = query.Take(take.Value);
                     }
 
-                    return await dbSet.ToListAsync();
+                    return await query.ToListAsync();
                 }
 
                 public async Task Update<T>(T entity) where T : class, new()
