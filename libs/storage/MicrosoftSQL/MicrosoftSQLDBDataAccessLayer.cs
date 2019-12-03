@@ -92,14 +92,14 @@ namespace TutorBits
                     var dbSet = dbContext_.Set<T>();
                     var query = dbSet.AsNoTracking();
 
-                    return await query.Where(GetKeyLambda<T>(keys)).FirstOrDefaultAsync();
+                    return await query.Where(GetKeyLambda<T>(keys)).AsNoTracking().FirstOrDefaultAsync();
                 }
 
                 public async Task<T> Get<T>(ICollection<object> keys) where T : class, new()
                 {
                     var dbSet = dbContext_.Set<T>();
                     var query = dbSet.AsNoTracking();
-                    return await query.Where(GetKeyLambda<T>(keys.ToArray())).FirstOrDefaultAsync();
+                    return await query.Where(GetKeyLambda<T>(keys.ToArray())).AsNoTracking().FirstOrDefaultAsync();
                 }
 
                 public async Task<T> Get<T, TProperty>(ICollection<Expression<Func<T, TProperty>>> includes, params object[] keys) where T : class, new()
@@ -112,7 +112,7 @@ namespace TutorBits
                         query = dbSet.Include(include);
                     }
 
-                    return await query.Where(GetKeyLambda<T>(keys)).FirstOrDefaultAsync();
+                    return await query.Where(GetKeyLambda<T>(keys)).AsNoTracking().FirstOrDefaultAsync();
                 }
 
                 public async Task<T> Get<T, TProperty>(ICollection<Expression<Func<T, TProperty>>> includes, ICollection<object> keys) where T : class, new()
@@ -125,7 +125,7 @@ namespace TutorBits
                         query = dbSet.Include(include);
                     }
 
-                    return await query.Where(GetKeyLambda<T>(keys.ToArray())).FirstOrDefaultAsync();
+                    return await query.Where(GetKeyLambda<T>(keys.ToArray())).AsNoTracking().FirstOrDefaultAsync();
                 }
 
                 public async Task<ICollection<T>> GetAll<T>(Expression<Func<T, bool>> where = null, int? skip = null, int? take = null) where T : class, new()
@@ -148,7 +148,7 @@ namespace TutorBits
                         query = query.Take(take.Value);
                     }
 
-                    return await query.ToListAsync();
+                    return await query.AsNoTracking().ToListAsync();
                 }
 
                 public async Task<ICollection<T>> GetAll<T, TProperty>(ICollection<Expression<Func<T, TProperty>>> includes, Expression<Func<T, bool>> where = null, int? skip = null, int? take = null) where T : class, new()
@@ -176,7 +176,7 @@ namespace TutorBits
                         query = query.Take(take.Value);
                     }
 
-                    return await query.ToListAsync();
+                    return await query.AsNoTracking().ToListAsync();
                 }
 
                 public async Task Update<T>(T entity) where T : class, new()
