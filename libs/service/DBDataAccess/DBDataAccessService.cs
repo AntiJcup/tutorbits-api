@@ -53,12 +53,18 @@ namespace TutorBits.DBDataAccess
 
         public async Task DeleteBaseModel<TModel>(TModel model) where TModel : BaseModel, new()
         {
-            await dataLayer_.Delete(model);
+            model.Status = BaseState.Deleted;
+            await dataLayer_.Update(model);
         }
 
         public async Task DeleteBaseModel<TModel>(params object[] keys) where TModel : BaseModel, new()
         {
-            await dataLayer_.Delete<TModel>(keys);
+            var model = await dataLayer_.Get<TModel>(keys);
+            if (model == null)
+            {
+                throw new Exception("Model doesnt exist");
+            }
+            await DeleteBaseModel(model);
         }
     }
 }
