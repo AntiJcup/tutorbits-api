@@ -37,13 +37,23 @@ namespace TutorBits
                     //Setup default values for base class while maintaining individual tables
                     //modelBuilder.Entity(typeof(Base)).Property("Status").HasConversion(converter); 
                     //Creates the base table ignoring other tables including attr and totable
-                    var converter = new EnumToStringConverter<BaseState>();
+                    var baseStateConverter = new EnumToStringConverter<BaseState>();
+                    var tutorialTypeConverter = new EnumToStringConverter<TutorialType>();
                     foreach (var publicPropertieBaseType in publicPropertieBaseTypes)
                     {
+                        if (publicPropertieBaseType.GetProperties().Any(p => p.Name == "TutorialType"))
+                        {
+                            modelBuilder.Entity(publicPropertieBaseType)
+                                                    .Property("TutorialType")
+                                                    .HasConversion(tutorialTypeConverter)
+                                                    .HasMaxLength(64);
+                        }
+
                         modelBuilder.Entity(publicPropertieBaseType)
                                                 .Property("Status")
-                                                .HasConversion(converter)
+                                                .HasConversion(baseStateConverter)
                                                 .HasMaxLength(64);
+
                         modelBuilder.Entity(publicPropertieBaseType, c =>
                         {
                             c.Property("DateCreated").HasDefaultValueSql("GETUTCDATE()").ValueGeneratedOnAdd();

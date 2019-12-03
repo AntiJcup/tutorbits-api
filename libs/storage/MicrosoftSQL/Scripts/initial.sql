@@ -35,7 +35,7 @@ CREATE TABLE [Tutorials] (
     [Owner] nvarchar(1028) NULL,
     [OwnerAccountId] uniqueidentifier NULL,
     [Title] nvarchar(64) NULL,
-    [Language] nvarchar(64) NULL,
+    [TutorialType] nvarchar(64) NOT NULL,
     [Description] nvarchar(1028) NULL,
     [DurationMS] decimal(20,0) NOT NULL,
     CONSTRAINT [PK_Tutorials] PRIMARY KEY ([Id]),
@@ -53,7 +53,7 @@ CREATE INDEX [IX_Tutorials_OwnerAccountId] ON [Tutorials] ([OwnerAccountId]);
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20191203135241_Initial', N'2.2.6-servicing-10079');
+VALUES (N'20191203165949_Initial', N'2.2.6-servicing-10079');
 
 GO
 

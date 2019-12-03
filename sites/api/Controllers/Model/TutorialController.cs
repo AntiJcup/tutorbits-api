@@ -73,6 +73,12 @@ namespace api.Controllers.Model
             return Ok();
         }
 
+        [HttpGet]
+        public IActionResult GetTutorialTypes()
+        {
+            return new JsonResult(Enum.GetNames(typeof(TutorialType)));
+        }
+
         protected override async Task EnrichViewModel(TutorialViewModel viewModel, Tutorial entity)
         {
             await base.EnrichViewModel(viewModel, entity);

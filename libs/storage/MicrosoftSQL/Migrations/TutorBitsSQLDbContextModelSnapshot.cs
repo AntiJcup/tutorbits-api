@@ -80,9 +80,6 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     b.Property<decimal>("DurationMS")
                         .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
 
-                    b.Property<string>("Language")
-                        .HasMaxLength(64);
-
                     b.Property<string>("Notes")
                         .HasMaxLength(1028);
 
@@ -96,6 +93,10 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         .HasMaxLength(64);
 
                     b.Property<string>("Title")
+                        .HasMaxLength(64);
+
+                    b.Property<string>("TutorialType")
+                        .IsRequired()
                         .HasMaxLength(64);
 
                     b.HasKey("Id");

@@ -45,7 +45,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
                     Title = table.Column<string>(maxLength: 64, nullable: true),
-                    Language = table.Column<string>(maxLength: 64, nullable: true),
+                    TutorialType = table.Column<string>(maxLength: 64, nullable: false),
                     Description = table.Column<string>(maxLength: 1028, nullable: true),
                     DurationMS = table.Column<decimal>(nullable: false)
                 },

@@ -9,16 +9,14 @@ namespace api.Models.Requests
     public class CreateUpdateTutorialModel : BaseConvertableModel<Tutorial>
     {
         public string Id { get; set; }
-        
+
         [MinLength(4)]
         [MaxLength(64)]
         [Required]
         public string Title { get; set; }
 
-        [MinLength(1)]
-        [MaxLength(64)]
         [Required]
-        public string Language { get; set; }
+        public TutorialType Type { get; set; }
 
         public string Description { get; set; }
 
@@ -27,7 +25,7 @@ namespace api.Models.Requests
             return new Tutorial()
             {
                 Title = Title,
-                Language = Language,
+                TutorialType = Type,
                 Description = Description
             };
         }
