@@ -194,8 +194,8 @@
     "requiresCompatibilities": [
         "FARGATE"
     ],
-    "cpu": "",
-    "memory": "",
+    "cpu": "1024",
+    "memory": "4096",
     "tags": [
         {
             "key": "",
