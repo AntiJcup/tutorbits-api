@@ -20,3 +20,6 @@ Setup:
 
 CloudFront:
 1. www needs error page forwarding to index.html (400 and 403)
+
+
+Docker:

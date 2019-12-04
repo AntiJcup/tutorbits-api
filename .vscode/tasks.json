@@ -9,7 +9,7 @@
                 "--proto_path=${workspaceFolder}/shared/Tracer/proto",
                 "--csharp_opt=file_extension=.g.cs",
                 "--csharp_out=${workspaceFolder}/shared/Tracer/models/cs",
-                "Tracer.proto",
+                "Tracer.proto"
             ]
         },
         {
@@ -21,7 +21,7 @@
                 "--proto_path=${workspaceFolder}/shared/Tracer/proto",
                 "--js_out=import_style=commonjs,binary:${workspaceFolder}/shared/Tracer/models/ts",
                 "--ts_out=${workspaceFolder}/shared/Tracer/models/ts",
-                "Tracer.proto",
+                "Tracer.proto"
             ]
         },
         {
@@ -112,6 +112,60 @@
             "problemMatcher": [],
             "options": {
                 "cwd": "${workspaceFolder}/libs/storage/MicrosoftSQL"
+            }
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: debug",
+            "dependsOn": [
+                "build"
+            ],
+            "dockerBuild": {
+                "tag": "tutorbitsapi:dev",
+                "target": "base",
+                "dockerfile": "${workspaceFolder}/Dockerfile",
+                "context": "${workspaceFolder}"
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/sites/api/tutorbits-api.csproj"
+            }
+        },
+        {
+            "type": "docker-build",
+            "label": "docker-build: release",
+            "dependsOn": [
+                "build"
+            ],
+            "dockerBuild": {
+                "tag": "tutorbitsapi:latest",
+                "dockerfile": "${workspaceFolder}/Dockerfile",
+                "context": "${workspaceFolder}"
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/sites/api/tutorbits-api.csproj"
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: debug",
+            "dependsOn": [
+                "docker-build: debug"
+            ],
+            "dockerRun": {},
+            "netCore": {
+                "appProject": "${workspaceFolder}/sites/api/tutorbits-api.csproj",
+                "enableDebugging": true
+            }
+        },
+        {
+            "type": "docker-run",
+            "label": "docker-run: release",
+            "dependsOn": [
+                "docker-build: release"
+            ],
+            "dockerRun": {},
+            "netCore": {
+                "appProject": "${workspaceFolder}/sites/api/tutorbits-api.csproj"
             }
         }
     ],

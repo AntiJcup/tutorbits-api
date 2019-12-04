@@ -4,68 +4,72 @@
    // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
    "version": "0.2.0",
    "configurations": [
-        {
-            "name": ".NET Api",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "buildAPI",
-            // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/sites/api/bin/Debug/netcoreapp2.2/tutorbits_api.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/sites/api",
-            "stopAtEntry": false,
-            // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
-            "serverReadyAction": {
-                "action": "openExternally",
-                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"                
-            },
-            "env": {
-                "ASPNETCORE_ENVIRONMENT": "Development",
-                "ASPNETCORE_URLS": "http://api.local.tutorbits.com:5000"
-            },
-            "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
-            }
+    {
+        "name": ".NET Api",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "buildAPI",
+        "program": "${workspaceFolder}/sites/api/bin/Debug/netcoreapp2.2/tutorbits_api.dll",
+        "args": [],
+        "cwd": "${workspaceFolder}/sites/api",
+        "stopAtEntry": false,
+        "serverReadyAction": {
+            "action": "openExternally",
+            "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
         },
-        {
-            "name": "Local AWS .NET Api",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "buildAPI",
-            // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/sites/api/bin/Debug/netcoreapp2.2/tutorbits_api.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/sites/api",
-            "stopAtEntry": false,
-            // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
-            "serverReadyAction": {
-                "action": "openExternally",
-                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"                
-            },
-            "env": {
-                "ASPNETCORE_ENVIRONMENT": "AWSDevelopment",
-                "ASPNETCORE_URLS": "http://api.local.tutorbits.com:5000"
-            },
-            "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
-            }
+        "env": {
+            "ASPNETCORE_ENVIRONMENT": "Development",
+            "ASPNETCORE_URLS": "http://api.local.tutorbits.com:5000"
         },
-        {
-            "name": ".NET CLI",
-            "type": "coreclr",
-            "request": "launch",
-            "preLaunchTask": "buildCLI",
-            // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/cli/LocalTracer/bin/Debug/netcoreapp2.2/LocalTracer.dll",
-            "args": [],
-            "cwd": "${workspaceFolder}/cli/LocalTracer/bin/Debug/netcoreapp2.2",
-            "stopAtEntry": false
-        },
-        {
-            "name": ".NET Core Attach",
-            "type": "coreclr",
-            "request": "attach",
-            "processId": "${command:pickProcess}"
+        "sourceFileMap": {
+            "/Views": "${workspaceFolder}/Views"
         }
-    ]
+    },
+    {
+        "name": "Local AWS .NET Api",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "buildAPI",
+        "program": "${workspaceFolder}/sites/api/bin/Debug/netcoreapp2.2/tutorbits_api.dll",
+        "args": [],
+        "cwd": "${workspaceFolder}/sites/api",
+        "stopAtEntry": false,
+        "serverReadyAction": {
+            "action": "openExternally",
+            "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+        },
+        "env": {
+            "ASPNETCORE_ENVIRONMENT": "AWSDevelopment",
+            "ASPNETCORE_URLS": "http://api.local.tutorbits.com:5000"
+        },
+        "sourceFileMap": {
+            "/Views": "${workspaceFolder}/Views"
+        }
+    },
+    {
+        "name": ".NET CLI",
+        "type": "coreclr",
+        "request": "launch",
+        "preLaunchTask": "buildCLI",
+        "program": "${workspaceFolder}/cli/LocalTracer/bin/Debug/netcoreapp2.2/LocalTracer.dll",
+        "args": [],
+        "cwd": "${workspaceFolder}/cli/LocalTracer/bin/Debug/netcoreapp2.2",
+        "stopAtEntry": false
+    },
+    {
+        "name": ".NET Core Attach",
+        "type": "coreclr",
+        "request": "attach",
+        "processId": "${command:pickProcess}"
+    },
+    {
+        "name": "Docker .NET Core Launch",
+        "type": "docker",
+        "request": "launch",
+        "preLaunchTask": "docker-run: debug",
+        "netCore": {
+            "appProject": "${workspaceFolder}/sites/api/tutorbits-api.csproj"
+        }
+    }
+]
 }
