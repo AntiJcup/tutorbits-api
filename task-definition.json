@@ -7,8 +7,7 @@
         {
             "name": "tutorbits-api-container",
             "image": "",
-            "repositoryCredentials": {
-            },
+            "repositoryCredentials": null,
             "cpu": 1024,
             "memory": 4096,
             "memoryReservation": 0,
