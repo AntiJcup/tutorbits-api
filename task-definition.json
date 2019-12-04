@@ -1,5 +1,5 @@
 {
-    "family": "",
+    "family": "tutorbits-api-task-definition",
     "taskRoleArn": "ecsTaskExecutionRole",
     "executionRoleArn": "ecsTaskExecutionRole",
     "networkMode": "awsvpc",
