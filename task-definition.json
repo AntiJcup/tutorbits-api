@@ -5,7 +5,7 @@
     "networkMode": "awsvpc",
     "containerDefinitions": [
         {
-            "name": "tutorbits-api-git-container",
+            "name": "tutorbits-api-container",
             "image": "",
             "repositoryCredentials": {
                 "credentialsParameter": ""
