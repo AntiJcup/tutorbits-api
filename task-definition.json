@@ -1,18 +1,10 @@
 {
-    "family": "tutorbits-api-task-definition",
-    "taskRoleArn": "ecsTaskExecutionRole",
-    "executionRoleArn": "ecsTaskExecutionRole",
-    "networkMode": "awsvpc",
+    "taskDefinitionArn": "arn:aws:ecs:us-west-2:518121476465:task-definition/tutorbits-api-task-definition:3",
     "containerDefinitions": [
         {
             "name": "tutorbits-api-container",
             "image": "",
-            "repositoryCredentials": null,
             "cpu": 1024,
-            "memory": 4096,
-            "memoryReservation": 0,
-            "links": [
-            ],
             "portMappings": [
                 {
                     "containerPort": 80,
@@ -26,64 +18,66 @@
                 }
             ],
             "essential": true,
-            "entryPoint": [
-            ],
-            "command": [
-            ],
+            "entryPoint": [],
             "environment": [
             ],
-            "mountPoints": [
-            ],
-            "volumesFrom": [
-            ],
-            "linuxParameters": null,
-            "secrets": [
-            ],
-            "dependsOn": [
-            ],
-            "startTimeout": 0,
-            "stopTimeout": 0,
-            "hostname": "",
-            "user": "",
-            "workingDirectory": "",
-            "disableNetworking": true,
-            "privileged": true,
-            "readonlyRootFilesystem": true,
-            "dnsServers": [
-            ],
-            "dnsSearchDomains": [
-            ],
-            "extraHosts": [
-            ],
-            "dockerSecurityOptions": [
-            ],
-            "interactive": true,
-            "pseudoTerminal": true,
-            "dockerLabels": {
-                "KeyName": ""
-            },
-            "ulimits": [
-            ],
-            "logConfiguration": null,
-            "healthCheck": null,
-            "systemControls": [
-            ],
-            "resourceRequirements": [
-            ]
+            "mountPoints": [],
+            "volumesFrom": [],
+            "startTimeout": 30,
+            "stopTimeout": 10,
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/tutorbits-api-task-definition",
+                    "awslogs-region": "us-west-2",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
         }
     ],
-    "volumes": [
+    "family": "tutorbits-api-task-definition",
+    "taskRoleArn": "arn:aws:iam::518121476465:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::518121476465:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "revision": 3,
+    "volumes": [],
+    "requiresAttributes": [
+        {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
+        },
+        {
+            "name": "ecs.capability.container-ordering"
+        },
+        {
+            "name": "ecs.capability.execution-role-ecr-pull"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+        },
+        {
+            "name": "ecs.capability.task-eni"
+        }
     ],
-    "placementConstraints": [
+    "placementConstraints": [],
+    "compatibilities": [
+        "EC2",
+        "FARGATE"
     ],
     "requiresCompatibilities": [
         "FARGATE"
     ],
     "cpu": "1024",
-    "memory": "4096",
-    "tags": [
-    ],
-    "pidMode": "task",
-    "ipcMode": "host",
-    "proxyConfiguration": null
+    "memory": "4096"
 }
