@@ -18,9 +18,32 @@
             ],
             "essential": true,
             "entryPoint": [],
-            "environment": null,
+            "environment": [
+                {
+                    "name": "ASPNETCORE_ENVIRONMENT",
+                    "value": "AWSStaging"
+                }
+            ],
             "mountPoints": [],
             "volumesFrom": [],
+            "secrets": [
+                {
+                    "name": "COGNITO_USER_POOL_CLIENT_SECRET",
+                    "valueFrom": "alias/aws/ssm"
+                },
+                {
+                    "name": "GOOGLE_OATH_KEY",
+                    "valueFrom": "alias/aws/ssm"
+                },
+                {
+                    "name": "SQL_PWD",
+                    "valueFrom": "alias/aws/ssm"
+                },
+                {
+                    "name": "SQL_UID",
+                    "valueFrom": "alias/aws/ssm"
+                }
+            ],
             "startTimeout": 30,
             "stopTimeout": 10,
             "logConfiguration": {
