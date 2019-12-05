@@ -29,19 +29,19 @@
             "secrets": [
                 {
                     "name": "COGNITO_USER_POOL_CLIENT_SECRET",
-                    "valueFrom": "alias/aws/ssm"
+                    "valueFrom": "arn:aws:ssm:us-west-2:518121476465:parameter/COGNITO_USER_POOL_CLIENT_SECRET"
                 },
                 {
                     "name": "GOOGLE_OATH_KEY",
-                    "valueFrom": "alias/aws/ssm"
+                    "valueFrom": "arn:aws:ssm:us-west-2:518121476465:parameter/GOOGLE_OATH_KEY"
                 },
                 {
                     "name": "SQL_PWD",
-                    "valueFrom": "alias/aws/ssm"
+                    "valueFrom": "arn:aws:ssm:us-west-2:518121476465:parameter/SQL_PWD"
                 },
                 {
                     "name": "SQL_UID",
-                    "valueFrom": "alias/aws/ssm"
+                    "valueFrom": "arn:aws:ssm:us-west-2:518121476465:parameter/SQL_UID"
                 }
             ],
             "startTimeout": 30,
