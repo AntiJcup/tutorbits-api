@@ -92,6 +92,7 @@ namespace tutorbits_api
             var connectionString = Configuration.GetConnectionString("DefaultConnection");
             connectionString = connectionString.Replace("<UID>", Environment.GetEnvironmentVariable("SQL_UID"));
             connectionString = connectionString.Replace("<PWD>", Environment.GetEnvironmentVariable("SQL_PWD"));
+            Console.WriteLine($"connectionString: {connectionString}");
             services.AddDbContext<TutorBitsSQLDbContext>(item => item.UseSqlServer(
                 connectionString,
                 b => b.MigrationsAssembly("MicrosoftSQL"))
