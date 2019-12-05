@@ -18,8 +18,7 @@
             ],
             "essential": true,
             "entryPoint": [],
-            "environment": [
-            ],
+            "environment": null,
             "mountPoints": [],
             "volumesFrom": [],
             "startTimeout": 30,
