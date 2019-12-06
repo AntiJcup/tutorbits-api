@@ -1,0 +1,70 @@
+{
+    "containerDefinitions": [
+        {
+            "name": "prod-tutorbits-api-container",
+            "image": "",
+            "cpu": 1024,
+            "portMappings": [
+                {
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp"
+                },
+                {
+                    "containerPort": 443,
+                    "hostPort": 443,
+                    "protocol": "tcp"
+                }
+            ],
+            "essential": true,
+            "entryPoint": [],
+            "environment": [
+                {
+                    "name": "ASPNETCORE_ENVIRONMENT",
+                    "value": "AWSProduction"
+                }
+            ],
+            "mountPoints": [],
+            "volumesFrom": [],
+            "secrets": [
+                {
+                    "name": "COGNITO_USER_POOL_CLIENT_SECRET",
+                    "valueFrom": "arn:aws:ssm:us-west-2:518121476465:parameter/COGNITO_USER_POOL_CLIENT_SECRET"
+                },
+                {
+                    "name": "GOOGLE_OATH_KEY",
+                    "valueFrom": "arn:aws:ssm:us-west-2:518121476465:parameter/GOOGLE_OATH_KEY"
+                },
+                {
+                    "name": "SQL_PWD",
+                    "valueFrom": "arn:aws:ssm:us-west-2:518121476465:parameter/SQL_PWD"
+                },
+                {
+                    "name": "SQL_UID",
+                    "valueFrom": "arn:aws:ssm:us-west-2:518121476465:parameter/SQL_UID"
+                }
+            ],
+            "startTimeout": 30,
+            "stopTimeout": 10,
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/prod-tutorbits-api-task-definition",
+                    "awslogs-region": "us-west-2",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
+        }
+    ],
+    "family": "prod-tutorbits-api-task-definition",
+    "taskRoleArn": "arn:aws:iam::518121476465:role/ecsTaskExecutionRole",
+    "executionRoleArn": "arn:aws:iam::518121476465:role/ecsTaskExecutionRole",
+    "networkMode": "awsvpc",
+    "volumes": [],
+    "placementConstraints": [],
+    "requiresCompatibilities": [
+        "FARGATE"
+    ],
+    "cpu": "1024",
+    "memory": "4096"
+}
