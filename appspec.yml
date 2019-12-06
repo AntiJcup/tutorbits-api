@@ -1,0 +1,10 @@
+version: 0.0
+Resources:
+  - TargetService:
+      Type: AWS::ECS::Service
+      Properties:
+        TaskDefinition: ""
+        LoadBalancerInfo:
+          ContainerName: "prod-tutorbits-api-container"
+          ContainerPort: 80
+Hooks:
