@@ -37,11 +37,11 @@
                 },
                 {
                     "name": "SQL_PWD",
-                    "valueFrom": "arn:aws:ssm:us-west-2:518121476465:parameter/SQL_PWD"
+                    "valueFrom": "arn:aws:ssm:us-west-2:518121476465:parameter/PROD-SQL_PWD"
                 },
                 {
                     "name": "SQL_UID",
-                    "valueFrom": "arn:aws:ssm:us-west-2:518121476465:parameter/SQL_UID"
+                    "valueFrom": "arn:aws:ssm:us-west-2:518121476465:parameter/PROD-SQL_UID"
                 }
             ],
             "startTimeout": 30,
