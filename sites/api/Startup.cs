@@ -1,23 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
-using Swashbuckle.AspNetCore.SwaggerGen;
-using Microsoft.OpenApi.Models;
 using TutorBits.Storage.MicrosoftSQL;
 using Microsoft.EntityFrameworkCore;
-using GenericServices.Setup;
 using TutorBits.WindowsFileSystem;
-using Microsoft.EntityFrameworkCore.Migrations;
 using TutorBits.Lambda.Local;
 using Amazon.S3;
 using Amazon.Lambda;
@@ -29,9 +21,6 @@ using Amazon.Extensions.CognitoAuthentication;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authorization;
 using AWS.Auth;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Amazon.AspNetCore.Identity.Cognito;
 using TutorBits.Auth.AWSAuth;
 using LocalAuth;
 using TutorBits.AccountAccess;
@@ -85,7 +74,11 @@ namespace tutorbits_api
                 options.AddPolicy("tutorbits",
                     builder =>
                     {
-                        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                        builder.WithOrigins(new string[] {
+                            "https://local.tutorbits.com",
+                            "https://www-staging.tutorbits.com",
+                            "https://www.tutorbits.com",
+                        }).AllowAnyHeader().AllowAnyMethod();
                     });
             });
 
@@ -111,7 +104,6 @@ namespace tutorbits_api
                 services.AddAWSService<IAmazonElasticTranscoder>();
                 services.AddS3FileDataAccessLayer();
                 services.AddAWSLambdaAccessLayer();
-
 
                 // The following 3 variables are null
                 var userPoolId = Configuration.GetSection(Constants.Configuration.Sections.SettingsKey)
