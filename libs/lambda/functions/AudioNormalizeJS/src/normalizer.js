@@ -228,7 +228,7 @@ var CommandFactory = /** @class */ (function () {
         else {
             command += " ";
         }
-        command += "-ar 48k -y ";
+        command += "-ar 48k -bufsize 1000m -threads 8 -y ";
         command += "\"" + output + "\"";
         return new Command({
             text: command,
@@ -246,14 +246,14 @@ var CommandFactory = /** @class */ (function () {
         });
     };
     CommandFactory.addPadding = function (input, output) {
-        var command = "/opt/bin/ffmpeg" + " -hide_banner -i \"" + input + "\" -af apad,atrim=0:3 -y \"" + output + "\"";
+        var command = "/opt/bin/ffmpeg" + " -hide_banner -i \"" + input + "\" -af apad,atrim=0:3 -bufsize 1000m -threads 8 -y \"" + output + "\"";
         return new Command({
             text: command,
             processAfter: function () { }
         });
     };
     CommandFactory.removePadding = function (input, output, duration, temporaryFile) {
-        var command = "/opt/bin/ffmpeg" + " -hide_banner -i \"" + input + "\" -af apad,atrim=0:" + duration + " -y \"" + output + "\"";
+        var command = "/opt/bin/ffmpeg" + " -hide_banner -i \"" + input + "\" -af apad,atrim=0:" + duration + " -bufsize 1000m -threads 8 -y \"" + output + "\"";
         return new Command({
             text: command,
             processAfter: function () {

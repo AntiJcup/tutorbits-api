@@ -50,7 +50,7 @@ namespace WebmToMp4
                 var localWebmFile = Path.ChangeExtension(Path.Combine(tmpDirectory, $"{Path.GetTempFileName()}"), ".webm");
                 var localMp4File = Path.ChangeExtension(Path.Combine(tmpDirectory, $"{Path.GetTempFileName()}"), ".mp4");
 
-                var s3Client = new AmazonS3Client(Amazon.RegionEndpoint.GetBySystemName(inputModel.Endpoint));
+                var s3Client = new AmazonS3Client();
 
                 //Get webm file
                 var webmRequest = new GetObjectRequest()

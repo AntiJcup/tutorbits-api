@@ -38,6 +38,8 @@ namespace TutorBits.Lambda.AWSLambda
         public readonly string TranscoderPipelineId;
         public readonly string FinalizeProjectLambdaName;
 
+        public readonly string NormalizeVideoLambdaName;
+
         private readonly System.TimeSpan MaxWaitForTranscode = new System.TimeSpan(hours: 0, minutes: 5, seconds: 0);
 
         public AWSLambdaLayerInterface(IConfiguration config, IAmazonLambda lambdaClient, IAmazonElasticTranscoder transcoderClient)
@@ -54,9 +56,24 @@ namespace TutorBits.Lambda.AWSLambda
                     .GetValue<string>(Constants.Configuration.Sections.Settings.TranscoderPipelineIdKey);
             FinalizeProjectLambdaName = configuration_.GetSection(Constants.Configuration.Sections.SettingsKey)
                     .GetValue<string>(Constants.Configuration.Sections.Settings.FinalizeProjectLambdaNameKey);
+            NormalizeVideoLambdaName = configuration_.GetSection(Constants.Configuration.Sections.SettingsKey)
+                    .GetValue<string>(Constants.Configuration.Sections.Settings.NormalizeVideoLambdaNameKey);
         }
 
         public async Task ConvertWebmToMp4(string webmPath, string outMp4Path)
+        {
+            WebmToMp4Request payloadModel = new WebmToMp4Request()
+            {
+                BucketName = BucketName,
+                WebmPath = webmPath,
+                Mp4Path = outMp4Path
+            };
+            InvokeRequest request = new InvokeRequest() { FunctionName = NormalizeVideoLambdaName, Payload = JsonConvert.SerializeObject(payloadModel) };
+            var respone = await lambdaClient_.InvokeAsync(request);
+        }
+
+        //Deprecated method since I couldnt normalize the audio.
+        public async Task ConvertWebmToMp4Transcoder(string webmPath, string outMp4Path)
         {
             //Tried lambda here but the lambda environment corrupts the video when using ffmpeg.
             var createJobRequest = new CreateJobRequest()

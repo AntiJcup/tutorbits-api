@@ -30,12 +30,12 @@ namespace TutorBits.Lambda.Local
 
         public async Task ConvertWebmToMp4(string webmPath, string outMp4Path)
         {
-            var process = new Process();
-            process.StartInfo.WorkingDirectory = workingDirectory;
-            process.StartInfo.FileName = Path.Combine(workingDirectory, ffmpegPath);
-            process.StartInfo.Arguments = $"-y -i \"{webmPath}\" -crf 26 \"{outMp4Path}\"";
-            process.Start();
-            await process.WaitForExitAsync();
+            var convertProcess = new Process();
+            convertProcess.StartInfo.WorkingDirectory = workingDirectory;
+            convertProcess.StartInfo.FileName = Path.Combine(workingDirectory, ffmpegPath);
+            convertProcess.StartInfo.Arguments = $"-loglevel error -y -i \"{webmPath}\" -vcodec libx264 -vprofile high -preset ultrafast -b:v 500k -maxrate 500k -bufsize 3000m -vf scale=-1:480 -codec:a aac -strict experimental -b:a 128k -af highpass=200, lowpass=1500, loudnorm=I=-35:TP=-1.5:LRA=20 \"{outMp4Path}\"";
+            convertProcess.Start();
+            await convertProcess.WaitForExitAsync();
         }
 
         public async Task SaveCompletedPreview(Guid projectId)
