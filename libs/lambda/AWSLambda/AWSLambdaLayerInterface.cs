@@ -40,6 +40,8 @@ namespace TutorBits.Lambda.AWSLambda
 
         public readonly string NormalizeVideoLambdaName;
 
+        public readonly string HealthCheckLambdaName;
+
         private readonly System.TimeSpan MaxWaitForTranscode = new System.TimeSpan(hours: 0, minutes: 5, seconds: 0);
 
         public AWSLambdaLayerInterface(IConfiguration config, IAmazonLambda lambdaClient, IAmazonElasticTranscoder transcoderClient)
@@ -58,9 +60,11 @@ namespace TutorBits.Lambda.AWSLambda
                     .GetValue<string>(Constants.Configuration.Sections.Settings.FinalizeProjectLambdaNameKey);
             NormalizeVideoLambdaName = configuration_.GetSection(Constants.Configuration.Sections.SettingsKey)
                     .GetValue<string>(Constants.Configuration.Sections.Settings.NormalizeVideoLambdaNameKey);
+            HealthCheckLambdaName = configuration_.GetSection(Constants.Configuration.Sections.SettingsKey)
+                    .GetValue<string>(Constants.Configuration.Sections.Settings.HealthCheckLambdaNameKey);
         }
 
-        public async Task ConvertWebmToMp4(string webmPath, string outMp4Path)
+        public async Task<bool> ConvertWebmToMp4(string webmPath, string outMp4Path)
         {
             WebmToMp4Request payloadModel = new WebmToMp4Request()
             {
@@ -69,7 +73,9 @@ namespace TutorBits.Lambda.AWSLambda
                 Mp4Path = outMp4Path
             };
             InvokeRequest request = new InvokeRequest() { FunctionName = NormalizeVideoLambdaName, Payload = JsonConvert.SerializeObject(payloadModel) };
-            var respone = await lambdaClient_.InvokeAsync(request);
+            var response = await lambdaClient_.InvokeAsync(request);
+            Console.WriteLine(response.FunctionError);
+            return string.IsNullOrWhiteSpace(response.FunctionError);
         }
 
         //Deprecated method since I couldnt normalize the audio.
@@ -125,6 +131,14 @@ namespace TutorBits.Lambda.AWSLambda
         {
             InvokeRequest request = new InvokeRequest() { FunctionName = FinalizeProjectLambdaName };
             await lambdaClient_.InvokeAsync(request);
+        }
+
+        public async Task<bool> HealthCheck()
+        {
+            InvokeRequest request = new InvokeRequest() { FunctionName = HealthCheckLambdaName };
+            var response = await lambdaClient_.InvokeAsync(request);
+            Console.WriteLine(response.FunctionError);
+            return string.IsNullOrWhiteSpace(response.FunctionError);
         }
     }
 }

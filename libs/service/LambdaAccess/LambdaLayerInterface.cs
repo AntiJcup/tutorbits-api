@@ -5,7 +5,8 @@ namespace TutorBits.LambdaAccess
 {
     public interface LambdaLayerInterface
     {
-        Task ConvertWebmToMp4(string webmPath, string outMp4Path);
+        Task<bool> ConvertWebmToMp4(string webmPath, string outMp4Path);
         Task SaveCompletedPreview(Guid projectId);
+        Task<bool> HealthCheck();
     }
 }

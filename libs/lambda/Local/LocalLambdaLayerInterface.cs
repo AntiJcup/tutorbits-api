@@ -28,7 +28,7 @@ namespace TutorBits.Lambda.Local
         private static readonly string workingDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         private static readonly string ffmpegPath = "ffmpeg.exe";
 
-        public async Task ConvertWebmToMp4(string webmPath, string outMp4Path)
+        public async Task<bool> ConvertWebmToMp4(string webmPath, string outMp4Path)
         {
             var convertProcess = new Process();
             convertProcess.StartInfo.WorkingDirectory = workingDirectory;
@@ -36,6 +36,8 @@ namespace TutorBits.Lambda.Local
             convertProcess.StartInfo.Arguments = $"-loglevel error -y -i \"{webmPath}\" -vcodec libx264 -vprofile high -preset ultrafast -b:v 500k -maxrate 500k -bufsize 3000m -vf scale=-1:480 -codec:a aac -strict experimental -b:a 128k -af highpass=200, lowpass=1500, loudnorm=I=-35:TP=-1.5:LRA=20 \"{outMp4Path}\"";
             convertProcess.Start();
             await convertProcess.WaitForExitAsync();
+
+            return File.Exists(outMp4Path);
         }
 
         public async Task SaveCompletedPreview(Guid projectId)
@@ -50,6 +52,12 @@ namespace TutorBits.Lambda.Local
             var previewDictionary = await dataLayer.GeneratePreview(project, (int)project.Duration, previewId);
             await dataLayer.PackagePreviewZIP(projectId, previewId);
             await dataLayer.PackagePreviewJSON(projectId, previewDictionary);
+        }
+
+        public async Task<bool> HealthCheck()
+        {
+            //DO nothing we are local
+            return true;
         }
     }
 }

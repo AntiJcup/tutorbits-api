@@ -35,6 +35,8 @@ public static class Constants
                 public static readonly string GoogleExternalGroupNameKey = "GoogleExternalGroupName";
 
                 public static readonly string NormalizeVideoLambdaNameKey = "NormalizeVideoLambdaName";
+
+                public static readonly string HealthCheckLambdaNameKey = "HealthCheckLambdaName";
             }
 
             public static class Paths

@@ -98,7 +98,11 @@ namespace tutorbits_api.Controllers
             try
             {
                 var fullVideoUrl = await fileDataAccessService_.FinishVideoRecording(projectId, recordingId, parts);
-                await lambdaAccessService_.ConvertProjectVideo(projectId);
+                if (!(await lambdaAccessService_.ConvertProjectVideo(projectId)))
+                {
+                    return BadRequest();
+                }
+                
                 return new JsonResult(fullVideoUrl);
             }
             catch (Exception e)
