@@ -233,6 +233,11 @@ namespace TutorBits.FileDataAccess
             {
                 await dataLayer_.DeleteFile(projectFilePath);
             }
+
+            if ((await dataLayer_.DirectoryExists(projectDirectoryPath)))
+            {
+                await dataLayer_.DeleteDirectory(projectDirectoryPath);
+            }
         }
         #endregion
 
