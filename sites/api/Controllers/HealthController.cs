@@ -88,8 +88,7 @@ namespace api.Controllers
             {
                 try
                 {
-                    var tempProject = await fileDataAccessService_.GetProject(projectId);
-                    if (tempProject == null)
+                    if (!(await fileDataAccessService_.DoesProjectExist(projectId)))
                     {
                         break;
                     }

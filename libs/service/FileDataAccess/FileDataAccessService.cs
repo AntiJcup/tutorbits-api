@@ -177,6 +177,12 @@ namespace TutorBits.FileDataAccess
             }
         }
 
+        public async Task<bool> DoesProjectExist(Guid id)
+        {
+            var projectDirectoryPath = GetProjectPath(id.ToString());
+            return await dataLayer_.DirectoryExists(projectDirectoryPath);
+        }
+
         public async Task<TraceProject> GetProject(Guid id)
         {
             var projectDirectoryPath = GetProjectPath(id.ToString());
