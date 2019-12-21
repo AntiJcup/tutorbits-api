@@ -66,6 +66,8 @@ public static class Constants
                 public static readonly string ProjectResourceDirKey = "ProjectResourceDir";
 
                 public static readonly string ProjectResourceFileNameKey = "ProjectResourceFileName";
+
+                public static readonly string ThumbnailsDirKey = "ThumbnailsDir";
             }
 
             public static class Urls

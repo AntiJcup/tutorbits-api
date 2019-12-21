@@ -29,6 +29,7 @@ namespace TutorBits.FileDataAccess
         public readonly string ProjectResourceDir;
         public readonly string ProjectResourceFileName;
         public readonly string TempDirectory;
+        public readonly string ThumbnailsDir;
 
         private readonly FileDataLayerInterface dataLayer_;
 
@@ -74,6 +75,9 @@ namespace TutorBits.FileDataAccess
 
             ProjectResourceFileName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                 .GetValue<string>(Constants.Configuration.Sections.Paths.ProjectResourceFileNameKey);
+
+            ThumbnailsDir = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                .GetValue<string>(Constants.Configuration.Sections.Paths.ThumbnailsDirKey);
 
             TempDirectory = Path.GetTempPath();
         }
@@ -128,6 +132,12 @@ namespace TutorBits.FileDataAccess
         public string GetPreviewPath(string projectId, string previewId)
         {
             return SanitizePath(Path.Combine(PreviewsDir, projectId, previewId));
+        }
+
+        public string GetThumbnailsDirectory(string projectId)
+        {
+            var workingDirectory = GetWorkingDirectory();
+            return SanitizePath(string.IsNullOrWhiteSpace(workingDirectory) ? Path.Combine(ThumbnailsDir, projectId) : Path.Combine(workingDirectory, ThumbnailsDir, projectId));
         }
 
         public string GetThumbnailFilePath(string directory)
@@ -678,10 +688,10 @@ namespace TutorBits.FileDataAccess
         #region Thumbnail
         public async Task CreateTutorialThumbnail(Guid tutorialId, Stream thumbnail)
         {
-            var projectDirectoryPath = GetProjectPath(tutorialId.ToString());
-            var thumbnailFilePath = GetThumbnailFilePath(projectDirectoryPath);
+            var thumbnailsDirectoryPath = GetThumbnailsDirectory(tutorialId.ToString());
+            var thumbnailFilePath = GetThumbnailFilePath(thumbnailsDirectoryPath);
 
-            await dataLayer_.CreateDirectory(projectDirectoryPath);
+            await dataLayer_.CreateDirectory(thumbnailsDirectoryPath);
             await dataLayer_.CreateFile(thumbnailFilePath, thumbnail);
         }
         #endregion
