@@ -562,28 +562,9 @@ namespace TutorBits.FileDataAccess
             await SavePreviewCache(files, previewPath);
         }
 
-        public async Task<ICollection<string>> GetAllFilesRecursive(string parentPath)
-        {
-            var result = new List<string>();
-            var files = await dataLayer_.GetAllFiles(parentPath);
-            foreach (var file in files)
-            {
-                var isDirectory = await dataLayer_.IsDirectory(file);
-                if (isDirectory)
-                {
-                    var childFiles = await GetAllFilesRecursive(file);
-                    result = result.Concat(childFiles).ToList();
-                }
-
-                result.Add(file);
-            }
-
-            return result;
-        }
-
         public async Task PackagePreviewZIP(string previewPath, string outputZipPath)
         {
-            var previewFiles = await GetAllFilesRecursive(previewPath);
+            var previewFiles = await dataLayer_.GetAllFiles(previewPath);
             var tempZipPath = Path.Combine(TempDirectory, Guid.NewGuid().ToString());
 
             using (var outFileStream = File.Create(tempZipPath))

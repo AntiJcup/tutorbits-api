@@ -78,7 +78,7 @@ namespace TutorBits
             public async Task<ICollection<string>> GetAllFiles(string parentPath)
             {
                 parentPath = RootPath(parentPath);
-                return Directory.GetFiles(parentPath).Concat(Directory.GetDirectories(parentPath)).ToArray();
+                return Directory.GetFileSystemEntries(parentPath, "*", SearchOption.AllDirectories);
             }
 
             public async Task<Stream> ReadFile(string path)
