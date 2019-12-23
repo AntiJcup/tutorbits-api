@@ -72,6 +72,8 @@ public static class Constants
                 public static readonly string ThumbnailsDirKey = "ThumbnailsDir";
 
                 public static readonly string TranscodeStateFileNameKey = "TranscodeStateFileName";
+
+                public static readonly string TranscodeOutputBucketKey = "TranscodeOutputBucket";
             }
 
             public static class Urls

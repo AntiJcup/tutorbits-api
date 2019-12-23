@@ -105,7 +105,6 @@ namespace tutorbits_api
                 services.AddAWSService<IAmazonElasticTranscoder>();
                 services.AddS3FileDataAccessLayer();
                 services.AddAWSLambdaAccessLayer();
-                services.AddVideoService();
 
                 // The following 3 variables are null
                 var userPoolId = Configuration.GetSection(Constants.Configuration.Sections.SettingsKey)
@@ -145,6 +144,8 @@ namespace tutorbits_api
                 services.AddLocalLambdaAccessLayer();
                 services.AddLocalAuthAccessLayer();
             }
+
+            services.AddVideoService();
 
             services.AddAuthorization(
                 options => options.AddPolicy("IsAdmin", policy => policy.Requirements.Add(new CognitoGroupAuthorizationRequirement("Admin")))

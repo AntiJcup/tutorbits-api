@@ -24,12 +24,12 @@ namespace TutorBits.Video
 
         private readonly TimeSpan TranscodeTimeout_;
 
-        VideoService(IConfiguration configuration, FileDataAccessService fileDataService, LambdaAccessService lambdaService)
+        public VideoService(IConfiguration configuration, FileDataAccessService fileDataService, LambdaAccessService lambdaService)
         {
             fileDataService_ = fileDataService;
             lambdaService_ = lambdaService;
 
-            TranscodeTimeout_ = TimeSpan.FromSeconds(configuration.GetSection(Constants.Configuration.Sections.PathsKey)
+            TranscodeTimeout_ = TimeSpan.FromSeconds(configuration.GetSection(Constants.Configuration.Sections.SettingsKey)
                 .GetValue<int>(Constants.Configuration.Sections.Paths.ProjectsDirKey));
         }
 
@@ -46,20 +46,24 @@ namespace TutorBits.Video
         {
             var videoDirectory = fileDataService_.GetVideoPath(projectId.ToString());
             var webmPath = fileDataService_.GetVideoFilePath(videoDirectory);
-            var transcodeMp4Path = Path.ChangeExtension(webmPath, ".transcoded_mp4");
             var mp4Path = Path.ChangeExtension(webmPath, ".mp4");
 
-            await CancelTranscoding(projectId); //Cancel if running already
+            try
+            {
+                await CancelTranscoding(projectId); //Cancel if running already
+            }
+            catch (Exception e) { }
 
             await fileDataService_.CreateTranscodingStateFile(projectId, new TranscodingStateFile()
             {
                 ProjectId = projectId,
                 State = TranscodingState.Transcoding,
-                TranscodingOutputPath = transcodeMp4Path,
+                TranscodingOutputPath = mp4Path,
                 NormalizeOutputPath = mp4Path,
                 Start = DateTimeOffset.Now
             });
 
+            await fileDataService_.DeletePreviousTranscode(projectId);
             var transactionJobId = await lambdaService_.ConvertProjectVideoTranscode(webmPath, mp4Path);
 
             return transactionJobId;

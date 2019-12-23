@@ -44,26 +44,26 @@ namespace TutorBits
                     .GetValue<string>(Constants.Configuration.Sections.Paths.BucketKey);
             }
 
-            public async Task CreateDirectory(string path)
+            public async Task CreateDirectory(string path, string bucket = null)
             {
                 var putObjectRequest = new PutObjectRequest();
-                putObjectRequest.BucketName = BucketName;
+                putObjectRequest.BucketName = bucket ?? BucketName;
                 putObjectRequest.Key = path.EndsWith("/") ? path : (path + "/");
 
                 await s3Client_.PutObjectAsync(putObjectRequest);
             }
 
-            public async Task CreateFile(string path, Stream stream)
+            public async Task CreateFile(string path, Stream stream, string bucket = null)
             {
                 var putObjectRequest = new PutObjectRequest();
-                putObjectRequest.BucketName = BucketName;
+                putObjectRequest.BucketName = bucket ?? BucketName;
                 putObjectRequest.Key = path;
                 putObjectRequest.InputStream = stream;
 
                 await s3Client_.PutObjectAsync(putObjectRequest);
             }
 
-            public async Task DeleteDirectory(string path)
+            public async Task DeleteDirectory(string path, string bucket = null)
             {
                 var files = await GetAllFiles(path);
 
@@ -72,7 +72,7 @@ namespace TutorBits
                 {
                     var count = 0;
                     var deleteObjectsRequest = new DeleteObjectsRequest();
-                    deleteObjectsRequest.BucketName = BucketName;
+                    deleteObjectsRequest.BucketName = bucket ?? BucketName;
                     foreach (var file in files.Skip(total))
                     {
                         deleteObjectsRequest.AddKey(file);
@@ -86,26 +86,26 @@ namespace TutorBits
                 }
 
                 var deleteObjectRequest = new DeleteObjectRequest();
-                deleteObjectRequest.BucketName = BucketName;
+                deleteObjectRequest.BucketName = bucket ?? BucketName;
                 deleteObjectRequest.Key = path.EndsWith("/") ? path : (path + "/");
 
                 await s3Client_.DeleteObjectAsync(deleteObjectRequest);
             }
 
-            public async Task DeleteFile(string path)
+            public async Task DeleteFile(string path, string bucket = null)
             {
                 var deleteObjectRequest = new DeleteObjectRequest();
-                deleteObjectRequest.BucketName = BucketName;
+                deleteObjectRequest.BucketName = bucket ?? BucketName;
                 deleteObjectRequest.Key = path;
 
                 await s3Client_.DeleteObjectAsync(deleteObjectRequest);
             }
 
-            public async Task<bool> DirectoryExists(string path)
+            public async Task<bool> DirectoryExists(string path, string bucket = null)
             {
                 var request = new ListObjectsRequest
                 {
-                    BucketName = BucketName,
+                    BucketName = bucket ?? BucketName,
                     Prefix = path,
                     MaxKeys = 1
                 };
@@ -115,11 +115,11 @@ namespace TutorBits
                 return response.S3Objects.Any();
             }
 
-            public async Task<bool> FileExists(string path)
+            public async Task<bool> FileExists(string path, string bucket = null)
             {
                 var request = new ListObjectsRequest
                 {
-                    BucketName = BucketName,
+                    BucketName = bucket ?? BucketName,
                     Prefix = path,
                     MaxKeys = 1
                 };
@@ -129,11 +129,11 @@ namespace TutorBits
                 return response.S3Objects.Any();
             }
 
-            public async Task<ICollection<string>> GetAllFiles(string parentPath)
+            public async Task<ICollection<string>> GetAllFiles(string parentPath, string bucket = null)
             {
                 var request = new ListObjectsRequest
                 {
-                    BucketName = BucketName,
+                    BucketName = bucket ?? BucketName,
                     Prefix = parentPath,
                 };
 
@@ -142,11 +142,11 @@ namespace TutorBits
                 return response.S3Objects.Select(o => o.Key).ToArray();
             }
 
-            public async Task<Stream> ReadFile(string path)
+            public async Task<Stream> ReadFile(string path, string bucket = null)
             {
                 var request = new GetObjectRequest()
                 {
-                    BucketName = BucketName,
+                    BucketName = bucket ?? BucketName,
                     Key = path,
                 };
 
@@ -160,11 +160,11 @@ namespace TutorBits
                 }
             }
 
-            public async Task<string> StartMultipartUpload(string path)
+            public async Task<string> StartMultipartUpload(string path, string bucket = null)
             {
                 var multipartUploadStartRequest = new InitiateMultipartUploadRequest()
                 {
-                    BucketName = BucketName,
+                    BucketName = bucket ?? BucketName,
                     Key = path
                 };
 
@@ -172,7 +172,7 @@ namespace TutorBits
                 return response.UploadId;
             }
 
-            public async Task<string> UploadPart(string path, string multipartUploadId, int part, Stream stream, bool last)
+            public async Task<string> UploadPart(string path, string multipartUploadId, int part, Stream stream, bool last, string bucket = null)
             {
                 using (var memStream = new MemoryStream())
                 {
@@ -181,7 +181,7 @@ namespace TutorBits
 
                     var multipartUploadStartRequest = new UploadPartRequest()
                     {
-                        BucketName = BucketName,
+                        BucketName = bucket ?? BucketName,
                         Key = path,
                         UploadId = multipartUploadId,
                         InputStream = memStream,
@@ -194,11 +194,11 @@ namespace TutorBits
                 }
             }
 
-            public async Task<string> StopMultipartUpload(string path, string multipartUploadId, ICollection<VideoPart> parts)
+            public async Task<string> StopMultipartUpload(string path, string multipartUploadId, ICollection<VideoPart> parts, string bucket = null)
             {
                 var multipartUploadStopRequest = new CompleteMultipartUploadRequest()
                 {
-                    BucketName = BucketName,
+                    BucketName = bucket ?? BucketName,
                     Key = path,
                     UploadId = multipartUploadId,
                     PartETags = parts.Select(p => new PartETag(p.Index + 1, p.ETag)).ToList()
@@ -208,27 +208,29 @@ namespace TutorBits
                 return path;
             }
 
-            public async Task UpdateFile(string path, Stream stream, bool append = false)
+            public async Task UpdateFile(string path, Stream stream, bool append = false, string bucket = null)
             {
                 if (!append)
                 {
-                    await CreateFile(path, stream);
+                    await CreateFile(path, stream, bucket);
                     return;
                 }
 
-                using (var writeStream = File.OpenWrite(path))
+                using (var writeStream = await ReadFile(path, bucket))
                 {
                     writeStream.Seek(0, SeekOrigin.End);
                     await stream.CopyToAsync(writeStream);
+                    writeStream.Seek(0, SeekOrigin.Begin);
+                    await CreateFile(path, writeStream, bucket);
                 }
             }
 
-            public async Task CreatePathForFile(string filePath)
+            public async Task CreatePathForFile(string filePath, string bucket = null)
             {
                 //Not necessary for s3
             }
 
-            public async Task<string> ConvertToNativePath(string path)
+            public async Task<string> ConvertToNativePath(string path, string bucket = null)
             {
                 return path.Replace('\\', '/');
             }
@@ -238,16 +240,16 @@ namespace TutorBits
                 return "";
             }
 
-            public async Task<bool> IsDirectory(string path)
+            public async Task<bool> IsDirectory(string path, string bucket = null)
             {
                 return path.EndsWith("/");
             }
 
-            public async Task CopyFile(string sourcePath, string destinationPath)
+            public async Task CopyFile(string sourcePath, string destinationPath, string bucket = null)
             {
-                using (var sourceStream = await ReadFile(sourcePath))
+                using (var sourceStream = await ReadFile(sourcePath, bucket))
                 {
-                    await CreateFile(destinationPath, sourceStream);
+                    await CreateFile(destinationPath, sourceStream, bucket);
                 }
             }
         }

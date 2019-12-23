@@ -30,7 +30,8 @@ namespace TutorBits.FileDataAccess
         public readonly string ProjectResourceFileName;
         public readonly string TempDirectory;
         public readonly string ThumbnailsDir;
-        public readonly string TranscodeStateFileName = "transcode_state.json";
+        public readonly string TranscodeStateFileName;
+        public readonly string TranscodeOutputBucket;
 
         private readonly FileDataLayerInterface dataLayer_;
 
@@ -82,6 +83,9 @@ namespace TutorBits.FileDataAccess
 
             TranscodeStateFileName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                 .GetValue<string>(Constants.Configuration.Sections.Paths.TranscodeStateFileNameKey);
+
+            TranscodeOutputBucket = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                .GetValue<string>(Constants.Configuration.Sections.Paths.TranscodeOutputBucketKey);
 
             TempDirectory = Path.GetTempPath();
         }
@@ -174,7 +178,7 @@ namespace TutorBits.FileDataAccess
             var videoDirectory = GetVideoPath(projectId.ToString());
             var videoTranscodingPath = Path.Combine(videoDirectory, TranscodeStateFileName);
 
-            return videoTranscodingPath;
+            return SanitizePath(videoTranscodingPath);
         }
 
         #endregion
@@ -407,11 +411,27 @@ namespace TutorBits.FileDataAccess
         {
             var transcodingStateFilePath = GetTranscodeStateFilePath(projectId);
 
+            if (!(await dataLayer_.FileExists(transcodingStateFilePath)))
+            {
+                return;
+            }
+
             using (var dataStream = new MemoryStream())
             {
                 Utils.Common.JsonUtils.Serialize(data, dataStream);
                 dataStream.Position = 0;
                 await dataLayer_.UpdateFile(transcodingStateFilePath, dataStream);
+            }
+        }
+
+        public async Task DeletePreviousTranscode(Guid projectId)
+        {
+            var videoDirectory = GetVideoPath(projectId.ToString());
+            var videoPath = Path.ChangeExtension(GetVideoFilePath(videoDirectory), ".mp4");
+
+            if (await dataLayer_.FileExists(videoPath, TranscodeOutputBucket))
+            {
+                await dataLayer_.DeleteFile(videoPath, TranscodeOutputBucket);
             }
         }
         #endregion

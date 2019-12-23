@@ -35,13 +35,13 @@ namespace TutorBits
                 return WorkingDirectory;
             }
 
-            public async Task CreateDirectory(string path)
+            public async Task CreateDirectory(string path, string bucket = null)
             {
                 path = RootPath(path);
                 Directory.CreateDirectory(path);
             }
 
-            public async Task CreateFile(string path, Stream stream)
+            public async Task CreateFile(string path, Stream stream, string bucket = null)
             {
                 path = RootPath(path);
 
@@ -51,37 +51,37 @@ namespace TutorBits
                 }
             }
 
-            public async Task DeleteDirectory(string path)
+            public async Task DeleteDirectory(string path, string bucket = null)
             {
                 path = RootPath(path);
                 Directory.Delete(path, true);
             }
 
-            public async Task DeleteFile(string path)
+            public async Task DeleteFile(string path, string bucket = null)
             {
                 path = RootPath(path);
                 File.Delete(path);
             }
 
-            public async Task<bool> DirectoryExists(string path)
+            public async Task<bool> DirectoryExists(string path, string bucket = null)
             {
                 path = RootPath(path);
                 return Directory.Exists(path);
             }
 
-            public async Task<bool> FileExists(string path)
+            public async Task<bool> FileExists(string path, string bucket = null)
             {
                 path = RootPath(path);
                 return File.Exists(path);
             }
 
-            public async Task<ICollection<string>> GetAllFiles(string parentPath)
+            public async Task<ICollection<string>> GetAllFiles(string parentPath, string bucket = null)
             {
                 parentPath = RootPath(parentPath);
                 return Directory.GetFileSystemEntries(parentPath, "*", SearchOption.AllDirectories);
             }
 
-            public async Task<Stream> ReadFile(string path)
+            public async Task<Stream> ReadFile(string path, string bucket = null)
             {
                 path = RootPath(path);
                 using (var fileStream = File.OpenRead(path))
@@ -93,7 +93,7 @@ namespace TutorBits
                 }
             }
 
-            public async Task<string> StartMultipartUpload(string path)
+            public async Task<string> StartMultipartUpload(string path, string bucket = null)
             {
                 var uploadId = Guid.NewGuid().ToString();
                 path = $"{RootPath(path)}_{uploadId}_{PartsSubDirectory}";
@@ -109,7 +109,7 @@ namespace TutorBits
                 return uploadId;
             }
 
-            public async Task<string> UploadPart(string path, string multipartUploadId, int part, Stream stream, bool last)
+            public async Task<string> UploadPart(string path, string multipartUploadId, int part, Stream stream, bool last, string bucket = null)
             {
                 path = $"{RootPath(path)}_{multipartUploadId}_{PartsSubDirectory}";
 
@@ -124,7 +124,7 @@ namespace TutorBits
                 return "NA";
             }
 
-            public async Task<string> StopMultipartUpload(string path, string multipartUploadId, ICollection<VideoPart> parts)
+            public async Task<string> StopMultipartUpload(string path, string multipartUploadId, ICollection<VideoPart> parts, string bucket = null)
             {
                 var partsPath = $"{RootPath(path)}_{multipartUploadId}_{PartsSubDirectory}";
                 path = RootPath(path);
@@ -146,7 +146,7 @@ namespace TutorBits
                 return path;
             }
 
-            public async Task UpdateFile(string path, Stream stream, bool append = false)
+            public async Task UpdateFile(string path, Stream stream, bool append = false, string bucket = null)
             {
                 path = RootPath(path);
                 if (!append)
@@ -162,7 +162,7 @@ namespace TutorBits
                 }
             }
 
-            public async Task CreatePathForFile(string filePath)
+            public async Task CreatePathForFile(string filePath, string bucket = null)
             {
                 filePath = RootPath(filePath);
                 var parentPath = Directory.GetParent(filePath).FullName;
@@ -173,17 +173,17 @@ namespace TutorBits
                 await CreateDirectory(parentPath);
             }
 
-            public async Task<string> ConvertToNativePath(string path)
+            public async Task<string> ConvertToNativePath(string path, string bucket = null)
             {
                 return RootPath(path.Replace('/', '\\'));
             }
 
-            public async Task<bool> IsDirectory(string path)
+            public async Task<bool> IsDirectory(string path, string bucket = null)
             {
                 return await DirectoryExists(path);
             }
 
-            public async Task CopyFile(string sourcePath, string destinationPath)
+            public async Task CopyFile(string sourcePath, string destinationPath, string bucket = null)
             {
                 File.Copy(sourcePath, destinationPath);
             }
