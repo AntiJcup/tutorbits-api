@@ -24,6 +24,7 @@ using AWS.Auth;
 using TutorBits.Auth.AWSAuth;
 using LocalAuth;
 using TutorBits.AccountAccess;
+using TutorBits.Video;
 
 namespace tutorbits_api
 {
@@ -104,6 +105,7 @@ namespace tutorbits_api
                 services.AddAWSService<IAmazonElasticTranscoder>();
                 services.AddS3FileDataAccessLayer();
                 services.AddAWSLambdaAccessLayer();
+                services.AddVideoService();
 
                 // The following 3 variables are null
                 var userPoolId = Configuration.GetSection(Constants.Configuration.Sections.SettingsKey)

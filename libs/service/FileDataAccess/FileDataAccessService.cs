@@ -30,6 +30,7 @@ namespace TutorBits.FileDataAccess
         public readonly string ProjectResourceFileName;
         public readonly string TempDirectory;
         public readonly string ThumbnailsDir;
+        public readonly string TranscodeStateFileName = "transcode_state.json";
 
         private readonly FileDataLayerInterface dataLayer_;
 
@@ -78,6 +79,9 @@ namespace TutorBits.FileDataAccess
 
             ThumbnailsDir = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                 .GetValue<string>(Constants.Configuration.Sections.Paths.ThumbnailsDirKey);
+
+            TranscodeStateFileName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                .GetValue<string>(Constants.Configuration.Sections.Paths.TranscodeStateFileNameKey);
 
             TempDirectory = Path.GetTempPath();
         }
@@ -164,6 +168,15 @@ namespace TutorBits.FileDataAccess
         {
             return SanitizePath(Path.Combine(resourceDirectory, string.Format(ProjectResourceFileName, resourceId)));
         }
+
+        public string GetTranscodeStateFilePath(Guid projectId)
+        {
+            var videoDirectory = GetVideoPath(projectId.ToString());
+            var videoTranscodingPath = Path.Combine(videoDirectory, TranscodeStateFileName);
+
+            return videoTranscodingPath;
+        }
+
         #endregion
 
         #region Project
@@ -370,6 +383,36 @@ namespace TutorBits.FileDataAccess
             var videoPath = GetVideoPath(projectId.ToString());
             var videoFilePath = GetVideoFilePath(videoPath);
             return await dataLayer_.StopMultipartUpload(videoFilePath, uploadId, parts);
+        }
+
+        public async Task CreateTranscodingStateFile(Guid projectId, TranscodingStateFile data)
+        {
+            var transcodingStateFilePath = GetTranscodeStateFilePath(projectId);
+
+            using (var dataStream = new MemoryStream())
+            {
+                Utils.Common.JsonUtils.Serialize(data, dataStream);
+                dataStream.Position = 0;
+                await dataLayer_.CreateFile(transcodingStateFilePath, dataStream);
+            }
+        }
+
+        public async Task<TranscodingStateFile> ReadTranscodingStateFile(Guid projectId)
+        {
+            var transcodingStateFilePath = GetTranscodeStateFilePath(projectId);
+            return Utils.Common.JsonUtils.Deserialize<TranscodingStateFile>(await dataLayer_.ReadFile(transcodingStateFilePath));
+        }
+
+        public async Task UpdateTranscodingStateFile(Guid projectId, TranscodingStateFile data)
+        {
+            var transcodingStateFilePath = GetTranscodeStateFilePath(projectId);
+
+            using (var dataStream = new MemoryStream())
+            {
+                Utils.Common.JsonUtils.Serialize(data, dataStream);
+                dataStream.Position = 0;
+                await dataLayer_.UpdateFile(transcodingStateFilePath, dataStream);
+            }
         }
         #endregion
 

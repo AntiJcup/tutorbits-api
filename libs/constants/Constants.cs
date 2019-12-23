@@ -37,6 +37,8 @@ public static class Constants
                 public static readonly string NormalizeVideoLambdaNameKey = "NormalizeVideoLambdaName";
 
                 public static readonly string HealthCheckLambdaNameKey = "HealthCheckLambdaName";
+
+                public static readonly string TranscodeTimeoutSecondsKey = "TranscodeTimeoutSeconds";
             }
 
             public static class Paths
@@ -68,6 +70,8 @@ public static class Constants
                 public static readonly string ProjectResourceFileNameKey = "ProjectResourceFileName";
 
                 public static readonly string ThumbnailsDirKey = "ThumbnailsDir";
+
+                public static readonly string TranscodeStateFileNameKey = "TranscodeStateFileName";
             }
 
             public static class Urls

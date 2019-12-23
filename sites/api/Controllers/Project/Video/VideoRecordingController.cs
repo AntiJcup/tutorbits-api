@@ -14,6 +14,7 @@ using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
 using TutorBits.LambdaAccess;
 using TutorBits.Models.Common;
+using TutorBits.Video;
 
 namespace tutorbits_api.Controllers
 {
@@ -24,17 +25,17 @@ namespace tutorbits_api.Controllers
     {
         private readonly DBDataAccessService dbDataAccessService_;
         private readonly FileDataAccessService fileDataAccessService_;
-        private readonly LambdaAccessService lambdaAccessService_;
+        private readonly VideoService videoService_;
 
         public VideoRecordingController(IConfiguration configuration,
-        DBDataAccessService dbDataAccessService,
-        FileDataAccessService fileDataAccessService,
-        LambdaAccessService lambdaAccessService)
+                                        DBDataAccessService dbDataAccessService,
+                                        FileDataAccessService fileDataAccessService,
+                                        VideoService videoService)
          : base(configuration)
         {
             dbDataAccessService_ = dbDataAccessService;
             fileDataAccessService_ = fileDataAccessService;
-            lambdaAccessService_ = lambdaAccessService;
+            videoService_ = videoService;
         }
 
         [ActionName("start")]
@@ -98,12 +99,43 @@ namespace tutorbits_api.Controllers
             try
             {
                 var fullVideoUrl = await fileDataAccessService_.FinishVideoRecording(projectId, recordingId, parts);
-                if (!(await lambdaAccessService_.ConvertProjectVideo(projectId)))
-                {
-                    return BadRequest();
-                }
-                
-                return new JsonResult(fullVideoUrl);
+                await videoService_.StartTranscoding(projectId);
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+            return BadRequest();
+        }
+
+        [ActionName("status")]
+        [HttpGet]
+        public async Task<IActionResult> CheckTranscodeStatus([FromQuery]Guid projectId)
+        {
+            try
+            {
+                var status = await videoService_.CheckTranscodingStatus(projectId);
+                return new JsonResult(status.ToString());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+
+            return BadRequest();
+        }
+
+        [ActionName("cancel")]
+        [HttpGet]
+        public async Task<IActionResult> CancelTranscoding([FromQuery]Guid projectId)
+        {
+            try
+            {
+                await videoService_.CancelTranscoding(projectId);
+                return Ok();
             }
             catch (Exception e)
             {

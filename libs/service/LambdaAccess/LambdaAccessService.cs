@@ -1,5 +1,4 @@
 ﻿using System;
-using TutorBits.FileDataAccess;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
 using System.IO;
@@ -16,21 +15,20 @@ namespace TutorBits.LambdaAccess
 
         private readonly LambdaLayerInterface lambdaLayer_;
 
-        private readonly FileDataAccessService fileDataService_;
-
-        public LambdaAccessService(IConfiguration configuration, LambdaLayerInterface lambdaLayer, FileDataAccessService fileDataService)
+        public LambdaAccessService(IConfiguration configuration, LambdaLayerInterface lambdaLayer)
         {
             configuration_ = configuration;
             lambdaLayer_ = lambdaLayer;
-            fileDataService_ = fileDataService;
         }
 
-        public async Task<bool> ConvertProjectVideo(Guid projectId)
+        public async Task<bool> ConvertProjectVideo(string webmPath, string mp4Path)
         {
-            var videoDirectory = fileDataService_.GetVideoPath(projectId.ToString());
-            var webmPath = fileDataService_.GetVideoFilePath(videoDirectory);
-            var mp4Path = Path.ChangeExtension(webmPath, ".mp4");
             return await lambdaLayer_.ConvertWebmToMp4(webmPath, mp4Path);
+        }
+
+        public async Task<string> ConvertProjectVideoTranscode(string webmPath, string mp4Path)
+        {
+            return await lambdaLayer_.ConvertWebmToMp4Transcoder(webmPath, mp4Path);
         }
 
         public async Task FinalizeProject(Guid projectId)

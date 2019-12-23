@@ -78,8 +78,8 @@ namespace TutorBits.Lambda.AWSLambda
             return string.IsNullOrWhiteSpace(response.FunctionError);
         }
 
-        //Deprecated method since I couldnt normalize the audio.
-        public async Task ConvertWebmToMp4Transcoder(string webmPath, string outMp4Path)
+        //Returns job id
+        public async Task<string> ConvertWebmToMp4Transcoder(string webmPath, string outMp4Path)
         {
             //Tried lambda here but the lambda environment corrupts the video when using ffmpeg.
             var createJobRequest = new CreateJobRequest()
@@ -103,28 +103,7 @@ namespace TutorBits.Lambda.AWSLambda
 
             var createResponse = await transcoderClient_.CreateJobAsync(createJobRequest);
 
-            var readJobRequest = new ReadJobRequest()
-            {
-                Id = createResponse.Job.Id
-            };
-
-            var timeStart = DateTime.Now;
-            var now = timeStart;
-            while (now - timeStart < MaxWaitForTranscode)
-            {
-                var readResponse = await transcoderClient_.ReadJobAsync(readJobRequest);
-
-                switch (readResponse.Job.Status)
-                {
-                    case "Complete":
-                    case "Canceled":
-                    case "Error":
-                        return;
-                    default:
-                        break;
-                }
-                Thread.Sleep(100);
-            }
+            return createResponse.Job.Id;
         }
 
         public async Task SaveCompletedPreview(Guid projectId)

@@ -4,6 +4,7 @@
     <ProjectReference Include="..\..\..\shared\Tracer\Tracer.csproj" />
     <ProjectReference Include="..\..\constants\constants.csproj" />
     <ProjectReference Include="..\..\models\Common\CommonModels.csproj" />
+    <ProjectReference Include="..\..\utils\Common\CommonUtils.csproj" />
   </ItemGroup>
 
   <ItemGroup>

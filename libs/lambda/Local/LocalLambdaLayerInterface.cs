@@ -40,6 +40,18 @@ namespace TutorBits.Lambda.Local
             return File.Exists(outMp4Path);
         }
 
+        public async Task<string> ConvertWebmToMp4Transcoder(string webmPath, string outMp4Path)
+        {
+            var convertProcess = new Process();
+            convertProcess.StartInfo.WorkingDirectory = workingDirectory;
+            convertProcess.StartInfo.FileName = Path.Combine(workingDirectory, ffmpegPath);
+            convertProcess.StartInfo.Arguments = $"-loglevel error -y -i \"{webmPath}\" -vcodec libx264 -vprofile high -preset veryfast -threads 0 -vf scale=-1:720 -codec:a aac -strict experimental \"{outMp4Path}\"";
+            convertProcess.Start();
+            // await convertProcess.WaitForExitAsync();
+
+            return string.Empty;
+        }
+
         public async Task SaveCompletedPreview(Guid projectId)
         {
             var config = new ConfigurationBuilder()
