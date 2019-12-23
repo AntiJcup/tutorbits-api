@@ -30,7 +30,7 @@ namespace TutorBits.Video
             lambdaService_ = lambdaService;
 
             TranscodeTimeout_ = TimeSpan.FromSeconds(configuration.GetSection(Constants.Configuration.Sections.SettingsKey)
-                .GetValue<int>(Constants.Configuration.Sections.Paths.ProjectsDirKey));
+                .GetValue<int>(Constants.Configuration.Sections.Settings.TranscodeTimeoutSecondsKey));
         }
 
         public async Task<bool> ConvertWebmToMp4(Guid projectId)
