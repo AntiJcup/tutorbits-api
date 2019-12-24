@@ -47,7 +47,19 @@ namespace TutorBits.Lambda.Local
             convertProcess.StartInfo.FileName = Path.Combine(workingDirectory, ffmpegPath);
             convertProcess.StartInfo.Arguments = $"-loglevel error -y -i \"{webmPath}\" -vcodec libx264 -vprofile high -preset veryfast -threads 0 -vf scale=-1:720 -codec:a aac -strict experimental -af highpass=200,lowpass=1500,loudnorm=I=-35:TP=-1.5:LRA=20 \"{outMp4Path}\"";
             convertProcess.Start();
-            // await convertProcess.WaitForExitAsync();
+            await convertProcess.WaitForExitAsync();
+
+            var parentDir = Path.GetDirectoryName(webmPath);
+            var transcode_state_file_path = Path.Combine(parentDir, "transcode_state.json");
+            using (var fileStream = File.OpenRead(transcode_state_file_path))
+            {
+                var transcode = JsonUtils.Deserialize<TranscodingStateFile>(fileStream);
+                transcode.State = TranscodingState.Finished;
+                using (var writeStream = File.OpenWrite(transcode_state_file_path))
+                {
+                    JsonUtils.Serialize(transcode, writeStream);
+                }
+            }
 
             return string.Empty;
         }
