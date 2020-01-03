@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace TutorBits.FileDataAccess
+namespace TutorBits.Preview
 {
     public class PreviewItem
     {

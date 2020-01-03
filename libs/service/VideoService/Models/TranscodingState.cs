@@ -1,6 +1,6 @@
 using System;
 
-namespace TutorBits.FileDataAccess
+namespace TutorBits.Video
 {
     public enum TranscodingState
     {

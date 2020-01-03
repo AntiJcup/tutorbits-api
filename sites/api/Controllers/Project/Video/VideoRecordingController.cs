@@ -24,17 +24,14 @@ namespace tutorbits_api.Controllers
     public class VideoRecordingController : TutorBitsController
     {
         private readonly DBDataAccessService dbDataAccessService_;
-        private readonly FileDataAccessService fileDataAccessService_;
         private readonly VideoService videoService_;
 
         public VideoRecordingController(IConfiguration configuration,
                                         DBDataAccessService dbDataAccessService,
-                                        FileDataAccessService fileDataAccessService,
                                         VideoService videoService)
          : base(configuration)
         {
             dbDataAccessService_ = dbDataAccessService;
-            fileDataAccessService_ = fileDataAccessService;
             videoService_ = videoService;
         }
 
@@ -60,7 +57,7 @@ namespace tutorbits_api.Controllers
                     return BadRequest();
                 }
 
-                var recordingId = await fileDataAccessService_.StartVideoRecording(projectId);
+                var recordingId = await videoService_.StartVideoRecording(projectId);
                 return new JsonResult(recordingId);
             }
             catch (Exception e)
@@ -82,7 +79,7 @@ namespace tutorbits_api.Controllers
                     return BadRequest();
                 }
 
-                return new JsonResult(await fileDataAccessService_.ContinueVideoRecording(projectId, recordingId, part, Request.Body, last));
+                return new JsonResult(await videoService_.ContinueVideoRecording(projectId, recordingId, part, Request.Body, last));
             }
             catch (Exception e)
             {
@@ -98,7 +95,7 @@ namespace tutorbits_api.Controllers
         {
             try
             {
-                var fullVideoUrl = await fileDataAccessService_.FinishVideoRecording(projectId, recordingId, parts);
+                var fullVideoUrl = await videoService_.FinishVideoRecording(projectId, recordingId, parts);
                 await videoService_.StartTranscoding(projectId);
 
                 return Ok();

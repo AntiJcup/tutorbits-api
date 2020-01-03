@@ -31,19 +31,15 @@ namespace api.Controllers.Model
         where TViewModel : BaseViewModel<TModel>, new()
     {
         protected readonly DBDataAccessService dbDataAccessService_;
-        protected readonly FileDataAccessService fileDataAccessService_;
-
         protected readonly AccountAccessService accountAccessService_;
 
         public BaseModelController(
             IConfiguration configuration,
             DBDataAccessService dbDataAccessService,
-            FileDataAccessService fileDataAccessService,
             AccountAccessService accountAccessService)
          : base(configuration)
         {
             dbDataAccessService_ = dbDataAccessService;
-            fileDataAccessService_ = fileDataAccessService;
             accountAccessService_ = accountAccessService;
         }
 

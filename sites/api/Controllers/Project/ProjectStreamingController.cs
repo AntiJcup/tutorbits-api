@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Tracer;
 using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
+using TutorBits.Project;
 using Utils.Common;
 
 namespace tutorbits_api.Controllers
@@ -20,13 +21,13 @@ namespace tutorbits_api.Controllers
     public class ProjectStreamingController : TutorBitsController
     {
         private readonly DBDataAccessService dbDataAccessService_;
-        private readonly FileDataAccessService fileDataAccessService_;
+        private readonly ProjectService projectService_;
 
-        public ProjectStreamingController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
+        public ProjectStreamingController(IConfiguration configuration, DBDataAccessService dbDataAccessService, ProjectService projectService)
         : base(configuration)
         {
             dbDataAccessService_ = dbDataAccessService;
-            fileDataAccessService_ = fileDataAccessService;
+            projectService_ = projectService;
         }
 
         [ActionName("project")]
@@ -51,7 +52,7 @@ namespace tutorbits_api.Controllers
         {
             try
             {
-                var transactionLogFullPaths = await fileDataAccessService_.GetTransactionLogsForRange(projectId, offsetStart, offsetEnd);
+                var transactionLogFullPaths = await projectService_.GetTransactionLogsForRange(projectId, offsetStart, offsetEnd);
 
                 var transactionUrls = new Dictionary<string, string>();
                 foreach (var transactionLogFullPath in transactionLogFullPaths)

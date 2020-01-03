@@ -12,6 +12,7 @@ using Tracer;
 using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
 using TutorBits.Models.Common;
+using TutorBits.Project;
 using Utils.Common;
 
 namespace tutorbits_api.Controllers
@@ -21,13 +22,13 @@ namespace tutorbits_api.Controllers
     public class ProjectRecordingController : TutorBitsController
     {
         private readonly DBDataAccessService dbDataAccessService_;
-        private readonly FileDataAccessService fileDataAccessService_;
+        private readonly ProjectService projectService_;
 
-        public ProjectRecordingController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
+        public ProjectRecordingController(IConfiguration configuration, DBDataAccessService dbDataAccessService, ProjectService projectService)
          : base(configuration)
         {
             dbDataAccessService_ = dbDataAccessService;
-            fileDataAccessService_ = fileDataAccessService;
+            projectService_ = projectService;
         }
 
         [Authorize]
@@ -60,7 +61,7 @@ namespace tutorbits_api.Controllers
                     PartitionSize = configuration_.GetSection(Constants.Configuration.Sections.SettingsKey)
                                                 .GetValue<uint>(Constants.Configuration.Sections.Settings.PartitionSizeKey)
                 };
-                await fileDataAccessService_.CreateTraceProject(project);
+                await projectService_.CreateTraceProject(project);
 
                 return new JsonResult(ProjectUrlGenerator.GenerateProjectUrl(tutorial.Id, configuration_));
             }
@@ -96,7 +97,7 @@ namespace tutorbits_api.Controllers
                     return BadRequest();
                 }
 
-                await fileDataAccessService_.DeleteProject(tutorial.Id);
+                await projectService_.DeleteProject(tutorial.Id);
 
                 return Ok();
             }
@@ -142,7 +143,7 @@ namespace tutorbits_api.Controllers
                     return BadRequest();
                 }
                 Console.WriteLine(transactionLog.ToString());
-                var transactionLogFullPath = await fileDataAccessService_.AddTraceTransactionLog(projectId, transactionLog);
+                var transactionLogFullPath = await projectService_.AddTraceTransactionLog(projectId, transactionLog);
 
                 return new JsonResult(ProjectUrlGenerator.GenerateTransactionLogUrl(Path.GetFileName(transactionLogFullPath), projectId, configuration_));
             }
@@ -187,7 +188,7 @@ namespace tutorbits_api.Controllers
                 {
                     await Request.Body.CopyToAsync(memoryStream);
                     memoryStream.Position = 0;
-                    await fileDataAccessService_.AddResource(projectId, memoryStream, resourceId);
+                    await projectService_.AddResource(projectId, memoryStream, resourceId);
                 }
 
                 return new JsonResult(resourceId.ToString());
@@ -222,7 +223,7 @@ namespace tutorbits_api.Controllers
                 {
                     await Request.Body.CopyToAsync(memoryStream);
                     memoryStream.Position = 0;
-                    await fileDataAccessService_.AddResource(projectId, memoryStream, resourceId);
+                    await projectService_.AddResource(projectId, memoryStream, resourceId);
                 }
 
                 return new JsonResult(resourceId.ToString());

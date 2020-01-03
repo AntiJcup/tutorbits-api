@@ -252,6 +252,11 @@ namespace TutorBits
                     await CreateFile(destinationPath, sourceStream, bucket);
                 }
             }
+
+            public string SanitizePath(string path)
+            {
+                return path.Replace("\\", "/");
+            }
         }
     }
 }

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TutorBits.FileDataAccess;
 using TutorBits.LambdaAccess;
+using TutorBits.Preview;
+using TutorBits.Project;
+using TutorBits.Video;
 using TutorBits.WindowsFileSystem;
 using Utils.Common;
 
@@ -70,12 +70,14 @@ namespace TutorBits.Lambda.Local
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: false)
                 .Build();
-            var dataLayer = new FileDataAccessService(config, new WindowsFileDataLayerInterface());
-            var project = await dataLayer.GetProject(projectId);
+            var dataLayer = new WindowsFileDataLayerInterface();
+            var projectService = new ProjectService(config, dataLayer);
+            var previewService = new PreviewService(config, dataLayer, projectService);
+            var project = await projectService.GetProject(projectId);
             var previewId = Guid.NewGuid().ToString();
-            var previewDictionary = await dataLayer.GeneratePreview(project, (int)project.Duration, previewId);
-            await dataLayer.PackagePreviewZIP(projectId, previewId);
-            await dataLayer.PackagePreviewJSON(projectId, previewDictionary);
+            var previewDictionary = await previewService.GeneratePreview(project, (int)project.Duration, previewId);
+            await previewService.PackagePreviewZIP(projectId, previewId);
+            await previewService.PackagePreviewJSON(projectId, previewDictionary);
         }
 
         public async Task<bool> HealthCheck()

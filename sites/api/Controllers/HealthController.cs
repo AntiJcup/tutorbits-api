@@ -8,6 +8,7 @@ using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
 using TutorBits.LambdaAccess;
 using TutorBits.Models.Common;
+using TutorBits.Project;
 
 namespace api.Controllers
 {
@@ -15,16 +16,16 @@ namespace api.Controllers
     public class HealthController : ControllerBase
     {
         protected readonly DBDataAccessService dbDataAccessService_;
-        protected readonly FileDataAccessService fileDataAccessService_;
+        protected readonly ProjectService projectService_;
         protected readonly LambdaAccessService lambdaAccessService_;
 
         public HealthController(IConfiguration configuration,
                                 DBDataAccessService dbDataAccessService,
-                                FileDataAccessService fileDataAccessService,
+                                ProjectService projectService,
                                 LambdaAccessService lambdaAccessService)
         {
             dbDataAccessService_ = dbDataAccessService;
-            fileDataAccessService_ = fileDataAccessService;
+            projectService_ = projectService;
             lambdaAccessService_ = lambdaAccessService;
         }
 
@@ -88,7 +89,7 @@ namespace api.Controllers
             {
                 try
                 {
-                    if (!(await fileDataAccessService_.DoesProjectExist(projectId)))
+                    if (!(await projectService_.DoesProjectExist(projectId)))
                     {
                         break;
                     }
@@ -100,14 +101,14 @@ namespace api.Controllers
                 }
             }
 
-            await fileDataAccessService_.CreateTraceProject(new Tracer.TraceProject()
+            await projectService_.CreateTraceProject(new Tracer.TraceProject()
             {
                 Id = projectId.ToString(),
                 Duration = 2,
                 PartitionSize = 30
             });
 
-            var project = await fileDataAccessService_.GetProject(projectId);
+            var project = await projectService_.GetProject(projectId);
 
             if (project.Duration != 2)
             {
@@ -127,16 +128,16 @@ namespace api.Controllers
                 FilePath = "health"
             });
 
-            await fileDataAccessService_.AddTraceTransactionLog(projectId, transactionLog);
+            await projectService_.AddTraceTransactionLog(projectId, transactionLog);
 
-            var transactionLogs = await fileDataAccessService_.GetTransactionLogsForRange(projectId, 0, 30000);
+            var transactionLogs = await projectService_.GetTransactionLogsForRange(projectId, 0, 30000);
             if (!transactionLogs.Any())
             {
                 Console.WriteLine("No transaction logs found");
                 return false;
             }
 
-            await fileDataAccessService_.DeleteProject(projectId);
+            await projectService_.DeleteProject(projectId);
 
             return true;
         }

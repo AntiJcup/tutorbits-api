@@ -25,6 +25,9 @@ using TutorBits.Auth.AWSAuth;
 using LocalAuth;
 using TutorBits.AccountAccess;
 using TutorBits.Video;
+using TutorBits.Project;
+using TutorBits.Preview;
+using TutorBits.Thumbnail;
 
 namespace tutorbits_api
 {
@@ -145,7 +148,10 @@ namespace tutorbits_api
                 services.AddLocalAuthAccessLayer();
             }
 
+            services.AddProjectService();
             services.AddVideoService();
+            services.AddPreviewService();
+            services.AddThumbnailService();
 
             services.AddAuthorization(
                 options => options.AddPolicy("IsAdmin", policy => policy.Requirements.Add(new CognitoGroupAuthorizationRequirement("Admin")))

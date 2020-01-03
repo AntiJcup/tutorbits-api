@@ -32,7 +32,7 @@ namespace TutorBits
 
             public string GetWorkingDirectory()
             {
-                return WorkingDirectory;
+                return SanitizePath(WorkingDirectory);
             }
 
             public async Task CreateDirectory(string path, string bucket = null)
@@ -186,6 +186,11 @@ namespace TutorBits
             public async Task CopyFile(string sourcePath, string destinationPath, string bucket = null)
             {
                 File.Copy(sourcePath, destinationPath);
+            }
+
+            public string SanitizePath(string path)
+            {
+                return path.Replace("\\", "/");
             }
         }
     }

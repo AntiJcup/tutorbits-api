@@ -19,14 +19,9 @@ namespace tutorbits_api.Controllers
     [ApiController]
     public class VideoStreamingController : TutorBitsController
     {
-        private readonly DBDataAccessService dbDataAccessService_;
-        private readonly FileDataAccessService fileDataAccessService_;
-
-        public VideoStreamingController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
+        public VideoStreamingController(IConfiguration configuration)
          : base(configuration)
         {
-            dbDataAccessService_ = dbDataAccessService;
-            fileDataAccessService_ = fileDataAccessService;
         }
 
         [ActionName("video")]

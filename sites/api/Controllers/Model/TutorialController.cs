@@ -10,6 +10,8 @@ using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
 using TutorBits.LambdaAccess;
 using TutorBits.Models.Common;
+using TutorBits.Preview;
+using TutorBits.Project;
 using Utils.Common;
 
 namespace api.Controllers.Model
@@ -18,15 +20,18 @@ namespace api.Controllers.Model
     [ApiController]
     public class TutorialController : BaseModelController<Tutorial, CreateUpdateTutorialModel, CreateUpdateTutorialModel, TutorialViewModel>
     {
-        private readonly LambdaAccessService lambdaAccessService_;
+        private readonly PreviewService previewService_;
+        private readonly ProjectService projectService_;
+
         public TutorialController(IConfiguration configuration,
                                     DBDataAccessService dbDataAccessService,
-                                    FileDataAccessService fileDataAccessService,
-                                    LambdaAccessService lambdaAccessService,
-                                    AccountAccessService accountAccessService)
-            : base(configuration, dbDataAccessService, fileDataAccessService, accountAccessService)
+                                    AccountAccessService accountAccessService,
+                                    ProjectService projectService,
+                                    PreviewService previewService)
+            : base(configuration, dbDataAccessService, accountAccessService)
         {
-            lambdaAccessService_ = lambdaAccessService;
+            projectService_ = projectService;
+            previewService_ = previewService;
         }
 
         [Authorize]
@@ -54,7 +59,7 @@ namespace api.Controllers.Model
                 return BadRequest();
             }
 
-            var project = await fileDataAccessService_.GetProject(tutorialId);
+            var project = await projectService_.GetProject(tutorialId);
             if (project == null)
             {
                 return BadRequest();
@@ -62,9 +67,9 @@ namespace api.Controllers.Model
 
             //Finalize project
             var previewId = Guid.NewGuid().ToString();
-            var previewDictionary = await fileDataAccessService_.GeneratePreview(project, (int)project.Duration, previewId);
-            await fileDataAccessService_.PackagePreviewZIP(tutorialId, previewId);
-            await fileDataAccessService_.PackagePreviewJSON(tutorialId, previewDictionary);
+            var previewDictionary = await previewService_.GeneratePreview(project, (int)project.Duration, previewId);
+            await previewService_.PackagePreviewZIP(tutorialId, previewId);
+            await previewService_.PackagePreviewJSON(tutorialId, previewDictionary);
 
             //Update tutorial model
             model.DurationMS = project.Duration;

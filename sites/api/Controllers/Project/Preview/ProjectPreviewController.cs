@@ -12,6 +12,8 @@ using Tracer;
 using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
 using TutorBits.Models.Common;
+using TutorBits.Preview;
+using TutorBits.Project;
 using Utils.Common;
 
 namespace tutorbits_api.Controllers
@@ -21,13 +23,16 @@ namespace tutorbits_api.Controllers
     public class ProjectPreviewController : TutorBitsController
     {
         private readonly DBDataAccessService dbDataAccessService_;
-        private readonly FileDataAccessService fileDataAccessService_;
+        private readonly PreviewService previewService_;
 
-        public ProjectPreviewController(IConfiguration configuration, DBDataAccessService dbDataAccessService, FileDataAccessService fileDataAccessService)
+        private readonly ProjectService projectService_;
+
+        public ProjectPreviewController(IConfiguration configuration, DBDataAccessService dbDataAccessService, PreviewService previewService, ProjectService projectService)
          : base(configuration)
         {
             dbDataAccessService_ = dbDataAccessService;
-            fileDataAccessService_ = fileDataAccessService;
+            previewService_ = previewService;
+            projectService_ = projectService;
         }
 
         [ActionName("load")]
@@ -37,12 +42,12 @@ namespace tutorbits_api.Controllers
             try
             {
                 var previewId = Guid.NewGuid().ToString();
-                var project = await fileDataAccessService_.GetProject(projectId);
+                var project = await projectService_.GetProject(projectId);
                 if (project == null)
                 {
                     return BadRequest();
                 }
-                await fileDataAccessService_.GeneratePreview(project, (int)offsetEnd, previewId);
+                await previewService_.GeneratePreview(project, (int)offsetEnd, previewId);
                 return new JsonResult(ProjectUrlGenerator.GenerateProjectPreviewUrl(previewId, projectId, configuration_));
             }
             catch (Exception e)
@@ -77,7 +82,7 @@ namespace tutorbits_api.Controllers
                 {
                     Id = projectId.ToString()
                 };
-                await fileDataAccessService_.GeneratePreview(tempProject, (int)offsetEnd, previewId, transactionLogs, baseProjectId);
+                await previewService_.GeneratePreview(tempProject, (int)offsetEnd, previewId, transactionLogs, baseProjectId);
                 return new JsonResult(ProjectUrlGenerator.GenerateProjectPreviewUrl(previewId, tempID, configuration_));
             }
             catch (Exception e)
@@ -120,8 +125,8 @@ namespace tutorbits_api.Controllers
                 {
                     Id = projectId.ToString()
                 };
-                await fileDataAccessService_.GeneratePreview(tempProject, (int)offsetEnd, previewId, transactionLogs, baseProjectId);
-                await fileDataAccessService_.PackagePreviewZIP(projectId, previewId);
+                await previewService_.GeneratePreview(tempProject, (int)offsetEnd, previewId, transactionLogs, baseProjectId);
+                await previewService_.PackagePreviewZIP(projectId, previewId);
 
                 return new JsonResult(ProjectUrlGenerator.GenerateProjectDownloadUrl(projectId, configuration_));
             }

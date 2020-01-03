@@ -2,7 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FileDataAccess\FileDataAccess.csproj" />
-    <ProjectReference Include="..\LambdaAccess\LambdaAccess.csproj" />
     <ProjectReference Include="..\ProjectService\ProjectService.csproj" />
   </ItemGroup>
 

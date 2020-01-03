@@ -14,6 +14,7 @@ using TutorBits.DBDataAccess;
 using TutorBits.FileDataAccess;
 using TutorBits.LambdaAccess;
 using TutorBits.Models.Common;
+using TutorBits.Thumbnail;
 using Utils.Common;
 
 namespace tutorbits_api.Controllers
@@ -24,15 +25,15 @@ namespace tutorbits_api.Controllers
     public class ThumbnailController : TutorBitsController
     {
         private readonly DBDataAccessService dbDataAccessService_;
-        private readonly FileDataAccessService fileDataAccessService_;
+        private readonly ThumbnailService thumbnailService_;
 
         public ThumbnailController(IConfiguration configuration,
                                     DBDataAccessService dbDataAccessService,
-                                    FileDataAccessService fileDataAccessService)
+                                    ThumbnailService thumbnailService)
          : base(configuration)
         {
             dbDataAccessService_ = dbDataAccessService;
-            fileDataAccessService_ = fileDataAccessService;
+            thumbnailService_ = thumbnailService;
         }
 
         [Authorize]
@@ -61,7 +62,7 @@ namespace tutorbits_api.Controllers
                 {
                     await Request.Body.CopyToAsync(memoryStream);
                     memoryStream.Position = 0;
-                    await fileDataAccessService_.CreateTutorialThumbnail(tutorialId, memoryStream);
+                    await thumbnailService_.CreateTutorialThumbnail(tutorialId, memoryStream);
                 }
                 return Ok();
             }

@@ -3,7 +3,9 @@
   <ItemGroup>
     <ProjectReference Include="..\..\service\LambdaAccess\LambdaAccess.csproj" />
     <ProjectReference Include="..\..\utils\Common\CommonUtils.csproj" />
-    <ProjectReference Include="..\..\service\FileDataAccess\FileDataAccess.csproj" />
+    <ProjectReference Include="..\..\service\PreviewService\PreviewService.csproj" />
+    <ProjectReference Include="..\..\service\ProjectService\ProjectService.csproj" />
+    <ProjectReference Include="..\..\service\VideoService\VideoService.csproj" />
     <ProjectReference Include="..\..\storage\WindowsFileSystem\WindowsFileSystem.csproj" />
   </ItemGroup>
 

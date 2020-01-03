@@ -27,11 +27,9 @@ namespace tutorbits_api.Controllers
         public AccountController(
             IConfiguration configuration,
             DBDataAccessService dbDataAccessService,
-            FileDataAccessService fileDataAccessService,
-            LambdaAccessService lambdaAccessService,
             AccountAccessService accountAccessService,
             AuthAccessService authService)
-           : base(configuration, dbDataAccessService, fileDataAccessService, accountAccessService)
+           : base(configuration, dbDataAccessService, accountAccessService)
         {
             authService_ = authService;
         }
