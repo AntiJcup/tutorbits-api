@@ -35,6 +35,8 @@ namespace TutorBits.Preview
         public readonly string TempDirectory;
         public readonly string ProjectZipName;
         public readonly string ProjectJsonName;
+        public readonly string PreviewHelpersBucket;
+        public readonly string PreviewHelpersPath;
 
         public PreviewService(IConfiguration configuration, FileDataLayerInterface dataLayer, ProjectService projectService)
         {
@@ -44,10 +46,17 @@ namespace TutorBits.Preview
 
             PreviewsDir = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                 .GetValue<string>(Constants.Configuration.Sections.Paths.PreviewsDirKey);
+                
             ProjectZipName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                 .GetValue<string>(Constants.Configuration.Sections.Paths.ProjectZipNameKey);
             ProjectJsonName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                 .GetValue<string>(Constants.Configuration.Sections.Paths.ProjectJsonNameKey);
+
+            PreviewHelpersBucket = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                .GetValue<string>(Constants.Configuration.Sections.Paths.PreviewHelpersBucketKey);
+            PreviewHelpersPath = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
+                .GetValue<string>(Constants.Configuration.Sections.Paths.PreviewHelpersPathKey);
+
             TempDirectory = Path.GetTempPath();
         }
 
@@ -241,7 +250,8 @@ namespace TutorBits.Preview
             return files;
         }
 
-        public async Task GeneratePreview(TraceProject project, int end, string previewId, TraceTransactionLogs traceTransactionLogs, Guid? baseProjectId = null)
+        public async Task GeneratePreview(TraceProject project, int end, string previewId, TraceTransactionLogs traceTransactionLogs,
+                                            bool includePreviewHelpers, Guid? baseProjectId = null)
         {
             var projectId = Guid.Parse(project.Id);
             var previewPath = GetPreviewPath(project.Id, previewId);
@@ -252,6 +262,17 @@ namespace TutorBits.Preview
             }
 
             await SavePreviewCache(files, previewPath);
+        }
+
+        public async Task IncludeJSPreviewHelper(string previewPath)
+        {
+
+        }
+
+        public async Task IncludePreviewHelpers(TraceProject project, string previewId)
+        {
+            var previewPath = GetPreviewPath(project.Id, previewId);
+            await IncludeJSPreviewHelper(previewPath);
         }
 
         public async Task PackagePreviewZIP(string previewPath, string outputZipPath)

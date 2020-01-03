@@ -74,6 +74,10 @@ public static class Constants
                 public static readonly string TranscodeStateFileNameKey = "TranscodeStateFileName";
 
                 public static readonly string TranscodeOutputBucketKey = "TranscodeOutputBucket";
+
+                public static readonly string PreviewHelpersBucketKey = "PreviewHelpersBucket";
+
+                public static readonly string PreviewHelpersPathKey = "PreviewHelpersPath";
             }
 
             public static class Urls
