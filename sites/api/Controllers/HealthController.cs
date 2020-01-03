@@ -95,7 +95,7 @@ namespace api.Controllers
                     }
                     projectId = Guid.NewGuid();
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     break;
                 }
