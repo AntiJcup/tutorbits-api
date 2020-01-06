@@ -47,7 +47,7 @@ namespace tutorbits_api.Controllers
                 {
                     return BadRequest();
                 }
-                await previewService_.GeneratePreview(project, (int)offsetEnd, previewId);
+                await previewService_.GeneratePreview(project, (int)offsetEnd, previewId, true);
                 return new JsonResult(ProjectUrlGenerator.GenerateProjectPreviewUrl(previewId, projectId, configuration_));
             }
             catch (Exception e)
@@ -82,7 +82,7 @@ namespace tutorbits_api.Controllers
                 {
                     Id = projectId.ToString()
                 };
-                await previewService_.GeneratePreview(tempProject, (int)offsetEnd, previewId, transactionLogs, baseProjectId);
+                await previewService_.GeneratePreview(tempProject, (int)offsetEnd, previewId, transactionLogs, true, baseProjectId);
                 return new JsonResult(ProjectUrlGenerator.GenerateProjectPreviewUrl(previewId, tempID, configuration_));
             }
             catch (Exception e)
@@ -125,7 +125,7 @@ namespace tutorbits_api.Controllers
                 {
                     Id = projectId.ToString()
                 };
-                await previewService_.GeneratePreview(tempProject, (int)offsetEnd, previewId, transactionLogs, baseProjectId);
+                await previewService_.GeneratePreview(tempProject, (int)offsetEnd, previewId, transactionLogs, false, baseProjectId);
                 await previewService_.PackagePreviewZIP(projectId, previewId);
 
                 return new JsonResult(ProjectUrlGenerator.GenerateProjectDownloadUrl(projectId, configuration_));

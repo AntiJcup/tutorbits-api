@@ -67,7 +67,7 @@ namespace api.Controllers.Model
 
             //Finalize project
             var previewId = Guid.NewGuid().ToString();
-            var previewDictionary = await previewService_.GeneratePreview(project, (int)project.Duration, previewId);
+            var previewDictionary = await previewService_.GeneratePreview(project, (int)project.Duration, previewId, false);
             await previewService_.PackagePreviewZIP(tutorialId, previewId);
             await previewService_.PackagePreviewJSON(tutorialId, previewDictionary);
 

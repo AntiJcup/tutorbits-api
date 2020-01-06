@@ -75,7 +75,7 @@ namespace TutorBits.Lambda.Local
             var previewService = new PreviewService(config, dataLayer, projectService);
             var project = await projectService.GetProject(projectId);
             var previewId = Guid.NewGuid().ToString();
-            var previewDictionary = await previewService.GeneratePreview(project, (int)project.Duration, previewId);
+            var previewDictionary = await previewService.GeneratePreview(project, (int)project.Duration, previewId, false);
             await previewService.PackagePreviewZIP(projectId, previewId);
             await previewService.PackagePreviewJSON(projectId, previewDictionary);
         }

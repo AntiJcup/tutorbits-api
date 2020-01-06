@@ -41,7 +41,9 @@ namespace TutorBits.FileDataAccess
 
         Task<bool> IsDirectory(string path, string bucket = null);
 
-        Task CopyFile(string sourcePath, string destinationPath, string bucket = null);
+        Task CopyFile(string sourcePath, string destinationPath, string sourceBucket = null, string destinationBucket = null);
+
+        Task CopyDirectory(string sourcePath, string destinationPath, string sourceBucket = null, string destinationBucket = null);
 
         string SanitizePath(string path);
     }

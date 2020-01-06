@@ -46,7 +46,7 @@ namespace TutorBits.Preview
 
             PreviewsDir = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                 .GetValue<string>(Constants.Configuration.Sections.Paths.PreviewsDirKey);
-                
+
             ProjectZipName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
                 .GetValue<string>(Constants.Configuration.Sections.Paths.ProjectZipNameKey);
             ProjectJsonName = configuration_.GetSection(Constants.Configuration.Sections.PathsKey)
@@ -229,7 +229,7 @@ namespace TutorBits.Preview
         }
 
 
-        public async Task<Dictionary<string, PreviewItem>> GeneratePreview(TraceProject project, int end, string previewId)
+        public async Task<Dictionary<string, PreviewItem>> GeneratePreview(TraceProject project, int end, string previewId, bool includePreviewHelpers)
         {
             var projectId = Guid.Parse(project.Id);
             var previewPath = GetPreviewPath(project.Id, previewId);
@@ -243,6 +243,11 @@ namespace TutorBits.Preview
                     var transactionLog = TraceTransactionLog.Parser.ParseFrom(transactionLogStream);
                     GeneratePreviewForTransactionLog(project.Id, transactionLog, end, files);
                 }
+            }
+
+            if (includePreviewHelpers)
+            {
+                await IncludePreviewHelpers(project, previewId);
             }
 
             await SavePreviewCache(files, previewPath);
@@ -261,12 +266,20 @@ namespace TutorBits.Preview
                 GeneratePreviewForTransactionLog(project.Id, transactionLog, end, files);
             }
 
+            if (includePreviewHelpers)
+            {
+                await IncludePreviewHelpers(project, previewId);
+            }
+
             await SavePreviewCache(files, previewPath);
         }
 
         public async Task IncludeJSPreviewHelper(string previewPath)
         {
-
+            var sourceJSHelperPath = dataLayer_.SanitizePath(Path.Combine(PreviewHelpersPath, "js"));
+            var destinationJSHelperPath = dataLayer_.SanitizePath(Path.Combine(dataLayer_.GetWorkingDirectory(), previewPath, "preview-helpers/js"));
+            await dataLayer_.CreateDirectory(destinationJSHelperPath);
+            await dataLayer_.CopyDirectory(sourceJSHelperPath, destinationJSHelperPath, PreviewHelpersBucket);
         }
 
         public async Task IncludePreviewHelpers(TraceProject project, string previewId)

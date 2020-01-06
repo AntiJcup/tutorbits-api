@@ -245,11 +245,31 @@ namespace TutorBits
                 return path.EndsWith("/");
             }
 
-            public async Task CopyFile(string sourcePath, string destinationPath, string bucket = null)
+            public async Task CopyFile(string sourcePath, string destinationPath, string sourceBucket = null, string destinationBucket = null)
             {
-                using (var sourceStream = await ReadFile(sourcePath, bucket))
+                using (var sourceStream = await ReadFile(sourcePath, sourceBucket))
                 {
-                    await CreateFile(destinationPath, sourceStream, bucket);
+                    await CreateFile(destinationPath, sourceStream, destinationBucket);
+                }
+            }
+
+            public async Task CopyDirectory(string sourcePath, string destinationPath, string sourceBucket = null, string destinationBucket = null)
+            {
+                using (var sourceStream = await ReadFile(sourcePath, sourceBucket))
+                {
+                    var sourceFiles = await GetAllFiles(sourcePath, sourceBucket);
+                    foreach (var sourceFile in sourceFiles)
+                    {
+                        var destinationFile = sourceFile.Remove(0, sourcePath.Length).Insert(0, destinationPath);
+                        if (await IsDirectory(sourceFile, sourceBucket))
+                        {
+                            await CreateDirectory(destinationFile, destinationBucket);
+                        }
+                        else
+                        {
+                            await CopyFile(sourceFile, destinationFile, sourceBucket, destinationBucket);
+                        }
+                    }
                 }
             }
 

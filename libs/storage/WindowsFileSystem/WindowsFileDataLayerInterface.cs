@@ -183,9 +183,29 @@ namespace TutorBits
                 return await DirectoryExists(path);
             }
 
-            public async Task CopyFile(string sourcePath, string destinationPath, string bucket = null)
+            public async Task CopyFile(string sourcePath, string destinationPath, string sourceBucket = null, string destinationBucket = null)
             {
                 File.Copy(sourcePath, destinationPath);
+            }
+
+            public async Task CopyDirectory(string sourcePath, string destinationPath, string sourceBucket = null, string destinationBucket = null)
+            {
+                // destinationPath = SanitizePath(Path.Combine(GetWorkingDirectory(), destinationPath));
+                //Now Create all of the directories
+                foreach (string dirPath in Directory.GetDirectories(sourcePath, "*",
+                    SearchOption.AllDirectories))
+                {
+                    Directory.CreateDirectory(dirPath.Remove(0, sourcePath.Length).Insert(0, destinationPath));
+                }
+
+                //Copy all the files & Replaces any files with the same name
+                foreach (string sourceFile in Directory.GetFiles(sourcePath, "*",
+                    SearchOption.AllDirectories))
+                {
+                    var destinationFile = SanitizePath(sourceFile.Remove(0, sourcePath.Length).Insert(0, destinationPath));
+                    var cleanedSourceFile = SanitizePath(sourceFile);
+                    File.Copy(cleanedSourceFile, destinationFile, true);
+                }
             }
 
             public string SanitizePath(string path)
