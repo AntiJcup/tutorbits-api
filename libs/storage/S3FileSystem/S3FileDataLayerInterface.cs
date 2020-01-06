@@ -255,20 +255,17 @@ namespace TutorBits
 
             public async Task CopyDirectory(string sourcePath, string destinationPath, string sourceBucket = null, string destinationBucket = null)
             {
-                using (var sourceStream = await ReadFile(sourcePath, sourceBucket))
+                var sourceFiles = await GetAllFiles(sourcePath, sourceBucket);
+                foreach (var sourceFile in sourceFiles)
                 {
-                    var sourceFiles = await GetAllFiles(sourcePath, sourceBucket);
-                    foreach (var sourceFile in sourceFiles)
+                    var destinationFile = sourceFile.Remove(0, sourcePath.Length).Insert(0, destinationPath);
+                    if (await IsDirectory(sourceFile, sourceBucket))
                     {
-                        var destinationFile = sourceFile.Remove(0, sourcePath.Length).Insert(0, destinationPath);
-                        if (await IsDirectory(sourceFile, sourceBucket))
-                        {
-                            await CreateDirectory(destinationFile, destinationBucket);
-                        }
-                        else
-                        {
-                            await CopyFile(sourceFile, destinationFile, sourceBucket, destinationBucket);
-                        }
+                        await CreateDirectory(destinationFile, destinationBucket);
+                    }
+                    else
+                    {
+                        await CopyFile(sourceFile, destinationFile, sourceBucket, destinationBucket);
                     }
                 }
             }
