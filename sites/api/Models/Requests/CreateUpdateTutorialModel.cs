@@ -16,7 +16,7 @@ namespace api.Models.Requests
         public string Title { get; set; }
 
         [Required]
-        public TutorialType Type { get; set; }
+        public TutorialLanguage Language { get; set; }
 
         public string Description { get; set; }
 
@@ -25,7 +25,7 @@ namespace api.Models.Requests
             return new Tutorial()
             {
                 Title = Title,
-                TutorialType = Type,
+                TutorialLanguage = Language,
                 Description = Description
             };
         }

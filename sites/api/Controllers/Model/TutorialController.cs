@@ -79,9 +79,9 @@ namespace api.Controllers.Model
         }
 
         [HttpGet]
-        public IActionResult GetTutorialTypes()
+        public IActionResult GetTutorialLanguages()
         {
-            return new JsonResult(Enum.GetNames(typeof(TutorialType)));
+            return new JsonResult(Enum.GetNames(typeof(TutorialLanguage)));
         }
 
         protected override async Task EnrichViewModel(TutorialViewModel viewModel, Tutorial entity)

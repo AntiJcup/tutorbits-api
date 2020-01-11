@@ -83,7 +83,7 @@ namespace TutorBits.Video
             {
                 await CancelTranscoding(projectId); //Cancel if running already
             }
-            catch (Exception e) { }
+            catch (Exception) { }
 
             await CreateTranscodingStateFile(projectId, new TranscodingStateFile()
             {

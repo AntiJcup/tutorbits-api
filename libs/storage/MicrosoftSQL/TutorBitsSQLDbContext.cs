@@ -38,14 +38,32 @@ namespace TutorBits
                     //modelBuilder.Entity(typeof(Base)).Property("Status").HasConversion(converter); 
                     //Creates the base table ignoring other tables including attr and totable
                     var baseStateConverter = new EnumToStringConverter<BaseState>();
-                    var tutorialTypeConverter = new EnumToStringConverter<TutorialType>();
+                    var tutorialLanguageConverter = new EnumToStringConverter<TutorialLanguage>();
+                    var tutorialCategoryConverter = new EnumToStringConverter<TutorialCategory>();
+                    var commentTypeConverter = new EnumToStringConverter<CommentType>();
                     foreach (var publicPropertieBaseType in publicPropertieBaseTypes)
                     {
-                        if (publicPropertieBaseType.GetProperties().Any(p => p.Name == "TutorialType"))
+                        if (publicPropertieBaseType.GetProperties().Any(p => p.Name == "TutorialLanguage"))
                         {
                             modelBuilder.Entity(publicPropertieBaseType)
-                                                    .Property("TutorialType")
-                                                    .HasConversion(tutorialTypeConverter)
+                                                    .Property("TutorialLanguage")
+                                                    .HasConversion(tutorialLanguageConverter)
+                                                    .HasMaxLength(64);
+                        }
+
+                        if (publicPropertieBaseType.GetProperties().Any(p => p.Name == "TutorialCategory"))
+                        {
+                            modelBuilder.Entity(publicPropertieBaseType)
+                                                    .Property("TutorialCategory")
+                                                    .HasConversion(tutorialCategoryConverter)
+                                                    .HasMaxLength(64);
+                        }
+
+                        if (publicPropertieBaseType.GetProperties().Any(p => p.Name == "CommentType"))
+                        {
+                            modelBuilder.Entity(publicPropertieBaseType)
+                                                    .Property("CommentType")
+                                                    .HasConversion(commentTypeConverter)
                                                     .HasMaxLength(64);
                         }
 

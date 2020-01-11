@@ -10,7 +10,7 @@ namespace api.Models.Views
 
         public string Title { get; set; }
 
-        public string Type { get; set; }
+        public string Language { get; set; }
 
         public string Description { get; set; }
 
@@ -20,15 +20,18 @@ namespace api.Models.Views
 
         public string ThumbnailUrl { get; set; } //Enriched
 
+        public string Category { get; set; }
+
         public override void Convert(Tutorial baseModel)
         {
             Id = baseModel.Id.ToString();
             Title = baseModel.Title;
-            Type = baseModel.TutorialType.ToString();
+            Language = baseModel.TutorialLanguage.ToString();
             Description = baseModel.Description;
             Status = baseModel.Status.ToString();
             Owner = baseModel.Owner;
             DurationMS = baseModel.DurationMS;
+            Category = baseModel.TutorialCategory.ToString();
         }
     }
 }
