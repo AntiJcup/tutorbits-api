@@ -14,8 +14,8 @@ CREATE TABLE [Comments] (
     [Status] int NOT NULL,
     [Owner] nvarchar(1028) NULL,
     [OwnerAccountId] uniqueidentifier NULL,
-    [Title] int NOT NULL,
-    [Body] int NOT NULL,
+    [Title] nvarchar(256) NULL,
+    [Body] nvarchar(1028) NULL,
     [CommentType] int NOT NULL,
     [TargetId] uniqueidentifier NOT NULL,
     CONSTRAINT [PK_Comments] PRIMARY KEY ([Id]),
@@ -59,7 +59,7 @@ CREATE INDEX [IX_Ratings_TargetId] ON [Ratings] ([TargetId]);
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20200109170957_AddCommentsAndRatings', N'2.2.6-servicing-10079');
+VALUES (N'20200111173703_AddCommentsAndRatings', N'2.2.6-servicing-10079');
 
 GO
 

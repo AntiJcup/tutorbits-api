@@ -10,7 +10,7 @@ using TutorBits.Storage.MicrosoftSQL;
 namespace TutorBits.Storage.MicrosoftSQL.Migrations
 {
     [DbContext(typeof(TutorBitsSQLDbContext))]
-    [Migration("20200109170957_AddCommentsAndRatings")]
+    [Migration("20200111173703_AddCommentsAndRatings")]
     partial class AddCommentsAndRatings
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,7 +68,8 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("Body");
+                    b.Property<string>("Body")
+                        .HasMaxLength(1028);
 
                     b.Property<int>("CommentType");
 
@@ -90,7 +91,8 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.Property<Guid>("TargetId");
 
-                    b.Property<int>("Title");
+                    b.Property<string>("Title")
+                        .HasMaxLength(256);
 
                     b.HasKey("Id");
 

@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 
@@ -7,9 +8,11 @@ namespace TutorBits.Models.Common
     [Table("Comments")]
     public class Comment : BaseModel
     {
-        public int Title { get; set; }
+        [MaxLength(256)]
+        public string Title { get; set; }
 
-        public int Body { get; set; }
+        [MaxLength(1028)]
+        public string Body { get; set; }
 
         public CommentType CommentType { get; set; }
 

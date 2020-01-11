@@ -30,8 +30,8 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     Status = table.Column<int>(nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
-                    Title = table.Column<int>(nullable: false),
-                    Body = table.Column<int>(nullable: false),
+                    Title = table.Column<string>(maxLength: 256, nullable: true),
+                    Body = table.Column<string>(maxLength: 1028, nullable: true),
                     CommentType = table.Column<int>(nullable: false),
                     TargetId = table.Column<Guid>(nullable: false)
                 },
@@ -116,16 +116,10 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 name: "TutorialCategory",
                 table: "Tutorials");
 
-            migrationBuilder.DropColumn(
+            migrationBuilder.RenameColumn(
                 name: "TutorialLanguage",
-                table: "Tutorials");
-
-            migrationBuilder.AddColumn<string>(
-                name: "TutorialType",
                 table: "Tutorials",
-                maxLength: 64,
-                nullable: false,
-                defaultValue: "");
+                newName: "TutorialType");
         }
     }
 }
