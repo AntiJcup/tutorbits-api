@@ -15,19 +15,23 @@ namespace api.Models.Requests
         public string Title { get; set; }
 
         [Required]
-        public TutorialLanguage Language { get; set; }
+        public string Language { get; set; }
 
         [Required]
         [MaxLength(1028)]
         public string Description { get; set; }
+
+        [Required]
+        public string Category { get; set; }
 
         public override Tutorial Create()
         {
             return new Tutorial()
             {
                 Title = Title,
-                TutorialLanguage = Language,
-                Description = Description
+                TutorialLanguage = (TutorialLanguage)Enum.Parse(typeof(TutorialLanguage), Language),
+                Description = Description,
+                TutorialCategory = (TutorialCategory)Enum.Parse(typeof(TutorialCategory), Category),
             };
         }
     }

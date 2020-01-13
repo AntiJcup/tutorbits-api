@@ -19,9 +19,6 @@ namespace api.Models.Requests
         public string Title { get; set; }
 
         [Required]
-        public TutorialLanguage Language { get; set; }
-
-        [Required]
         [MaxLength(1028)]
         public string Description { get; set; }
 
@@ -35,7 +32,6 @@ namespace api.Models.Requests
         public override void Update(Tutorial model)
         {
             model.Title = Title;
-            model.TutorialLanguage = Language;
             model.Description = Description;
         }
     }

@@ -19,7 +19,7 @@ namespace api.Models.Requests
         public string Body { get; set; }
 
         [Required]
-        public CommentType Type { get; set; }
+        public string Type { get; set; }
 
         [Required]
         public Guid TargetTutorialId { get; set; }
@@ -29,7 +29,7 @@ namespace api.Models.Requests
             return new Comment()
             {
                 Title = Title,
-                CommentType = Type,
+                CommentType = (CommentType)Enum.Parse(typeof(CommentType), Type),
                 Body = Body,
                 TargetId = TargetTutorialId
             };

@@ -48,12 +48,14 @@ namespace TutorBits.DBDataAccess
 
         public async Task UpdateBaseModel<TModel>(TModel model) where TModel : BaseModel, new()
         {
+            model.DateModified = DateTime.Now;
             await dataLayer_.Update(model);
         }
 
         public async Task DeleteBaseModel<TModel>(TModel model) where TModel : BaseModel, new()
         {
             model.Status = BaseState.Deleted;
+            model.DateModified = DateTime.Now;
             await dataLayer_.Update(model);
         }
 
