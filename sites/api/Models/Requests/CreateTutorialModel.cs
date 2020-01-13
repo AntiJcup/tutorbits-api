@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations;
 using api.Models.Updates;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
@@ -6,10 +7,8 @@ using TutorBits.Models.Common;
 
 namespace api.Models.Requests
 {
-    public class CreateUpdateTutorialModel : BaseConvertableModel<Tutorial>
+    public class CreateTutorialModel : BaseCreateModel<Tutorial>
     {
-        public string Id { get; set; }
-
         [MinLength(4)]
         [MaxLength(64)]
         [Required]
@@ -18,9 +17,11 @@ namespace api.Models.Requests
         [Required]
         public TutorialLanguage Language { get; set; }
 
+        [Required]
+        [MaxLength(1028)]
         public string Description { get; set; }
 
-        public override Tutorial Convert()
+        public override Tutorial Create()
         {
             return new Tutorial()
             {

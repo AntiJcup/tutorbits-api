@@ -26,8 +26,8 @@ namespace api.Controllers.Model
 
     public abstract class BaseModelController<TModel, TCreateModel, TUpdateModel, TViewModel> : TutorBitsController
         where TModel : BaseModel, new()
-        where TCreateModel : BaseConvertableModel<TModel>
-        where TUpdateModel : BaseConvertableModel<TModel>
+        where TCreateModel : BaseCreateModel<TModel>
+        where TUpdateModel : BaseUpdateModel<TModel>
         where TViewModel : BaseViewModel<TModel>, new()
     {
         protected readonly DBDataAccessService dbDataAccessService_;
@@ -133,7 +133,7 @@ namespace api.Controllers.Model
                 return BadRequest(ModelState);
             }
 
-            var model = createModel.Convert();
+            var model = createModel.Create();
             await EnrichModel(model, Action.Create);
             var entity = await dbDataAccessService_.CreateBaseModel(model);
             var viewModel = new TViewModel();
@@ -151,19 +151,20 @@ namespace api.Controllers.Model
                 return BadRequest(ModelState);
             }
 
-            var model = updateModel.Convert();
-            var modelKeys = await GetKeysFromModel(model);
-            var oldModel = await dbDataAccessService_.GetBaseModel<TModel>(modelKeys);
+            var modelKeys = updateModel.GetKeys();
+            var model = await dbDataAccessService_.GetBaseModel<TModel>(modelKeys);
 
-            if (oldModel == null)
+            if (model == null)
             {
                 return NotFound(); //Update cant be called on items that dont exist
             }
 
-            if (!HasAccessToModel(oldModel))
+            if (!HasAccessToModel(model))
             {
                 return Forbid(); //Only the owner and admins can modify this data
             }
+
+            updateModel.Update(model);
 
             await EnrichModel(model, Action.Update);
             await dbDataAccessService_.UpdateBaseModel(model);

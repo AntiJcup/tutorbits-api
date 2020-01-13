@@ -8,6 +8,7 @@ namespace TutorBits.Models.Common
     [Table("Ratings")]
     public class Rating : BaseModel
     {
+        [Range(0, 5)]
         public int Score { get; set; }
 
         public Guid TargetId { get; set; }

@@ -20,7 +20,7 @@ namespace tutorbits_api.Controllers
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize(Policy = "IsAdmin")]
-    public class AccountController : BaseModelController<Account, CreateUpdateAccountModel, CreateUpdateAccountModel, AccountViewModel>
+    public class AccountController : BaseModelController<Account, CreateAccountModel, UpdateAccountModel, AccountViewModel>
     {
         private readonly AuthAccessService authService_;
 
@@ -75,7 +75,7 @@ namespace tutorbits_api.Controllers
 
         [Authorize(Policy = "IsAdmin")]
         [HttpPost]
-        public override async Task<IActionResult> Create([FromBody] CreateUpdateAccountModel createModel)
+        public override async Task<IActionResult> Create([FromBody] CreateAccountModel createModel)
         {
             return await base.Create(createModel);
         }
@@ -103,7 +103,7 @@ namespace tutorbits_api.Controllers
 
         [Authorize(Policy = "IsAdmin")]
         [HttpPost]
-        public override async Task<IActionResult> Update([FromBody] CreateUpdateAccountModel updateModel)
+        public override async Task<IActionResult> Update([FromBody] UpdateAccountModel updateModel)
         {
             return await base.Update(updateModel);
         }

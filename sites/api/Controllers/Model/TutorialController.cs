@@ -18,7 +18,7 @@ namespace api.Controllers.Model
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class TutorialController : BaseModelController<Tutorial, CreateUpdateTutorialModel, CreateUpdateTutorialModel, TutorialViewModel>
+    public class TutorialController : BaseModelController<Tutorial, CreateTutorialModel, UpdateTutorialModel, TutorialViewModel>
     {
         private readonly PreviewService previewService_;
         private readonly ProjectService projectService_;
