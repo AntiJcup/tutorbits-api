@@ -168,7 +168,12 @@ namespace api.Controllers.Model
 
             await EnrichModel(model, Action.Update);
             await dbDataAccessService_.UpdateBaseModel(model);
-            return Ok();
+
+            var viewModel = new TViewModel();
+            viewModel.Convert(model);
+            await EnrichViewModel(viewModel, model);
+            
+            return new JsonResult(viewModel);
         }
 
         [Authorize]

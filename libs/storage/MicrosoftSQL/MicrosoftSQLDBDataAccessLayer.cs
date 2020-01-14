@@ -56,6 +56,29 @@ namespace TutorBits
                     return Expression.Lambda<Func<T, bool>>(previousExpression, param);
                 }
 
+                protected Expression<Func<T, bool>> GetIndexLambda<T>(params object[] keys) where T : class, new()
+                {
+                    var modelKeys = dbContext_.Model.FindEntityType(typeof(T)).GetIndexes();
+                    Expression previousExpression = null;
+                    var keyIndex = 0;
+                    var param = Expression.Parameter(typeof(T), "entity");
+
+                    foreach (var modelKey in modelKeys)
+                    {
+                        var property = Expression.Property(param, modelKey.Properties[0].PropertyInfo);
+                        dynamic val = keys[keyIndex++];
+                        if (previousExpression == null)
+                        {
+                            previousExpression = Expression.Equal(property, Expression.Constant(val));
+                            continue;
+                        }
+
+                        previousExpression = Expression.Or(previousExpression, Expression.Equal(property, Expression.Constant(val)));
+                    }
+
+                    return Expression.Lambda<Func<T, bool>>(previousExpression, param);
+                }
+
                 public async Task<T> Create<T>(T entity) where T : class, new()
                 {
                     var dbEntity = (await dbContext_.AddAsync(entity)).Entity;

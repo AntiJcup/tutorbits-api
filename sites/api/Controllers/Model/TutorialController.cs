@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using api.Models.Requests;
 using api.Models.Views;
@@ -7,8 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using TutorBits.AccountAccess;
 using TutorBits.DBDataAccess;
-using TutorBits.FileDataAccess;
-using TutorBits.LambdaAccess;
 using TutorBits.Models.Common;
 using TutorBits.Preview;
 using TutorBits.Project;
@@ -82,6 +82,13 @@ namespace api.Controllers.Model
         public IActionResult GetTutorialLanguages()
         {
             return new JsonResult(Enum.GetNames(typeof(TutorialLanguage)));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckTitle([FromQuery] string title)
+        {
+            return new JsonResult(!(await dbDataAccessService_.GetAllBaseModel((Expression<Func<Tutorial, Boolean>>)(m => m.Title == title)))
+                .Any());
         }
 
         protected override async Task EnrichViewModel(TutorialViewModel viewModel, Tutorial entity)

@@ -10,15 +10,15 @@ namespace api.Models.Requests
 {
     public class UpdateAccountModel : BaseUpdateModel<Account>
     {
-        [Required]
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
 
         [Required]
         [MaxLength(256)]
         [MinLength(4)]
+        [RegularExpression("^[a-zA-Z0-9._-]+$")]
         public string NickName { get; set; }
 
-        public bool AcceptOffers { get; set; }
+        public bool? AcceptOffers { get; set; }
 
         public override ICollection<object> GetKeys()
         {
@@ -30,7 +30,7 @@ namespace api.Models.Requests
         public override void Update(Account model)
         {
             model.NickName = NickName;
-            model.AcceptOffers = AcceptOffers;
+            model.AcceptOffers = AcceptOffers.HasValue ? AcceptOffers.Value : model.AcceptOffers;
         }
     }
 }

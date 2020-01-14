@@ -15,6 +15,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
+    <PackageReference Include="Toolbelt.EntityFrameworkCore.IndexAttribute.SqlServer" Version="1.0.0.2" />
   </ItemGroup>
 
   <ItemGroup>

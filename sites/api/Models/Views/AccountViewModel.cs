@@ -5,6 +5,8 @@ namespace api.Models.Views
 {
     public class AccountViewModel : BaseViewModel<Account>
     {
+        public string Id { get; set; }
+
         public string UserId { get; set; }
 
         public string NickName { get; set; }
@@ -15,6 +17,7 @@ namespace api.Models.Views
 
         public override void Convert(Account baseModel)
         {
+            Id = baseModel.Id.ToString();
             UserId = baseModel.Owner;
             NickName = baseModel.NickName;
             Email = baseModel.Email;

@@ -45,7 +45,7 @@ namespace TutorBits.AccountAccess
             {
                 Owner = user.Name,
                 Email = user.Email,
-                NickName = !string.IsNullOrWhiteSpace(nickName) ? nickName : $"TBit_{Guid.NewGuid().GetHashCode().ToString()}",
+                NickName = ValidateNickName(nickName) && !(await DoesNickNameExist(nickName)) ? nickName : $"TBit_{Guid.NewGuid().GetHashCode().ToString()}",
                 AcceptOffers = false,
                 Status = BaseState.Active
             };
@@ -56,35 +56,13 @@ namespace TutorBits.AccountAccess
         public bool ValidateNickName(string nickName)
         {
             var regex = new Regex("^[a-z0-9._-]+$", RegexOptions.IgnoreCase);
-            return regex.IsMatch(nickName);
+            return !string.IsNullOrWhiteSpace(nickName) && regex.IsMatch(nickName);
         }
 
         public async Task<bool> DoesNickNameExist(string nickName)
         {
-            return (await dbService_.GetAllBaseModel((Expression<Func<Account, Boolean>>)(m => m.NickName == nickName && m.Status != BaseState.Deleted)))
+            return (await dbService_.GetAllBaseModel((Expression<Func<Account, Boolean>>)(m => m.NickName == nickName)))
                 .Any();
-        }
-
-        public async Task<Account> UpdateNickName(Account account, string nickName)
-        {
-            if (account == null)
-            {
-                throw new Exception("Account not found");
-            }
-
-            if (!ValidateNickName(nickName))
-            {
-                throw new Exception("Invalid name");
-            }
-
-            account.NickName = nickName;
-            if ((await DoesNickNameExist(nickName)))
-            {
-                throw new Exception("Account name already taken");
-            }
-
-            await dbService_.UpdateBaseModel(account);
-            return account;
         }
     }
 }

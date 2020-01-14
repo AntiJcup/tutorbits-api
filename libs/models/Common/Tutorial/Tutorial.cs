@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Toolbelt.ComponentModel.DataAnnotations.Schema;
 
 namespace TutorBits.Models.Common
 {
@@ -9,6 +10,7 @@ namespace TutorBits.Models.Common
     public class Tutorial : BaseModel
     {
         [MaxLength(64)]
+        [Index]
         public string Title { get; set; }
 
         public TutorialLanguage TutorialLanguage { get; set; }

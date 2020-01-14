@@ -57,20 +57,10 @@ namespace tutorbits_api.Controllers
             return new JsonResult(accountView);
         }
 
-        [Authorize]
-        [HttpPost]
-        public async Task<IActionResult> UpdateNickName([FromQuery]string nickName)
+        [HttpGet]
+        public async Task<IActionResult> CheckNickName([FromQuery] string nickName)
         {
-            try
-            {
-                var account = (await accountAccessService_.GetAccount(UserName));
-                account = await accountAccessService_.UpdateNickName(account, nickName);
-                return new JsonResult(account);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
+            return new JsonResult(!(await accountAccessService_.DoesNickNameExist(nickName)));
         }
 
         [Authorize(Policy = "IsAdmin")]
@@ -99,13 +89,6 @@ namespace tutorbits_api.Controllers
         public override async Task<IActionResult> GetById([FromQuery] Guid id)
         {
             return await base.GetById(id);
-        }
-
-        [Authorize(Policy = "IsAdmin")]
-        [HttpPost]
-        public override async Task<IActionResult> Update([FromBody] UpdateAccountModel updateModel)
-        {
-            return await base.Update(updateModel);
         }
 
         [Authorize(Policy = "IsAdmin")]

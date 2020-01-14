@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TutorBits.Models.Common;
+using Toolbelt.ComponentModel.DataAnnotations;
 
 namespace TutorBits
 {
@@ -27,6 +28,10 @@ namespace TutorBits
 
                 protected override void OnModelCreating(ModelBuilder modelBuilder)
                 {
+                    base.OnModelCreating(modelBuilder);
+
+                    modelBuilder.BuildIndexesFromAnnotationsForSqlServer();
+                    
                     //Auto generates tables that are of base type
                     var publicPropertieBaseTypes = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
                                 .Where(p => p.PropertyType.IsGenericType &&

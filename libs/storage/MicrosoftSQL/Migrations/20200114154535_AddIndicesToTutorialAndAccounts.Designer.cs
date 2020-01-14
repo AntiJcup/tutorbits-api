@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TutorBits.Storage.MicrosoftSQL;
 
 namespace TutorBits.Storage.MicrosoftSQL.Migrations
 {
     [DbContext(typeof(TutorBitsSQLDbContext))]
-    partial class TutorBitsSQLDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200114154535_AddIndicesToTutorialAndAccounts")]
+    partial class AddIndicesToTutorialAndAccounts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
