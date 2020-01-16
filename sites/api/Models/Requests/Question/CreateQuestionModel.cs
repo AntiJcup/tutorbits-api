@@ -25,7 +25,7 @@ namespace api.Models.Requests
             return new Question()
             {
                 Title = Title,
-                TutorialLanguage = (TutorialLanguage)Enum.Parse(typeof(TutorialLanguage), Language),
+                QuestionTopic = (QuestionTopics)Enum.Parse(typeof(QuestionTopics), Language),
                 Description = Description,
             };
         }

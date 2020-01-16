@@ -91,7 +91,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.Property<int>("Status");
 
-                    b.Property<Guid?>("TargetId");
+                    b.Property<Guid>("TargetId");
 
                     b.Property<string>("Title")
                         .HasMaxLength(256);
@@ -129,7 +129,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.Property<int>("Status");
 
-                    b.Property<Guid?>("TargetId");
+                    b.Property<Guid>("TargetId");
 
                     b.Property<string>("Title")
                         .HasMaxLength(256);
@@ -235,16 +235,16 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.Property<Guid?>("OwnerAccountId");
 
+                    b.Property<string>("QuestionTopic")
+                        .IsRequired()
+                        .HasMaxLength(64);
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(64);
 
                     b.Property<string>("Title")
                         .HasMaxLength(256);
-
-                    b.Property<string>("TutorialLanguage")
-                        .IsRequired()
-                        .HasMaxLength(64);
 
                     b.HasKey("Id");
 
@@ -280,7 +280,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.Property<int>("Status");
 
-                    b.Property<Guid?>("TargetId");
+                    b.Property<Guid>("TargetId");
 
                     b.Property<string>("Title")
                         .HasMaxLength(256);
@@ -400,7 +400,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         .IsRequired()
                         .HasMaxLength(64);
 
-                    b.Property<string>("TutorialLanguage")
+                    b.Property<string>("TutorialTopic")
                         .IsRequired()
                         .HasMaxLength(64);
 
@@ -535,7 +535,8 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.HasOne("TutorBits.Models.Common.Question", "Target")
                         .WithMany("Answers")
-                        .HasForeignKey("TargetId");
+                        .HasForeignKey("TargetId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("TutorBits.Models.Common.AnswerComment", b =>
@@ -546,7 +547,8 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.HasOne("TutorBits.Models.Common.Answer", "Target")
                         .WithMany("Comments")
-                        .HasForeignKey("TargetId");
+                        .HasForeignKey("TargetId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("TutorBits.Models.Common.AnswerCommentRating", b =>
@@ -588,7 +590,8 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.HasOne("TutorBits.Models.Common.Question", "Target")
                         .WithMany("Comments")
-                        .HasForeignKey("TargetId");
+                        .HasForeignKey("TargetId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("TutorBits.Models.Common.QuestionCommentRating", b =>

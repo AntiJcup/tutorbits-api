@@ -1,4 +1,4 @@
-EXEC sp_rename N'[Tutorials].[TutorialType]', N'TutorialLanguage', N'COLUMN';
+EXEC sp_rename N'[Tutorials].[TutorialType]', N'TutorialTopic', N'COLUMN';
 
 GO
 
@@ -35,7 +35,7 @@ CREATE TABLE [Questions] (
     [Owner] nvarchar(1028) NULL,
     [OwnerAccountId] uniqueidentifier NULL,
     [Title] nvarchar(256) NULL,
-    [TutorialLanguage] nvarchar(64) NOT NULL,
+    [QuestionTopic] nvarchar(64) NOT NULL,
     [Description] nvarchar(2056) NULL,
     CONSTRAINT [PK_Questions] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_Questions_Accounts_OwnerAccountId] FOREIGN KEY ([OwnerAccountId]) REFERENCES [Accounts] ([Id]) ON DELETE NO ACTION
@@ -86,12 +86,12 @@ CREATE TABLE [Answer] (
     [Status] int NOT NULL,
     [Owner] nvarchar(1028) NULL,
     [OwnerAccountId] uniqueidentifier NULL,
+    [TargetId] uniqueidentifier NOT NULL,
     [Title] nvarchar(256) NULL,
     [Body] nvarchar(1028) NULL,
-    [TargetId] uniqueidentifier NULL,
     CONSTRAINT [PK_Answer] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_Answer_Accounts_OwnerAccountId] FOREIGN KEY ([OwnerAccountId]) REFERENCES [Accounts] ([Id]) ON DELETE NO ACTION,
-    CONSTRAINT [FK_Answer_Questions_TargetId] FOREIGN KEY ([TargetId]) REFERENCES [Questions] ([Id]) ON DELETE NO ACTION
+    CONSTRAINT [FK_Answer_Questions_TargetId] FOREIGN KEY ([TargetId]) REFERENCES [Questions] ([Id]) ON DELETE CASCADE
 );
 
 GO
@@ -104,12 +104,12 @@ CREATE TABLE [QuestionComment] (
     [Status] int NOT NULL,
     [Owner] nvarchar(1028) NULL,
     [OwnerAccountId] uniqueidentifier NULL,
+    [TargetId] uniqueidentifier NOT NULL,
     [Title] nvarchar(256) NULL,
     [Body] nvarchar(1028) NULL,
-    [TargetId] uniqueidentifier NULL,
     CONSTRAINT [PK_QuestionComment] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_QuestionComment_Accounts_OwnerAccountId] FOREIGN KEY ([OwnerAccountId]) REFERENCES [Accounts] ([Id]) ON DELETE NO ACTION,
-    CONSTRAINT [FK_QuestionComment_Questions_TargetId] FOREIGN KEY ([TargetId]) REFERENCES [Questions] ([Id]) ON DELETE NO ACTION
+    CONSTRAINT [FK_QuestionComment_Questions_TargetId] FOREIGN KEY ([TargetId]) REFERENCES [Questions] ([Id]) ON DELETE CASCADE
 );
 
 GO
@@ -122,8 +122,8 @@ CREATE TABLE [QuestionRating] (
     [Status] int NOT NULL,
     [Owner] nvarchar(1028) NULL,
     [OwnerAccountId] uniqueidentifier NULL,
-    [Score] int NOT NULL,
     [TargetId] uniqueidentifier NOT NULL,
+    [Score] int NOT NULL,
     CONSTRAINT [PK_QuestionRating] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_QuestionRating_Accounts_OwnerAccountId] FOREIGN KEY ([OwnerAccountId]) REFERENCES [Accounts] ([Id]) ON DELETE NO ACTION,
     CONSTRAINT [FK_QuestionRating_Questions_TargetId] FOREIGN KEY ([TargetId]) REFERENCES [Questions] ([Id]) ON DELETE CASCADE
@@ -156,12 +156,12 @@ CREATE TABLE [AnswerComment] (
     [Status] int NOT NULL,
     [Owner] nvarchar(1028) NULL,
     [OwnerAccountId] uniqueidentifier NULL,
+    [TargetId] uniqueidentifier NOT NULL,
     [Title] nvarchar(256) NULL,
     [Body] nvarchar(1028) NULL,
-    [TargetId] uniqueidentifier NULL,
     CONSTRAINT [PK_AnswerComment] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_AnswerComment_Accounts_OwnerAccountId] FOREIGN KEY ([OwnerAccountId]) REFERENCES [Accounts] ([Id]) ON DELETE NO ACTION,
-    CONSTRAINT [FK_AnswerComment_Answer_TargetId] FOREIGN KEY ([TargetId]) REFERENCES [Answer] ([Id]) ON DELETE NO ACTION
+    CONSTRAINT [FK_AnswerComment_Answer_TargetId] FOREIGN KEY ([TargetId]) REFERENCES [Answer] ([Id]) ON DELETE CASCADE
 );
 
 GO
@@ -174,8 +174,8 @@ CREATE TABLE [AnswerRating] (
     [Status] int NOT NULL,
     [Owner] nvarchar(1028) NULL,
     [OwnerAccountId] uniqueidentifier NULL,
-    [Score] int NOT NULL,
     [TargetId] uniqueidentifier NOT NULL,
+    [Score] int NOT NULL,
     CONSTRAINT [PK_AnswerRating] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_AnswerRating_Accounts_OwnerAccountId] FOREIGN KEY ([OwnerAccountId]) REFERENCES [Accounts] ([Id]) ON DELETE NO ACTION,
     CONSTRAINT [FK_AnswerRating_Answer_TargetId] FOREIGN KEY ([TargetId]) REFERENCES [Answer] ([Id]) ON DELETE CASCADE
@@ -191,8 +191,8 @@ CREATE TABLE [QuestionCommentRating] (
     [Status] int NOT NULL,
     [Owner] nvarchar(1028) NULL,
     [OwnerAccountId] uniqueidentifier NULL,
-    [Score] int NOT NULL,
     [TargetId] uniqueidentifier NOT NULL,
+    [Score] int NOT NULL,
     CONSTRAINT [PK_QuestionCommentRating] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_QuestionCommentRating_Accounts_OwnerAccountId] FOREIGN KEY ([OwnerAccountId]) REFERENCES [Accounts] ([Id]) ON DELETE NO ACTION,
     CONSTRAINT [FK_QuestionCommentRating_QuestionComment_TargetId] FOREIGN KEY ([TargetId]) REFERENCES [QuestionComment] ([Id]) ON DELETE CASCADE
@@ -208,8 +208,8 @@ CREATE TABLE [AnswerCommentRating] (
     [Status] int NOT NULL,
     [Owner] nvarchar(1028) NULL,
     [OwnerAccountId] uniqueidentifier NULL,
-    [Score] int NOT NULL,
     [TargetId] uniqueidentifier NOT NULL,
+    [Score] int NOT NULL,
     CONSTRAINT [PK_AnswerCommentRating] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_AnswerCommentRating_Accounts_OwnerAccountId] FOREIGN KEY ([OwnerAccountId]) REFERENCES [Accounts] ([Id]) ON DELETE NO ACTION,
     CONSTRAINT [FK_AnswerCommentRating_AnswerComment_TargetId] FOREIGN KEY ([TargetId]) REFERENCES [AnswerComment] ([Id]) ON DELETE CASCADE
@@ -318,7 +318,7 @@ CREATE INDEX [IX_TutorialRating_TargetId] ON [TutorialRating] ([TargetId]);
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20200115175027_Questions', N'2.2.6-servicing-10079');
+VALUES (N'20200116152446_Questions', N'2.2.6-servicing-10079');
 
 GO
 

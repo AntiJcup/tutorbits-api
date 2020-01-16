@@ -33,9 +33,9 @@ namespace api.Controllers.Model
         }
 
         [HttpGet]
-        public IActionResult GetQuestionLanguages()
+        public IActionResult GetQuestionTopics()
         {
-            return new JsonResult(Enum.GetNames(typeof(TutorialLanguage)));
+            return new JsonResult(Enum.GetNames(typeof(QuestionTopics)));
         }
 
         [HttpGet]

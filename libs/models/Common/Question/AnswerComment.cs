@@ -8,8 +8,6 @@ namespace TutorBits.Models.Common
 {
     public class AnswerComment : Comment
     {
-        public Guid? TargetId { get; set; }
-
         [ForeignKey("TargetId")]
         public virtual Answer Target { get; set; }
 

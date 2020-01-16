@@ -13,7 +13,7 @@ namespace TutorBits.Models.Common
         [Index]
         public string Title { get; set; }
 
-        public TutorialLanguage TutorialLanguage { get; set; }
+        public TutorialTopics TutorialTopic { get; set; }
 
         [MaxLength(1028)]
         public string Description { get; set; }

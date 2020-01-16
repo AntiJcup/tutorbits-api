@@ -9,7 +9,7 @@ namespace api.Models.Views
 
         public string Title { get; set; }
 
-        public string Language { get; set; }
+        public string Topic { get; set; }
 
         public string Description { get; set; }
 
@@ -17,15 +17,11 @@ namespace api.Models.Views
 
         public UInt64 DurationMS { get; set; }
 
-        public string ThumbnailUrl { get; set; } //Enriched
-
-        public string Category { get; set; }
-
         public override void Convert(Question baseModel)
         {
             Id = baseModel.Id.ToString();
             Title = baseModel.Title;
-            Language = baseModel.TutorialLanguage.ToString();
+            Topic = baseModel.QuestionTopic.ToString();
             Description = baseModel.Description;
             Status = baseModel.Status.ToString();
             Owner = baseModel.Owner;

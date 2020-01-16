@@ -10,8 +10,6 @@ namespace api.Models.Views
 
         public string Body { get; set; }
 
-        public string Type { get; set; }
-
         public string Status { get; set; }
 
         protected void BaseConvert(Comment baseModel)

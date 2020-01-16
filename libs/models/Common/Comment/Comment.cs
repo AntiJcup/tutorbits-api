@@ -7,6 +7,9 @@ namespace TutorBits.Models.Common
 {
     public class Comment : BaseModel
     {
+        [Required]
+        public Guid TargetId { get; set; }
+
         [MaxLength(256)]
         public string Title { get; set; }
 

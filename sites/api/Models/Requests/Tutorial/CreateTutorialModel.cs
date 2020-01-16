@@ -28,7 +28,7 @@ namespace api.Models.Requests
             return new Tutorial()
             {
                 Title = Title,
-                TutorialLanguage = (TutorialLanguage)Enum.Parse(typeof(TutorialLanguage), Language),
+                TutorialTopic = (TutorialTopics)Enum.Parse(typeof(TutorialTopics), Language),
                 Description = Description,
                 TutorialCategory = (TutorialCategory)Enum.Parse(typeof(TutorialCategory), Category),
             };

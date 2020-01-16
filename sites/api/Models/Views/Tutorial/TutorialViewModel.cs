@@ -9,7 +9,7 @@ namespace api.Models.Views
 
         public string Title { get; set; }
 
-        public string Language { get; set; }
+        public string Topic { get; set; }
 
         public string Description { get; set; }
 
@@ -25,7 +25,7 @@ namespace api.Models.Views
         {
             Id = baseModel.Id.ToString();
             Title = baseModel.Title;
-            Language = baseModel.TutorialLanguage.ToString();
+            Topic = baseModel.TutorialTopic.ToString();
             Description = baseModel.Description;
             Status = baseModel.Status.ToString();
             Owner = baseModel.Owner;

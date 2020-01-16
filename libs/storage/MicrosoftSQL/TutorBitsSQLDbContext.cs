@@ -45,16 +45,25 @@ namespace TutorBits
                     //modelBuilder.Entity(typeof(Base)).Property("Status").HasConversion(converter); 
                     //Creates the base table ignoring other tables including attr and totable
                     var baseStateConverter = new EnumToStringConverter<BaseState>();
-                    var tutorialLanguageConverter = new EnumToStringConverter<TutorialLanguage>();
+                    var tutorialTopicConverter = new EnumToStringConverter<TutorialTopics>();
+                    var questionTopicConverter = new EnumToStringConverter<QuestionTopics>();
                     var tutorialCategoryConverter = new EnumToStringConverter<TutorialCategory>();
                     var commentTypeConverter = new EnumToStringConverter<CommentType>();
                     foreach (var publicPropertieBaseType in publicPropertieBaseTypes)
                     {
-                        if (publicPropertieBaseType.GetProperties().Any(p => p.Name == "TutorialLanguage"))
+                        if (publicPropertieBaseType.GetProperties().Any(p => p.Name == "TutorialTopic"))
                         {
                             modelBuilder.Entity(publicPropertieBaseType)
-                                                    .Property("TutorialLanguage")
-                                                    .HasConversion(tutorialLanguageConverter)
+                                                    .Property("TutorialTopic")
+                                                    .HasConversion(tutorialTopicConverter)
+                                                    .HasMaxLength(64);
+                        }
+
+                        if (publicPropertieBaseType.GetProperties().Any(p => p.Name == "QuestionTopic"))
+                        {
+                            modelBuilder.Entity(publicPropertieBaseType)
+                                                    .Property("QuestionTopic")
+                                                    .HasConversion(questionTopicConverter)
                                                     .HasMaxLength(64);
                         }
 

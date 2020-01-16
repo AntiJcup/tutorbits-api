@@ -10,7 +10,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
             migrationBuilder.RenameColumn(
                 name: "TutorialType",
                 table: "Tutorials",
-                newName: "TutorialLanguage");
+                newName: "TutorialTopic");
 
             migrationBuilder.AddColumn<string>(
                 name: "TutorialCategory",
@@ -45,7 +45,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
                     Title = table.Column<string>(maxLength: 256, nullable: true),
-                    TutorialLanguage = table.Column<string>(maxLength: 64, nullable: false),
+                    QuestionTopic = table.Column<string>(maxLength: 64, nullable: false),
                     Description = table.Column<string>(maxLength: 2056, nullable: true)
                 },
                 constraints: table =>
@@ -133,9 +133,9 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     Status = table.Column<int>(nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
+                    TargetId = table.Column<Guid>(nullable: false),
                     Title = table.Column<string>(maxLength: 256, nullable: true),
-                    Body = table.Column<string>(maxLength: 1028, nullable: true),
-                    TargetId = table.Column<Guid>(nullable: true)
+                    Body = table.Column<string>(maxLength: 1028, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -151,7 +151,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         column: x => x.TargetId,
                         principalTable: "Questions",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -165,9 +165,9 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     Status = table.Column<int>(nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
+                    TargetId = table.Column<Guid>(nullable: false),
                     Title = table.Column<string>(maxLength: 256, nullable: true),
-                    Body = table.Column<string>(maxLength: 1028, nullable: true),
-                    TargetId = table.Column<Guid>(nullable: true)
+                    Body = table.Column<string>(maxLength: 1028, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -183,7 +183,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         column: x => x.TargetId,
                         principalTable: "Questions",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -197,8 +197,8 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     Status = table.Column<int>(nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
-                    Score = table.Column<int>(nullable: false),
-                    TargetId = table.Column<Guid>(nullable: false)
+                    TargetId = table.Column<Guid>(nullable: false),
+                    Score = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -259,9 +259,9 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     Status = table.Column<int>(nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
+                    TargetId = table.Column<Guid>(nullable: false),
                     Title = table.Column<string>(maxLength: 256, nullable: true),
-                    Body = table.Column<string>(maxLength: 1028, nullable: true),
-                    TargetId = table.Column<Guid>(nullable: true)
+                    Body = table.Column<string>(maxLength: 1028, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -277,7 +277,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         column: x => x.TargetId,
                         principalTable: "Answer",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -291,8 +291,8 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     Status = table.Column<int>(nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
-                    Score = table.Column<int>(nullable: false),
-                    TargetId = table.Column<Guid>(nullable: false)
+                    TargetId = table.Column<Guid>(nullable: false),
+                    Score = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -322,8 +322,8 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     Status = table.Column<int>(nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
-                    Score = table.Column<int>(nullable: false),
-                    TargetId = table.Column<Guid>(nullable: false)
+                    TargetId = table.Column<Guid>(nullable: false),
+                    Score = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -353,8 +353,8 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     Status = table.Column<int>(nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
-                    Score = table.Column<int>(nullable: false),
-                    TargetId = table.Column<Guid>(nullable: false)
+                    TargetId = table.Column<Guid>(nullable: false),
+                    Score = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -555,7 +555,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 table: "Tutorials");
 
             migrationBuilder.RenameColumn(
-                name: "TutorialLanguage",
+                name: "TutorialTopic",
                 table: "Tutorials",
                 newName: "TutorialType");
 

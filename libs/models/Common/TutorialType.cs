@@ -1,6 +1,15 @@
 namespace TutorBits.Models.Common
 {
-    public enum TutorialLanguage
+    public enum TutorialTopics
+    {
+        Javascript,
+        Html,
+        CSS,
+        Website,
+        Other,
+    }
+
+    public enum QuestionTopics
     {
         Javascript,
         Html,

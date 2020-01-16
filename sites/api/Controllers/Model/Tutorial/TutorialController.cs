@@ -79,9 +79,9 @@ namespace api.Controllers.Model
         }
 
         [HttpGet]
-        public IActionResult GetTutorialLanguages()
+        public IActionResult GetTutorialTopics()
         {
-            return new JsonResult(Enum.GetNames(typeof(TutorialLanguage)));
+            return new JsonResult(Enum.GetNames(typeof(TutorialTopics)));
         }
 
         [HttpGet]
