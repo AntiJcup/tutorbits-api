@@ -36,7 +36,9 @@ namespace api.Controllers.Model
             }
 
             var entityCount = await dbDataAccessService_.CountAllBaseModel(
-                state == BaseState.Undefined ? (Expression<Func<TModel, Boolean>>)(m => m.TargetId == targetId) : (Expression<Func<TModel, Boolean>>)(m => m.Status == state && m.TargetId == targetId));
+                state == BaseState.Undefined ? 
+                    (Expression<Func<TModel, Boolean>>)(m => m.TargetId == targetId) : 
+                    (Expression<Func<TModel, Boolean>>)(m => m.Status == state && m.TargetId == targetId));
 
             return new JsonResult(entityCount);
         }
@@ -50,7 +52,9 @@ namespace api.Controllers.Model
             }
 
             var entities = await dbDataAccessService_.GetAllBaseModel(
-                state == BaseState.Undefined ? (Expression<Func<TModel, Boolean>>)(m => m.TargetId == targetId) : (Expression<Func<TModel, Boolean>>)(m => m.Status == state && m.TargetId == targetId));
+                state == BaseState.Undefined ? 
+                    (Expression<Func<TModel, Boolean>>)(m => m.TargetId == targetId) : 
+                    (Expression<Func<TModel, Boolean>>)(m => m.Status == state && m.TargetId == targetId));
 
             var score = 1;
             foreach (var rating in entities)
