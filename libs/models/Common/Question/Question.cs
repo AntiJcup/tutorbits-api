@@ -6,27 +6,26 @@ using Toolbelt.ComponentModel.DataAnnotations.Schema;
 
 namespace TutorBits.Models.Common
 {
-    [Table("Tutorials")]
-    public class Tutorial : BaseModel
+    [Table("Questions")]
+    public class Question : BaseModel
     {
-        [MaxLength(64)]
+        [MaxLength(256)]
         [Index]
         public string Title { get; set; }
 
         public TutorialLanguage TutorialLanguage { get; set; }
 
-        [MaxLength(1028)]
+        [MaxLength(2056)]
         public string Description { get; set; }
 
-        public UInt64 DurationMS { get; set; }
-
-        public TutorialCategory TutorialCategory { get; set; }
+        [InverseProperty("Target")]
+        public virtual ICollection<QuestionRating> Ratings { get; set; }
 
         [InverseProperty("Target")]
-        public virtual ICollection<TutorialRating> Ratings { get; set; }
+        public virtual ICollection<QuestionComment> Comments { get; set; }
 
         [InverseProperty("Target")]
-        public virtual ICollection<TutorialComment> Comments { get; set; }
+        public virtual ICollection<Answer> Answers { get; set; }
 
     }
 }

@@ -12,7 +12,7 @@ namespace TutorBits.Models.Common
     public enum TutorialCategory
     {
         Tutorial,
-        Question,
+        Answer,
         Example,
         Library
     }

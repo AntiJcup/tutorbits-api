@@ -26,12 +26,14 @@ namespace TutorBits
 
                 public DbSet<Account> Accounts { get; set; }
 
+                public DbSet<Question> Questions { get; set; }
+
                 protected override void OnModelCreating(ModelBuilder modelBuilder)
                 {
                     base.OnModelCreating(modelBuilder);
 
                     modelBuilder.BuildIndexesFromAnnotationsForSqlServer();
-                    
+
                     //Auto generates tables that are of base type
                     var publicPropertieBaseTypes = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
                                 .Where(p => p.PropertyType.IsGenericType &&
