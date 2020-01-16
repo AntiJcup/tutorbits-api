@@ -21,6 +21,8 @@ namespace TutorBits.DBDataAccess
 
         Task<ICollection<T>> GetAll<T, TProperty>(ICollection<Expression<Func<T, TProperty>>> includes, Expression<Func<T, Boolean>> where = null, int? skip = null, int? take = null) where T : class, new();
 
+        Task<int> CountAll<T>(Expression<Func<T, Boolean>> where = null) where T : class, new();
+
         Task Update<T>(T entity) where T : class, new();
 
         Task Delete<T>(T entity) where T : class, new();

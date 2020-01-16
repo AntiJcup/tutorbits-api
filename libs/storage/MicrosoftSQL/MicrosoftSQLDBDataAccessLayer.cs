@@ -174,6 +174,19 @@ namespace TutorBits
                     return await query.AsNoTracking().ToListAsync();
                 }
 
+                public async Task<int> CountAll<T>(Expression<Func<T, bool>> where = null) where T : class, new()
+                {
+                    var dbSet = dbContext_.Set<T>();
+                    var query = dbSet.AsNoTracking();
+
+                    if (where != null)
+                    {
+                        query = query.Where(where);
+                    }
+
+                    return await query.AsNoTracking().CountAsync();
+                }
+
                 public async Task<ICollection<T>> GetAll<T, TProperty>(ICollection<Expression<Func<T, TProperty>>> includes, Expression<Func<T, bool>> where = null, int? skip = null, int? take = null) where T : class, new()
                 {
                     var dbSet = dbContext_.Set<T>();

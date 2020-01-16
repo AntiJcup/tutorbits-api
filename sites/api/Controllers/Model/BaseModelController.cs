@@ -123,6 +123,20 @@ namespace api.Controllers.Model
             return new JsonResult(viewModels);
         }
 
+        [HttpGet]
+        public virtual async Task<IActionResult> CountAll([FromQuery] BaseState state)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var entityCount = await dbDataAccessService_.CountAllBaseModel(
+                state == BaseState.Undefined ? (Expression<Func<TModel, Boolean>>)null : (Expression<Func<TModel, Boolean>>)(m => m.Status == state));
+
+            return new JsonResult(entityCount);
+        }
+
         [Authorize]
         [HttpPost]
         public virtual async Task<IActionResult> Create([FromBody] TCreateModel createModel)

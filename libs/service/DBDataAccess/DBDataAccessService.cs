@@ -22,6 +22,11 @@ namespace TutorBits.DBDataAccess
             }, where, skip, take);
         }
 
+        public async Task<int> CountAllBaseModel<TModel>(Expression<Func<TModel, Boolean>> where = null) where TModel : BaseModel, new()
+        {
+            return await dataLayer_.CountAll<TModel>(where);
+        }
+
         public async Task<ICollection<TModel>> GetAllOwnedModel<TModel>(string userName, int? skip = null, int? take = null) where TModel : BaseModel, new()
         {
             return await dataLayer_.GetAll<TModel>((Expression<Func<TModel, Boolean>>)(m => m.Owner == userName && m.Status != BaseState.Deleted), skip, take);
