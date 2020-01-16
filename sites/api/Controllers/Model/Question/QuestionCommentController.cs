@@ -10,7 +10,7 @@ namespace api.Controllers.Model
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class QuestionCommentController : BaseModelController<QuestionComment, CreateQuestionCommentModel, UpdateQuestionCommentModel, QuestionCommentViewModel>
+    public class QuestionCommentController : BaseCommentController<QuestionComment, CreateQuestionCommentModel, UpdateQuestionCommentModel, QuestionCommentViewModel>
     {
         public QuestionCommentController(IConfiguration configuration,
                                     DBDataAccessService dbDataAccessService,
