@@ -12,16 +12,12 @@ namespace api.Models.Requests
         public Guid TargetId { get; set; }
 
         [MinLength(4)]
-        [MaxLength(64)]
+        [MaxLength(128)]
         [Required]
         public string Title { get; set; }
 
-        [Required]
         [MaxLength(1028)]
         public string Body { get; set; }
-
-        [Required]
-        public string Type { get; set; }
 
         protected TCommentType BaseCreate()
         {

@@ -23,10 +23,22 @@ namespace TutorBits
                 }
 
                 public DbSet<Tutorial> Tutorials { get; set; }
+                public DbSet<TutorialRating> TutorialRatings { get; set; }
+                public DbSet<TutorialComment> TutorialComments { get; set; }
+                public DbSet<TutorialCommentRating> TutorialCommentRatings { get; set; }
 
                 public DbSet<Account> Accounts { get; set; }
 
                 public DbSet<Question> Questions { get; set; }
+                public DbSet<QuestionRating> QuestionRatings { get; set; }
+                public DbSet<QuestionComment> QuestionComments { get; set; }
+                public DbSet<QuestionCommentRating> QuestionCommentRatings { get; set; }
+
+
+                public DbSet<Answer> Answers { get; set; }
+                public DbSet<AnswerRating> AnswerRatings { get; set; }
+                public DbSet<AnswerComment> AnswerComments { get; set; }
+                public DbSet<AnswerCommentRating> AnswerCommentRatings { get; set; }
 
                 protected override void OnModelCreating(ModelBuilder modelBuilder)
                 {

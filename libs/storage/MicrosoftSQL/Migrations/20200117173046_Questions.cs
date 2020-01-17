@@ -60,14 +60,14 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TutorialComment",
+                name: "TutorialComments",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    DateModified = table.Column<DateTime>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    DateModified = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
                     Notes = table.Column<string>(maxLength: 1028, nullable: true),
-                    Status = table.Column<int>(nullable: false),
+                    Status = table.Column<string>(maxLength: 64, nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
                     Title = table.Column<string>(maxLength: 256, nullable: true),
@@ -76,15 +76,15 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TutorialComment", x => x.Id);
+                    table.PrimaryKey("PK_TutorialComments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TutorialComment_Accounts_OwnerAccountId",
+                        name: "FK_TutorialComments_Accounts_OwnerAccountId",
                         column: x => x.OwnerAccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TutorialComment_Tutorials_TargetId",
+                        name: "FK_TutorialComments_Tutorials_TargetId",
                         column: x => x.TargetId,
                         principalTable: "Tutorials",
                         principalColumn: "Id",
@@ -92,14 +92,14 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TutorialRating",
+                name: "TutorialRatings",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    DateModified = table.Column<DateTime>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    DateModified = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
                     Notes = table.Column<string>(maxLength: 1028, nullable: true),
-                    Status = table.Column<int>(nullable: false),
+                    Status = table.Column<string>(maxLength: 64, nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
                     Score = table.Column<int>(nullable: false),
@@ -107,15 +107,15 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TutorialRating", x => x.Id);
+                    table.PrimaryKey("PK_TutorialRatings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TutorialRating_Accounts_OwnerAccountId",
+                        name: "FK_TutorialRatings_Accounts_OwnerAccountId",
                         column: x => x.OwnerAccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TutorialRating_Tutorials_TargetId",
+                        name: "FK_TutorialRatings_Tutorials_TargetId",
                         column: x => x.TargetId,
                         principalTable: "Tutorials",
                         principalColumn: "Id",
@@ -123,14 +123,14 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Answer",
+                name: "Answers",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    DateModified = table.Column<DateTime>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    DateModified = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
                     Notes = table.Column<string>(maxLength: 1028, nullable: true),
-                    Status = table.Column<int>(nullable: false),
+                    Status = table.Column<string>(maxLength: 64, nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
                     TargetId = table.Column<Guid>(nullable: false),
@@ -139,15 +139,15 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Answer", x => x.Id);
+                    table.PrimaryKey("PK_Answers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Answer_Accounts_OwnerAccountId",
+                        name: "FK_Answers_Accounts_OwnerAccountId",
                         column: x => x.OwnerAccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Answer_Questions_TargetId",
+                        name: "FK_Answers_Questions_TargetId",
                         column: x => x.TargetId,
                         principalTable: "Questions",
                         principalColumn: "Id",
@@ -155,14 +155,14 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "QuestionComment",
+                name: "QuestionComments",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    DateModified = table.Column<DateTime>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    DateModified = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
                     Notes = table.Column<string>(maxLength: 1028, nullable: true),
-                    Status = table.Column<int>(nullable: false),
+                    Status = table.Column<string>(maxLength: 64, nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
                     TargetId = table.Column<Guid>(nullable: false),
@@ -171,15 +171,15 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_QuestionComment", x => x.Id);
+                    table.PrimaryKey("PK_QuestionComments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_QuestionComment_Accounts_OwnerAccountId",
+                        name: "FK_QuestionComments_Accounts_OwnerAccountId",
                         column: x => x.OwnerAccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_QuestionComment_Questions_TargetId",
+                        name: "FK_QuestionComments_Questions_TargetId",
                         column: x => x.TargetId,
                         principalTable: "Questions",
                         principalColumn: "Id",
@@ -187,14 +187,14 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "QuestionRating",
+                name: "QuestionRatings",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    DateModified = table.Column<DateTime>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    DateModified = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
                     Notes = table.Column<string>(maxLength: 1028, nullable: true),
-                    Status = table.Column<int>(nullable: false),
+                    Status = table.Column<string>(maxLength: 64, nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
                     TargetId = table.Column<Guid>(nullable: false),
@@ -202,15 +202,15 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_QuestionRating", x => x.Id);
+                    table.PrimaryKey("PK_QuestionRatings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_QuestionRating_Accounts_OwnerAccountId",
+                        name: "FK_QuestionRatings_Accounts_OwnerAccountId",
                         column: x => x.OwnerAccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_QuestionRating_Questions_TargetId",
+                        name: "FK_QuestionRatings_Questions_TargetId",
                         column: x => x.TargetId,
                         principalTable: "Questions",
                         principalColumn: "Id",
@@ -218,14 +218,14 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "TutorialCommentRating",
+                name: "TutorialCommentRatings",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    DateModified = table.Column<DateTime>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    DateModified = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
                     Notes = table.Column<string>(maxLength: 1028, nullable: true),
-                    Status = table.Column<int>(nullable: false),
+                    Status = table.Column<string>(maxLength: 64, nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
                     Score = table.Column<int>(nullable: false),
@@ -233,30 +233,30 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TutorialCommentRating", x => x.Id);
+                    table.PrimaryKey("PK_TutorialCommentRatings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_TutorialCommentRating_Accounts_OwnerAccountId",
+                        name: "FK_TutorialCommentRatings_Accounts_OwnerAccountId",
                         column: x => x.OwnerAccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_TutorialCommentRating_TutorialComment_TargetId",
+                        name: "FK_TutorialCommentRatings_TutorialComments_TargetId",
                         column: x => x.TargetId,
-                        principalTable: "TutorialComment",
+                        principalTable: "TutorialComments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AnswerComment",
+                name: "AnswerComments",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    DateModified = table.Column<DateTime>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    DateModified = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
                     Notes = table.Column<string>(maxLength: 1028, nullable: true),
-                    Status = table.Column<int>(nullable: false),
+                    Status = table.Column<string>(maxLength: 64, nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
                     TargetId = table.Column<Guid>(nullable: false),
@@ -265,30 +265,30 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AnswerComment", x => x.Id);
+                    table.PrimaryKey("PK_AnswerComments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AnswerComment_Accounts_OwnerAccountId",
+                        name: "FK_AnswerComments_Accounts_OwnerAccountId",
                         column: x => x.OwnerAccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_AnswerComment_Answer_TargetId",
+                        name: "FK_AnswerComments_Answers_TargetId",
                         column: x => x.TargetId,
-                        principalTable: "Answer",
+                        principalTable: "Answers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AnswerRating",
+                name: "AnswerRatings",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    DateModified = table.Column<DateTime>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    DateModified = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
                     Notes = table.Column<string>(maxLength: 1028, nullable: true),
-                    Status = table.Column<int>(nullable: false),
+                    Status = table.Column<string>(maxLength: 64, nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
                     TargetId = table.Column<Guid>(nullable: false),
@@ -296,30 +296,30 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AnswerRating", x => x.Id);
+                    table.PrimaryKey("PK_AnswerRatings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AnswerRating_Accounts_OwnerAccountId",
+                        name: "FK_AnswerRatings_Accounts_OwnerAccountId",
                         column: x => x.OwnerAccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_AnswerRating_Answer_TargetId",
+                        name: "FK_AnswerRatings_Answers_TargetId",
                         column: x => x.TargetId,
-                        principalTable: "Answer",
+                        principalTable: "Answers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "QuestionCommentRating",
+                name: "QuestionCommentRatings",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    DateModified = table.Column<DateTime>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    DateModified = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
                     Notes = table.Column<string>(maxLength: 1028, nullable: true),
-                    Status = table.Column<int>(nullable: false),
+                    Status = table.Column<string>(maxLength: 64, nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
                     TargetId = table.Column<Guid>(nullable: false),
@@ -327,30 +327,30 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_QuestionCommentRating", x => x.Id);
+                    table.PrimaryKey("PK_QuestionCommentRatings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_QuestionCommentRating_Accounts_OwnerAccountId",
+                        name: "FK_QuestionCommentRatings_Accounts_OwnerAccountId",
                         column: x => x.OwnerAccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_QuestionCommentRating_QuestionComment_TargetId",
+                        name: "FK_QuestionCommentRatings_QuestionComments_TargetId",
                         column: x => x.TargetId,
-                        principalTable: "QuestionComment",
+                        principalTable: "QuestionComments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AnswerCommentRating",
+                name: "AnswerCommentRatings",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    DateModified = table.Column<DateTime>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    DateModified = table.Column<DateTime>(nullable: false, defaultValueSql: "GETUTCDATE()"),
                     Notes = table.Column<string>(maxLength: 1028, nullable: true),
-                    Status = table.Column<int>(nullable: false),
+                    Status = table.Column<string>(maxLength: 64, nullable: false),
                     Owner = table.Column<string>(maxLength: 1028, nullable: true),
                     OwnerAccountId = table.Column<Guid>(nullable: true),
                     TargetId = table.Column<Guid>(nullable: false),
@@ -358,17 +358,17 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AnswerCommentRating", x => x.Id);
+                    table.PrimaryKey("PK_AnswerCommentRatings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AnswerCommentRating_Accounts_OwnerAccountId",
+                        name: "FK_AnswerCommentRatings_Accounts_OwnerAccountId",
                         column: x => x.OwnerAccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_AnswerCommentRating_AnswerComment_TargetId",
+                        name: "FK_AnswerCommentRatings_AnswerComments_TargetId",
                         column: x => x.TargetId,
-                        principalTable: "AnswerComment",
+                        principalTable: "AnswerComments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -392,73 +392,73 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Answer_OwnerAccountId",
-                table: "Answer",
+                name: "IX_AnswerCommentRatings_OwnerAccountId",
+                table: "AnswerCommentRatings",
                 column: "OwnerAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Answer_TargetId",
-                table: "Answer",
+                name: "IX_AnswerCommentRatings_TargetId",
+                table: "AnswerCommentRatings",
                 column: "TargetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AnswerComment_OwnerAccountId",
-                table: "AnswerComment",
+                name: "IX_AnswerComments_OwnerAccountId",
+                table: "AnswerComments",
                 column: "OwnerAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AnswerComment_TargetId",
-                table: "AnswerComment",
+                name: "IX_AnswerComments_TargetId",
+                table: "AnswerComments",
                 column: "TargetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AnswerCommentRating_OwnerAccountId",
-                table: "AnswerCommentRating",
+                name: "IX_AnswerRatings_OwnerAccountId",
+                table: "AnswerRatings",
                 column: "OwnerAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AnswerCommentRating_TargetId",
-                table: "AnswerCommentRating",
+                name: "IX_AnswerRatings_TargetId",
+                table: "AnswerRatings",
                 column: "TargetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AnswerRating_OwnerAccountId",
-                table: "AnswerRating",
+                name: "IX_Answers_OwnerAccountId",
+                table: "Answers",
                 column: "OwnerAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AnswerRating_TargetId",
-                table: "AnswerRating",
+                name: "IX_Answers_TargetId",
+                table: "Answers",
                 column: "TargetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QuestionComment_OwnerAccountId",
-                table: "QuestionComment",
+                name: "IX_QuestionCommentRatings_OwnerAccountId",
+                table: "QuestionCommentRatings",
                 column: "OwnerAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QuestionComment_TargetId",
-                table: "QuestionComment",
+                name: "IX_QuestionCommentRatings_TargetId",
+                table: "QuestionCommentRatings",
                 column: "TargetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QuestionCommentRating_OwnerAccountId",
-                table: "QuestionCommentRating",
+                name: "IX_QuestionComments_OwnerAccountId",
+                table: "QuestionComments",
                 column: "OwnerAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QuestionCommentRating_TargetId",
-                table: "QuestionCommentRating",
+                name: "IX_QuestionComments_TargetId",
+                table: "QuestionComments",
                 column: "TargetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QuestionRating_OwnerAccountId",
-                table: "QuestionRating",
+                name: "IX_QuestionRatings_OwnerAccountId",
+                table: "QuestionRatings",
                 column: "OwnerAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QuestionRating_TargetId",
-                table: "QuestionRating",
+                name: "IX_QuestionRatings_TargetId",
+                table: "QuestionRatings",
                 column: "TargetId");
 
             migrationBuilder.CreateIndex(
@@ -473,67 +473,67 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                 .Annotation("SqlServer:Clustered", false);
 
             migrationBuilder.CreateIndex(
-                name: "IX_TutorialComment_OwnerAccountId",
-                table: "TutorialComment",
+                name: "IX_TutorialCommentRatings_OwnerAccountId",
+                table: "TutorialCommentRatings",
                 column: "OwnerAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TutorialComment_TargetId",
-                table: "TutorialComment",
+                name: "IX_TutorialCommentRatings_TargetId",
+                table: "TutorialCommentRatings",
                 column: "TargetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TutorialCommentRating_OwnerAccountId",
-                table: "TutorialCommentRating",
+                name: "IX_TutorialComments_OwnerAccountId",
+                table: "TutorialComments",
                 column: "OwnerAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TutorialCommentRating_TargetId",
-                table: "TutorialCommentRating",
+                name: "IX_TutorialComments_TargetId",
+                table: "TutorialComments",
                 column: "TargetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TutorialRating_OwnerAccountId",
-                table: "TutorialRating",
+                name: "IX_TutorialRatings_OwnerAccountId",
+                table: "TutorialRatings",
                 column: "OwnerAccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TutorialRating_TargetId",
-                table: "TutorialRating",
+                name: "IX_TutorialRatings_TargetId",
+                table: "TutorialRatings",
                 column: "TargetId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "AnswerCommentRating");
+                name: "AnswerCommentRatings");
 
             migrationBuilder.DropTable(
-                name: "AnswerRating");
+                name: "AnswerRatings");
 
             migrationBuilder.DropTable(
-                name: "QuestionCommentRating");
+                name: "QuestionCommentRatings");
 
             migrationBuilder.DropTable(
-                name: "QuestionRating");
+                name: "QuestionRatings");
 
             migrationBuilder.DropTable(
-                name: "TutorialCommentRating");
+                name: "TutorialCommentRatings");
 
             migrationBuilder.DropTable(
-                name: "TutorialRating");
+                name: "TutorialRatings");
 
             migrationBuilder.DropTable(
-                name: "AnswerComment");
+                name: "AnswerComments");
 
             migrationBuilder.DropTable(
-                name: "QuestionComment");
+                name: "QuestionComments");
 
             migrationBuilder.DropTable(
-                name: "TutorialComment");
+                name: "TutorialComments");
 
             migrationBuilder.DropTable(
-                name: "Answer");
+                name: "Answers");
 
             migrationBuilder.DropTable(
                 name: "Questions");

@@ -76,10 +76,12 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         .HasMaxLength(1028);
 
                     b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<DateTime>("DateModified")
-                        .ValueGeneratedOnAddOrUpdate();
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(1028);
@@ -89,7 +91,9 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.Property<Guid?>("OwnerAccountId");
 
-                    b.Property<int>("Status");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
 
                     b.Property<Guid>("TargetId");
 
@@ -102,7 +106,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.HasIndex("TargetId");
 
-                    b.ToTable("Answer");
+                    b.ToTable("Answers");
                 });
 
             modelBuilder.Entity("TutorBits.Models.Common.AnswerComment", b =>
@@ -114,10 +118,12 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         .HasMaxLength(1028);
 
                     b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<DateTime>("DateModified")
-                        .ValueGeneratedOnAddOrUpdate();
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(1028);
@@ -127,7 +133,9 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.Property<Guid?>("OwnerAccountId");
 
-                    b.Property<int>("Status");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
 
                     b.Property<Guid>("TargetId");
 
@@ -140,7 +148,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.HasIndex("TargetId");
 
-                    b.ToTable("AnswerComment");
+                    b.ToTable("AnswerComments");
                 });
 
             modelBuilder.Entity("TutorBits.Models.Common.AnswerCommentRating", b =>
@@ -149,10 +157,12 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<DateTime>("DateModified")
-                        .ValueGeneratedOnAddOrUpdate();
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(1028);
@@ -164,7 +174,9 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.Property<int>("Score");
 
-                    b.Property<int>("Status");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
 
                     b.Property<Guid>("TargetId");
 
@@ -174,7 +186,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.HasIndex("TargetId");
 
-                    b.ToTable("AnswerCommentRating");
+                    b.ToTable("AnswerCommentRatings");
                 });
 
             modelBuilder.Entity("TutorBits.Models.Common.AnswerRating", b =>
@@ -183,10 +195,12 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<DateTime>("DateModified")
-                        .ValueGeneratedOnAddOrUpdate();
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(1028);
@@ -198,7 +212,9 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.Property<int>("Score");
 
-                    b.Property<int>("Status");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
 
                     b.Property<Guid>("TargetId");
 
@@ -208,7 +224,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.HasIndex("TargetId");
 
-                    b.ToTable("AnswerRating");
+                    b.ToTable("AnswerRatings");
                 });
 
             modelBuilder.Entity("TutorBits.Models.Common.Question", b =>
@@ -265,10 +281,12 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         .HasMaxLength(1028);
 
                     b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<DateTime>("DateModified")
-                        .ValueGeneratedOnAddOrUpdate();
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(1028);
@@ -278,7 +296,9 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.Property<Guid?>("OwnerAccountId");
 
-                    b.Property<int>("Status");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
 
                     b.Property<Guid>("TargetId");
 
@@ -291,7 +311,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.HasIndex("TargetId");
 
-                    b.ToTable("QuestionComment");
+                    b.ToTable("QuestionComments");
                 });
 
             modelBuilder.Entity("TutorBits.Models.Common.QuestionCommentRating", b =>
@@ -300,10 +320,12 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<DateTime>("DateModified")
-                        .ValueGeneratedOnAddOrUpdate();
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(1028);
@@ -315,7 +337,9 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.Property<int>("Score");
 
-                    b.Property<int>("Status");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
 
                     b.Property<Guid>("TargetId");
 
@@ -325,7 +349,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.HasIndex("TargetId");
 
-                    b.ToTable("QuestionCommentRating");
+                    b.ToTable("QuestionCommentRatings");
                 });
 
             modelBuilder.Entity("TutorBits.Models.Common.QuestionRating", b =>
@@ -334,10 +358,12 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<DateTime>("DateModified")
-                        .ValueGeneratedOnAddOrUpdate();
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(1028);
@@ -349,7 +375,9 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.Property<int>("Score");
 
-                    b.Property<int>("Status");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
 
                     b.Property<Guid>("TargetId");
 
@@ -359,7 +387,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.HasIndex("TargetId");
 
-                    b.ToTable("QuestionRating");
+                    b.ToTable("QuestionRatings");
                 });
 
             modelBuilder.Entity("TutorBits.Models.Common.Tutorial", b =>
@@ -423,10 +451,12 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         .HasMaxLength(1028);
 
                     b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<DateTime>("DateModified")
-                        .ValueGeneratedOnAddOrUpdate();
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(1028);
@@ -436,7 +466,9 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.Property<Guid?>("OwnerAccountId");
 
-                    b.Property<int>("Status");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
 
                     b.Property<Guid?>("TargetId");
 
@@ -449,7 +481,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.HasIndex("TargetId");
 
-                    b.ToTable("TutorialComment");
+                    b.ToTable("TutorialComments");
                 });
 
             modelBuilder.Entity("TutorBits.Models.Common.TutorialCommentRating", b =>
@@ -458,10 +490,12 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<DateTime>("DateModified")
-                        .ValueGeneratedOnAddOrUpdate();
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(1028);
@@ -473,7 +507,9 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.Property<int>("Score");
 
-                    b.Property<int>("Status");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
 
                     b.Property<Guid>("TargetId");
 
@@ -483,7 +519,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.HasIndex("TargetId");
 
-                    b.ToTable("TutorialCommentRating");
+                    b.ToTable("TutorialCommentRatings");
                 });
 
             modelBuilder.Entity("TutorBits.Models.Common.TutorialRating", b =>
@@ -492,10 +528,12 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("DateCreated")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<DateTime>("DateModified")
-                        .ValueGeneratedOnAddOrUpdate();
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(1028);
@@ -507,7 +545,9 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.Property<int>("Score");
 
-                    b.Property<int>("Status");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
 
                     b.Property<Guid>("TargetId");
 
@@ -517,7 +557,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.HasIndex("TargetId");
 
-                    b.ToTable("TutorialRating");
+                    b.ToTable("TutorialRatings");
                 });
 
             modelBuilder.Entity("TutorBits.Models.Common.Account", b =>
