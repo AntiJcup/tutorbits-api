@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using api.Models.Requests;
 using api.Models.Updates;
 using api.Models.Views;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using TutorBits.AccountAccess;
@@ -16,8 +18,8 @@ namespace api.Controllers.Model
     [ApiController]
     public class BaseRatingController<TModel, TCreateModel, TUpdateModel, TViewModel> : BaseModelController<TModel, TCreateModel, TUpdateModel, TViewModel>
         where TModel : Rating, new()
-        where TCreateModel : BaseCreateModel<TModel>
-        where TUpdateModel : BaseUpdateModel<TModel>
+        where TCreateModel : CreateRatingModel<TModel>
+        where TUpdateModel : UpdateRatingModel<TModel>
         where TViewModel : BaseViewModel<TModel>, new()
     {
         public BaseRatingController(IConfiguration configuration,
@@ -65,6 +67,20 @@ namespace api.Controllers.Model
             return new JsonResult(score);
         }
 
+        [Authorize]
+        [HttpGet]
+        public virtual async Task<IActionResult> GetYourScoreForTarget([FromQuery] Guid targetId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var entities = await dbDataAccessService_.GetAllBaseModel(
+                    (Expression<Func<TModel, Boolean>>)(m => m.Owner == UserName && m.TargetId == targetId));
+            return new JsonResult(entities.FirstOrDefault());
+        }
+
         protected override async Task EnrichModel(TModel model, Action action)
         {
             await base.EnrichModel(model, action);
@@ -75,6 +91,27 @@ namespace api.Controllers.Model
                     model.Status = BaseState.Active;
                     break;
             }
+        }
+
+        //Overrides create to prevent duplicates
+        [Authorize]
+        [HttpPost]
+        public virtual async Task<IActionResult> Create([FromBody] TCreateModel createModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var existingModel = (await dbDataAccessService_.GetAllBaseModel(
+                (Expression<Func<TModel, Boolean>>)(m => m.Owner == UserName && m.TargetId == createModel.TargetId)))
+                .FirstOrDefault();
+            if (existingModel == null)
+            {
+                return await base.Create(createModel);
+            }
+
+            return BadRequest("Rating already exists");
         }
     }
 }

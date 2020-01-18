@@ -17,8 +17,8 @@ namespace api.Controllers.Model
     [ApiController]
     public class BaseCommentController<TModel, TCreateModel, TUpdateModel, TViewModel> : BaseModelController<TModel, TCreateModel, TUpdateModel, TViewModel>
         where TModel : Comment, new()
-        where TCreateModel : BaseCreateModel<TModel>
-        where TUpdateModel : BaseUpdateModel<TModel>
+        where TCreateModel : CreateCommentModel<TModel>
+        where TUpdateModel : UpdateCommentModel<TModel>
         where TViewModel : BaseViewModel<TModel>, new()
     {
         public BaseCommentController(IConfiguration configuration,

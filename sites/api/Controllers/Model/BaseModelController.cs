@@ -149,9 +149,10 @@ namespace api.Controllers.Model
             var model = createModel.Create();
             await EnrichModel(model, Action.Create);
             var entity = await dbDataAccessService_.CreateBaseModel(model);
+            var filledOutEntity = await dbDataAccessService_.GetBaseModel<TModel>(await GetKeysFromModel(entity));
             var viewModel = new TViewModel();
             viewModel.Convert(entity);
-            await EnrichViewModel(viewModel, entity);
+            await EnrichViewModel(viewModel, filledOutEntity);
             return new JsonResult(viewModel);
         }
 
@@ -185,7 +186,7 @@ namespace api.Controllers.Model
             var viewModel = new TViewModel();
             viewModel.Convert(model);
             await EnrichViewModel(viewModel, model);
-            
+
             return new JsonResult(viewModel);
         }
 
