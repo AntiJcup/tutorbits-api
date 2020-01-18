@@ -37,8 +37,8 @@ namespace api.Controllers.Model
             }
 
             var entityCount = await dbDataAccessService_.CountAllBaseModel(
-                state == BaseState.Undefined ? 
-                    (Expression<Func<TModel, Boolean>>)(m => m.TargetId == targetId) : 
+                state == BaseState.Undefined ?
+                    (Expression<Func<TModel, Boolean>>)(m => m.TargetId == targetId) :
                     (Expression<Func<TModel, Boolean>>)(m => m.Status == state && m.TargetId == targetId));
 
             return new JsonResult(entityCount);
@@ -68,6 +68,18 @@ namespace api.Controllers.Model
                 viewModels.Add(viewModel);
             }
             return new JsonResult(viewModels);
+        }
+
+        protected override async Task EnrichModel(TModel model, Action action)
+        {
+            await base.EnrichModel(model, action);
+
+            switch (action)
+            {
+                case Action.Create:
+                    model.Status = BaseState.Active;
+                    break;
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ namespace api.Models.Requests
         public string Title { get; set; }
 
         [Required]
-        public string Language { get; set; }
+        public string Topic { get; set; }
 
         [Required]
         [MaxLength(1028)]
@@ -28,7 +28,7 @@ namespace api.Models.Requests
             return new Tutorial()
             {
                 Title = Title,
-                TutorialTopic = (TutorialTopics)Enum.Parse(typeof(TutorialTopics), Language),
+                TutorialTopic = (TutorialTopics)Enum.Parse(typeof(TutorialTopics), Topic),
                 Description = Description,
                 TutorialCategory = (TutorialCategory)Enum.Parse(typeof(TutorialCategory), Category),
             };
