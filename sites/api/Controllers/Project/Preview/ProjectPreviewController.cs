@@ -104,7 +104,7 @@ namespace tutorbits_api.Controllers
                     return BadRequest();
                 }
 
-                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(projectId);
+                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(null, projectId);
                 if (tutorial != null)
                 {
                     if (tutorial.Status != BaseState.Inactive)

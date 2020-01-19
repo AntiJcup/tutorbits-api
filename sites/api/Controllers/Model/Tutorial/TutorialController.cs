@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -23,6 +24,17 @@ namespace api.Controllers.Model
         private readonly PreviewService previewService_;
         private readonly ProjectService projectService_;
 
+        protected override ICollection<Expression<Func<Tutorial, object>>> GetIncludes
+        {
+            get
+            {
+                return new List<Expression<Func<Tutorial, object>>>{
+                    p => p.OwnerAccount,
+                    p => p.Ratings
+                };
+            }
+        }
+
         public TutorialController(IConfiguration configuration,
                                     DBDataAccessService dbDataAccessService,
                                     AccountAccessService accountAccessService,
@@ -43,7 +55,7 @@ namespace api.Controllers.Model
                 return BadRequest(ModelState);
             }
 
-            var model = await dbDataAccessService_.GetBaseModel<Tutorial>(tutorialId);
+            var model = await dbDataAccessService_.GetBaseModel<Tutorial>(null, tutorialId);
             if (model == null)
             {
                 return NotFound(); //Update cant be called on items that dont exist
@@ -95,6 +107,11 @@ namespace api.Controllers.Model
         {
             await base.EnrichViewModel(viewModel, entity);
             viewModel.ThumbnailUrl = ProjectUrlGenerator.GenerateProjectThumbnailUrl(Guid.Parse(viewModel.Id), configuration_);
+
+            if (entity.Ratings != null)
+            {
+                viewModel.Score = BaseRatingController<TutorialRating, CreateTutorialRatingModel, UpdateTutorialRatingModel, TutorialRatingViewModel>.CalculateRatingScore(entity.Ratings);
+            }
         }
     }
 }

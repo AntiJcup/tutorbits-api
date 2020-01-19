@@ -21,6 +21,8 @@ namespace api.Models.Views
 
         public string Category { get; set; }
 
+        public int Score { get; set; } = 1; //Enriched
+
         public override void Convert(Tutorial baseModel)
         {
             Id = baseModel.Id.ToString();

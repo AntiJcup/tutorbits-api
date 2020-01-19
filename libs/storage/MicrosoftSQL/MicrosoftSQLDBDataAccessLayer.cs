@@ -192,9 +192,12 @@ namespace TutorBits
                     var dbSet = dbContext_.Set<T>();
                     var query = dbSet.AsNoTracking();
 
-                    foreach (var include in includes)
+                    if (includes != null)
                     {
-                        query = query.Include(include);
+                        foreach (var include in includes)
+                        {
+                            query = query.Include(include);
+                        }
                     }
 
                     if (where != null)

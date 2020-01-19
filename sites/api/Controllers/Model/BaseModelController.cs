@@ -32,6 +32,16 @@ namespace api.Controllers.Model
         protected readonly DBDataAccessService dbDataAccessService_;
         protected readonly AccountAccessService accountAccessService_;
 
+        protected virtual ICollection<Expression<Func<TModel, object>>> GetIncludes
+        {
+            get
+            {
+                return new List<Expression<Func<TModel, object>>>{
+                    p => p.OwnerAccount
+                };
+            }
+        }
+
         public BaseModelController(
             IConfiguration configuration,
             DBDataAccessService dbDataAccessService,
@@ -46,7 +56,7 @@ namespace api.Controllers.Model
         public virtual async Task<IActionResult> Get()
         {
             var keys = await GetKeysFromRequest();
-            var entity = await dbDataAccessService_.GetBaseModel<TModel>(keys);
+            var entity = await dbDataAccessService_.GetBaseModel<TModel>(keys, GetIncludes);
             var viewModel = new TViewModel();
             viewModel.Convert(entity);
             await EnrichViewModel(viewModel, entity);
@@ -67,7 +77,7 @@ namespace api.Controllers.Model
                 return BadRequest(ModelState);
             }
 
-            var entity = await dbDataAccessService_.GetBaseModel<TModel>(id);
+            var entity = await dbDataAccessService_.GetBaseModel<TModel>(GetIncludes, id);
             var viewModel = new TViewModel();
             viewModel.Convert(entity);
             await EnrichViewModel(viewModel, entity);
@@ -85,7 +95,8 @@ namespace api.Controllers.Model
             var entities = await dbDataAccessService_.GetAllBaseModel(
                 state == BaseState.Undefined ? (Expression<Func<TModel, Boolean>>)null : (Expression<Func<TModel, Boolean>>)(m => m.Status == state),
                 skip,
-                take);
+                take,
+                GetIncludes);
             var viewModels = new List<TViewModel>();
 
             foreach (var entity in entities)
@@ -199,7 +210,7 @@ namespace api.Controllers.Model
                 return BadRequest(ModelState);
             }
 
-            var model = await dbDataAccessService_.GetBaseModel<TModel>(id);
+            var model = await dbDataAccessService_.GetBaseModel<TModel>(null, id);
             if (model == null)
             {
                 return NotFound(); //Update cant be called on items that dont exist
@@ -246,7 +257,7 @@ namespace api.Controllers.Model
                 return BadRequest(ModelState);
             }
 
-            var oldModel = await dbDataAccessService_.GetBaseModel<TModel>(id);
+            var oldModel = await dbDataAccessService_.GetBaseModel<TModel>(null, id);
 
             if (oldModel == null)
             {

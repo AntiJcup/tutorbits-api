@@ -60,7 +60,7 @@ namespace api.Controllers
                 Title = "HEalthCheckTest"
             });
 
-            var lookedUpTutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(tutorial.Id);
+            var lookedUpTutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(null, tutorial.Id);
             if (tutorial.Title != lookedUpTutorial.Title || lookedUpTutorial.Title != "HEalthCheckTest")
             {
                 Console.WriteLine("Invalid title on tutorial");
@@ -70,7 +70,7 @@ namespace api.Controllers
             lookedUpTutorial.Description = "HealthCheckTesting";
             await dbDataAccessService_.UpdateBaseModel(lookedUpTutorial);
 
-            lookedUpTutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(tutorial.Id);
+            lookedUpTutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(null, tutorial.Id);
             if (lookedUpTutorial.Description != "HealthCheckTesting")
             {
                 Console.WriteLine("Invalid description on tutorial");

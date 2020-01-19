@@ -39,7 +39,7 @@ namespace tutorbits_api.Controllers
             try
             {
                 //TODO guard this with auth and per account limits
-                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(tutorialId);
+                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(null, tutorialId);
                 if (tutorial == null)
                 {
                     return NotFound();
@@ -81,7 +81,7 @@ namespace tutorbits_api.Controllers
             try
             {
                 //TODO guard this with auth and per account limits
-                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(tutorialId);
+                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(null, tutorialId);
                 if (tutorial == null)
                 {
                     return NotFound();
@@ -121,7 +121,7 @@ namespace tutorbits_api.Controllers
                     return BadRequest();
                 }
 
-                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(projectId);
+                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(null, projectId);
                 if (tutorial == null)
                 {
                     return NotFound();
@@ -167,7 +167,7 @@ namespace tutorbits_api.Controllers
                     return BadRequest();
                 }
 
-                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(projectId);
+                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(null, projectId);
                 if (tutorial == null)
                 {
                     return BadRequest();
@@ -212,7 +212,7 @@ namespace tutorbits_api.Controllers
                     return BadRequest();
                 }
 
-                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(projectId);
+                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(null, projectId);
                 if (tutorial != null)
                 {
                     return Forbid();

@@ -36,7 +36,7 @@ namespace TutorBits.AccountAccess
 
         public async Task<Account> GetAccount(Guid accountId)
         {
-            return (await dbService_.GetBaseModel<Account>(accountId));
+            return (await dbService_.GetBaseModel<Account>(null, accountId));
         }
 
         public async Task<Account> CreateAccount(User user, string nickName = null)

@@ -41,7 +41,7 @@ namespace tutorbits_api.Controllers
         {
             try
             {
-                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(projectId);
+                var tutorial = await dbDataAccessService_.GetBaseModel<Tutorial>(null, projectId);
                 if (tutorial == null)
                 {
                     return NotFound();

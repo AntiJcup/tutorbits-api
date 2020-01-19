@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -58,13 +59,7 @@ namespace api.Controllers.Model
                     (Expression<Func<TModel, Boolean>>)(m => m.TargetId == targetId) :
                     (Expression<Func<TModel, Boolean>>)(m => m.Status == state && m.TargetId == targetId));
 
-            var score = 1;
-            foreach (var rating in entities)
-            {
-                score += rating.Score;
-            }
-
-            return new JsonResult(score);
+            return new JsonResult(CalculateRatingScore(entities));
         }
 
         [Authorize]
@@ -96,7 +91,7 @@ namespace api.Controllers.Model
         //Overrides create to prevent duplicates
         [Authorize]
         [HttpPost]
-        public virtual async Task<IActionResult> Create([FromBody] TCreateModel createModel)
+        public override async Task<IActionResult> Create([FromBody] TCreateModel createModel)
         {
             if (!ModelState.IsValid)
             {
@@ -112,6 +107,17 @@ namespace api.Controllers.Model
             }
 
             return BadRequest("Rating already exists");
+        }
+
+        public static int CalculateRatingScore(ICollection<TModel> ratings)
+        {
+            var score = 1;
+            foreach (var rating in ratings)
+            {
+                score += rating.Score;
+            }
+
+            return score;
         }
     }
 }
