@@ -57,7 +57,8 @@ namespace api.Controllers.Model
                     (Expression<Func<TModel, Boolean>>)(m => m.TargetId == targetId) :
                     (Expression<Func<TModel, Boolean>>)(m => m.Status == state && m.TargetId == targetId),
                 skip,
-                take);
+                take,
+                GetIncludes);
             var viewModels = new List<TViewModel>();
 
             foreach (var entity in entities)

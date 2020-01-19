@@ -112,17 +112,12 @@ namespace TutorBits
 
                 public async Task<T> Get<T>(params object[] keys) where T : class, new()
                 {
-                    var dbSet = dbContext_.Set<T>();
-                    var query = dbSet.AsNoTracking();
-
-                    return await query.Where(GetKeyLambda<T>(keys)).AsNoTracking().FirstOrDefaultAsync();
+                    return await Get<T, object>(null, keys);
                 }
 
                 public async Task<T> Get<T>(ICollection<object> keys) where T : class, new()
                 {
-                    var dbSet = dbContext_.Set<T>();
-                    var query = dbSet.AsNoTracking();
-                    return await query.Where(GetKeyLambda<T>(keys.ToArray())).AsNoTracking().FirstOrDefaultAsync();
+                    return await Get<T, object>(null, keys);
                 }
 
                 public async Task<T> Get<T, TProperty>(ICollection<Expression<Func<T, TProperty>>> includes, params object[] keys) where T : class, new()
@@ -130,9 +125,12 @@ namespace TutorBits
                     var dbSet = dbContext_.Set<T>();
                     var query = dbSet.AsNoTracking();
 
-                    foreach (var include in includes)
+                    if (includes != null)
                     {
-                        query = dbSet.Include(include);
+                        foreach (var include in includes)
+                        {
+                            query = dbSet.Include(include);
+                        }
                     }
 
                     return await query.Where(GetKeyLambda<T>(keys)).AsNoTracking().FirstOrDefaultAsync();
@@ -140,51 +138,12 @@ namespace TutorBits
 
                 public async Task<T> Get<T, TProperty>(ICollection<Expression<Func<T, TProperty>>> includes, ICollection<object> keys) where T : class, new()
                 {
-                    var dbSet = dbContext_.Set<T>();
-                    var query = dbSet.AsNoTracking();
-
-                    foreach (var include in includes)
-                    {
-                        query = dbSet.Include(include);
-                    }
-
-                    return await query.Where(GetKeyLambda<T>(keys.ToArray())).AsNoTracking().FirstOrDefaultAsync();
+                    return await Get<T, TProperty>(includes, keys.ToArray());
                 }
 
                 public async Task<ICollection<T>> GetAll<T>(Expression<Func<T, bool>> where = null, int? skip = null, int? take = null) where T : class, new()
                 {
-                    var dbSet = dbContext_.Set<T>();
-                    var query = dbSet.AsNoTracking();
-
-                    if (where != null)
-                    {
-                        query = query.Where(where);
-                    }
-
-                    if (skip.HasValue)
-                    {
-                        query = query.Skip(skip.Value);
-                    }
-
-                    if (take.HasValue)
-                    {
-                        query = query.Take(take.Value);
-                    }
-
-                    return await query.AsNoTracking().ToListAsync();
-                }
-
-                public async Task<int> CountAll<T>(Expression<Func<T, bool>> where = null) where T : class, new()
-                {
-                    var dbSet = dbContext_.Set<T>();
-                    var query = dbSet.AsNoTracking();
-
-                    if (where != null)
-                    {
-                        query = query.Where(where);
-                    }
-
-                    return await query.AsNoTracking().CountAsync();
+                    return await GetAll<T, object>(null, where, skip, take);
                 }
 
                 public async Task<ICollection<T>> GetAll<T, TProperty>(ICollection<Expression<Func<T, TProperty>>> includes, Expression<Func<T, bool>> where = null, int? skip = null, int? take = null) where T : class, new()
@@ -224,6 +183,19 @@ namespace TutorBits
                     dbContext_.Entry(entity).State = EntityState.Modified;
                     await dbContext_.SaveChangesAsync();
                     dbContext_.Entry(entity).State = EntityState.Detached;
+                }
+
+                public async Task<int> CountAll<T>(Expression<Func<T, bool>> where = null) where T : class, new()
+                {
+                    var dbSet = dbContext_.Set<T>();
+                    var query = dbSet.AsNoTracking();
+
+                    if (where != null)
+                    {
+                        query = query.Where(where);
+                    }
+
+                    return await query.AsNoTracking().CountAsync();
                 }
             }
         }
