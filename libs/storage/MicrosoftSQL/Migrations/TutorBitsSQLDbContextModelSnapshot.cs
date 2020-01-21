@@ -227,6 +227,212 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     b.ToTable("AnswerRatings");
                 });
 
+            modelBuilder.Entity("TutorBits.Models.Common.Example", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DateCreated")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime>("DateModified")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(1028);
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1028);
+
+                    b.Property<string>("Owner")
+                        .HasMaxLength(1028);
+
+                    b.Property<Guid?>("OwnerAccountId");
+
+                    b.Property<string>("ProgrammingTopic")
+                        .IsRequired()
+                        .HasMaxLength(64);
+
+                    b.Property<Guid?>("ProjectId");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
+
+                    b.Property<Guid?>("ThumbnailId");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(64);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerAccountId");
+
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("ThumbnailId");
+
+                    b.HasIndex("Title")
+                        .HasAnnotation("SqlServer:Clustered", false);
+
+                    b.ToTable("Examples");
+                });
+
+            modelBuilder.Entity("TutorBits.Models.Common.ExampleComment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Body")
+                        .HasMaxLength(1028);
+
+                    b.Property<DateTime>("DateCreated")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime>("DateModified")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1028);
+
+                    b.Property<string>("Owner")
+                        .HasMaxLength(1028);
+
+                    b.Property<Guid?>("OwnerAccountId");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
+
+                    b.Property<Guid>("TargetId");
+
+                    b.Property<string>("Title")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerAccountId");
+
+                    b.HasIndex("TargetId");
+
+                    b.ToTable("ExampleComments");
+                });
+
+            modelBuilder.Entity("TutorBits.Models.Common.ExampleCommentRating", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DateCreated")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime>("DateModified")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1028);
+
+                    b.Property<string>("Owner")
+                        .HasMaxLength(1028);
+
+                    b.Property<Guid?>("OwnerAccountId");
+
+                    b.Property<int>("Score");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
+
+                    b.Property<Guid>("TargetId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerAccountId");
+
+                    b.HasIndex("TargetId");
+
+                    b.ToTable("ExampleCommentRatings");
+                });
+
+            modelBuilder.Entity("TutorBits.Models.Common.ExampleRating", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DateCreated")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime>("DateModified")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1028);
+
+                    b.Property<string>("Owner")
+                        .HasMaxLength(1028);
+
+                    b.Property<Guid?>("OwnerAccountId");
+
+                    b.Property<int>("Score");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
+
+                    b.Property<Guid>("TargetId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerAccountId");
+
+                    b.HasIndex("TargetId");
+
+                    b.ToTable("ExampleRatings");
+                });
+
+            modelBuilder.Entity("TutorBits.Models.Common.Project", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DateCreated")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime>("DateModified")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<decimal>("DurationMS")
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1028);
+
+                    b.Property<string>("Owner")
+                        .HasMaxLength(1028);
+
+                    b.Property<Guid?>("OwnerAccountId");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerAccountId");
+
+                    b.ToTable("Projects");
+                });
+
             modelBuilder.Entity("TutorBits.Models.Common.Question", b =>
                 {
                     b.Property<Guid>("Id")
@@ -251,7 +457,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.Property<Guid?>("OwnerAccountId");
 
-                    b.Property<string>("QuestionTopic")
+                    b.Property<string>("ProgrammingTopic")
                         .IsRequired()
                         .HasMaxLength(64);
 
@@ -390,6 +596,38 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     b.ToTable("QuestionRatings");
                 });
 
+            modelBuilder.Entity("TutorBits.Models.Common.Thumbnail", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DateCreated")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime>("DateModified")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1028);
+
+                    b.Property<string>("Owner")
+                        .HasMaxLength(1028);
+
+                    b.Property<Guid?>("OwnerAccountId");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerAccountId");
+
+                    b.ToTable("Thumbnails");
+                });
+
             modelBuilder.Entity("TutorBits.Models.Common.Tutorial", b =>
                 {
                     b.Property<Guid>("Id")
@@ -406,9 +644,6 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     b.Property<string>("Description")
                         .HasMaxLength(1028);
 
-                    b.Property<decimal>("DurationMS")
-                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
-
                     b.Property<string>("Notes")
                         .HasMaxLength(1028);
 
@@ -417,27 +652,35 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.Property<Guid?>("OwnerAccountId");
 
+                    b.Property<string>("ProgrammingTopic")
+                        .IsRequired()
+                        .HasMaxLength(64);
+
+                    b.Property<Guid?>("ProjectId");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(64);
 
+                    b.Property<Guid?>("ThumbnailId");
+
                     b.Property<string>("Title")
                         .HasMaxLength(64);
 
-                    b.Property<string>("TutorialCategory")
-                        .IsRequired()
-                        .HasMaxLength(64);
-
-                    b.Property<string>("TutorialTopic")
-                        .IsRequired()
-                        .HasMaxLength(64);
+                    b.Property<Guid?>("VideoId");
 
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerAccountId");
 
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("ThumbnailId");
+
                     b.HasIndex("Title")
                         .HasAnnotation("SqlServer:Clustered", false);
+
+                    b.HasIndex("VideoId");
 
                     b.ToTable("Tutorials");
                 });
@@ -470,7 +713,7 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         .IsRequired()
                         .HasMaxLength(64);
 
-                    b.Property<Guid?>("TargetId");
+                    b.Property<Guid>("TargetId");
 
                     b.Property<string>("Title")
                         .HasMaxLength(256);
@@ -560,6 +803,41 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                     b.ToTable("TutorialRatings");
                 });
 
+            modelBuilder.Entity("TutorBits.Models.Common.Video", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("DateCreated")
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<DateTime>("DateModified")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasDefaultValueSql("GETUTCDATE()");
+
+                    b.Property<decimal>("DurationMS")
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
+
+                    b.Property<string>("Notes")
+                        .HasMaxLength(1028);
+
+                    b.Property<string>("Owner")
+                        .HasMaxLength(1028);
+
+                    b.Property<Guid?>("OwnerAccountId");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(64);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerAccountId");
+
+                    b.ToTable("Videos");
+                });
+
             modelBuilder.Entity("TutorBits.Models.Common.Account", b =>
                 {
                     b.HasOne("TutorBits.Models.Common.Account", "OwnerAccount")
@@ -615,6 +893,64 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("TutorBits.Models.Common.Example", b =>
+                {
+                    b.HasOne("TutorBits.Models.Common.Account", "OwnerAccount")
+                        .WithMany()
+                        .HasForeignKey("OwnerAccountId");
+
+                    b.HasOne("TutorBits.Models.Common.Project", "Project")
+                        .WithMany()
+                        .HasForeignKey("ProjectId");
+
+                    b.HasOne("TutorBits.Models.Common.Thumbnail", "Thumbnail")
+                        .WithMany()
+                        .HasForeignKey("ThumbnailId");
+                });
+
+            modelBuilder.Entity("TutorBits.Models.Common.ExampleComment", b =>
+                {
+                    b.HasOne("TutorBits.Models.Common.Account", "OwnerAccount")
+                        .WithMany()
+                        .HasForeignKey("OwnerAccountId");
+
+                    b.HasOne("TutorBits.Models.Common.Example", "Target")
+                        .WithMany("Comments")
+                        .HasForeignKey("TargetId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("TutorBits.Models.Common.ExampleCommentRating", b =>
+                {
+                    b.HasOne("TutorBits.Models.Common.Account", "OwnerAccount")
+                        .WithMany()
+                        .HasForeignKey("OwnerAccountId");
+
+                    b.HasOne("TutorBits.Models.Common.ExampleComment", "Target")
+                        .WithMany("Ratings")
+                        .HasForeignKey("TargetId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("TutorBits.Models.Common.ExampleRating", b =>
+                {
+                    b.HasOne("TutorBits.Models.Common.Account", "OwnerAccount")
+                        .WithMany()
+                        .HasForeignKey("OwnerAccountId");
+
+                    b.HasOne("TutorBits.Models.Common.Example", "Target")
+                        .WithMany("Ratings")
+                        .HasForeignKey("TargetId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("TutorBits.Models.Common.Project", b =>
+                {
+                    b.HasOne("TutorBits.Models.Common.Account", "OwnerAccount")
+                        .WithMany()
+                        .HasForeignKey("OwnerAccountId");
+                });
+
             modelBuilder.Entity("TutorBits.Models.Common.Question", b =>
                 {
                     b.HasOne("TutorBits.Models.Common.Account", "OwnerAccount")
@@ -658,11 +994,30 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("TutorBits.Models.Common.Thumbnail", b =>
+                {
+                    b.HasOne("TutorBits.Models.Common.Account", "OwnerAccount")
+                        .WithMany()
+                        .HasForeignKey("OwnerAccountId");
+                });
+
             modelBuilder.Entity("TutorBits.Models.Common.Tutorial", b =>
                 {
                     b.HasOne("TutorBits.Models.Common.Account", "OwnerAccount")
                         .WithMany()
                         .HasForeignKey("OwnerAccountId");
+
+                    b.HasOne("TutorBits.Models.Common.Project", "Project")
+                        .WithMany("Tutorials")
+                        .HasForeignKey("ProjectId");
+
+                    b.HasOne("TutorBits.Models.Common.Thumbnail", "Thumbnail")
+                        .WithMany("Tutorials")
+                        .HasForeignKey("ThumbnailId");
+
+                    b.HasOne("TutorBits.Models.Common.Video", "Video")
+                        .WithMany("Tutorials")
+                        .HasForeignKey("VideoId");
                 });
 
             modelBuilder.Entity("TutorBits.Models.Common.TutorialComment", b =>
@@ -673,7 +1028,8 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
 
                     b.HasOne("TutorBits.Models.Common.Tutorial", "Target")
                         .WithMany("Comments")
-                        .HasForeignKey("TargetId");
+                        .HasForeignKey("TargetId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("TutorBits.Models.Common.TutorialCommentRating", b =>
@@ -698,6 +1054,13 @@ namespace TutorBits.Storage.MicrosoftSQL.Migrations
                         .WithMany("Ratings")
                         .HasForeignKey("TargetId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("TutorBits.Models.Common.Video", b =>
+                {
+                    b.HasOne("TutorBits.Models.Common.Account", "OwnerAccount")
+                        .WithMany()
+                        .HasForeignKey("OwnerAccountId");
                 });
 #pragma warning restore 612, 618
         }

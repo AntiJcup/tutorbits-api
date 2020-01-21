@@ -161,6 +161,7 @@ namespace api.Controllers.Model
             await EnrichModel(model, Action.Create);
             var entity = await dbDataAccessService_.CreateBaseModel(model);
             var filledOutEntity = await dbDataAccessService_.GetBaseModel<TModel>(await GetKeysFromModel(entity), GetIncludes);
+            await OnCreated(createModel, filledOutEntity);
             var viewModel = new TViewModel();
             viewModel.Convert(entity);
             await EnrichViewModel(viewModel, filledOutEntity);
@@ -193,6 +194,7 @@ namespace api.Controllers.Model
 
             await EnrichModel(model, Action.Update);
             await dbDataAccessService_.UpdateBaseModel(model);
+            await OnUpdated(updateModel, model);
 
             var viewModel = new TViewModel();
             viewModel.Convert(model);
@@ -223,6 +225,7 @@ namespace api.Controllers.Model
 
             model.Status = status;
             await dbDataAccessService_.UpdateBaseModel(model);
+            await OnUpdated(null, model);
 
             return Ok();
         }
@@ -245,6 +248,8 @@ namespace api.Controllers.Model
             }
 
             await dbDataAccessService_.DeleteBaseModel<TModel>(keys);
+            await OnDeleted(oldModel);
+
             return Ok();
         }
 
@@ -270,6 +275,8 @@ namespace api.Controllers.Model
             }
 
             await dbDataAccessService_.DeleteBaseModel<TModel>(oldModel);
+            await OnDeleted(oldModel);
+            
             return Ok();
         }
 
@@ -349,6 +356,21 @@ namespace api.Controllers.Model
         protected virtual async Task EnrichViewModel(TViewModel viewModel, TModel entity)
         {
             viewModel.Owner = entity.OwnerAccount == null ? null : entity.OwnerAccount.NickName;
+        }
+
+        protected virtual async Task OnCreated(TCreateModel createModel, TModel entity)
+        {
+            //Override when you need to something special on model create
+        }
+
+        protected virtual async Task OnDeleted(TModel entity)
+        {
+            //Override when you need to something special on model delete
+        }
+
+        protected virtual async Task OnUpdated(TUpdateModel updateModel, TModel entity)
+        {
+            //Override when you need to something special on model delete
         }
     }
 }

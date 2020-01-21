@@ -20,17 +20,22 @@ namespace api.Models.Requests
         [MaxLength(1028)]
         public string Description { get; set; }
 
-        [Required]
-        public string Category { get; set; }
+        public string ThumbnailId { get; set; }
+
+        public string VideoId { get; set; }
+
+        public string ProjectId { get; set; }
 
         public override Tutorial Create()
         {
             return new Tutorial()
             {
                 Title = Title,
-                TutorialTopic = (TutorialTopics)Enum.Parse(typeof(TutorialTopics), Topic),
+                ProgrammingTopic = (ProgrammingTopic)Enum.Parse(typeof(ProgrammingTopic), Topic),
                 Description = Description,
-                TutorialCategory = (TutorialCategory)Enum.Parse(typeof(TutorialCategory), Category),
+                ThumbnailId = string.IsNullOrWhiteSpace(ThumbnailId) ? (Guid?)null : Guid.Parse(ThumbnailId),
+                VideoId = string.IsNullOrWhiteSpace(VideoId) ? (Guid?)null : Guid.Parse(VideoId),
+                ProjectId = string.IsNullOrWhiteSpace(ProjectId) ? (Guid?)null : Guid.Parse(ProjectId),
             };
         }
     }

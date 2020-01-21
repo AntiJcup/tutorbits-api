@@ -15,11 +15,9 @@ namespace api.Models.Views
 
         public string Status { get; set; }
 
-        public UInt64 DurationMS { get; set; }
+        public UInt64 DurationMS { get; set; } //TODO Enrich!
 
         public string ThumbnailUrl { get; set; } //Enriched
-
-        public string Category { get; set; }
 
         public int Score { get; set; } = 1; //Enriched
 
@@ -27,12 +25,10 @@ namespace api.Models.Views
         {
             Id = baseModel.Id.ToString();
             Title = baseModel.Title;
-            Topic = baseModel.TutorialTopic.ToString();
+            Topic = baseModel.ProgrammingTopic.ToString();
             Description = baseModel.Description;
             Status = baseModel.Status.ToString();
             Owner = baseModel.Owner;
-            DurationMS = baseModel.DurationMS;
-            Category = baseModel.TutorialCategory.ToString();
         }
     }
 }

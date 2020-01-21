@@ -9,8 +9,7 @@ namespace api.Models.Requests
     {
         public override AnswerRating Create()
         {
-            var answerRating = BaseCreate();
-            return answerRating;
+            return BaseCreate();
         }
     }
 }

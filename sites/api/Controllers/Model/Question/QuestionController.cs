@@ -33,9 +33,9 @@ namespace api.Controllers.Model
         }
 
         [HttpGet]
-        public IActionResult GetQuestionTopics()
+        public IActionResult GetProgrammingTopics()
         {
-            return new JsonResult(Enum.GetNames(typeof(QuestionTopics)));
+            return new JsonResult(Enum.GetNames(typeof(ProgrammingTopic)));
         }
 
         [HttpGet]

@@ -15,7 +15,7 @@ namespace TutorBits.Video
 
     public class TranscodingStateFile
     {
-        public Guid ProjectId { get; set; }
+        public Guid VideoId { get; set; }
 
         public TranscodingState State { get; set; }
 

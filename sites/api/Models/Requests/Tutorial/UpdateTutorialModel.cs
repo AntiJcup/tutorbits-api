@@ -21,6 +21,12 @@ namespace api.Models.Requests
         [MaxLength(1028)]
         public string Description { get; set; }
 
+        public string ThumbnailId { get; set; }
+
+        public string VideoId { get; set; }
+
+        public string ProjectId { get; set; }
+
         public override ICollection<object> GetKeys()
         {
             return new List<object> {
@@ -32,6 +38,14 @@ namespace api.Models.Requests
         {
             model.Title = Title;
             model.Description = Description;
+
+            model.ThumbnailId = string.IsNullOrWhiteSpace(ThumbnailId) ? model.ProjectId : Guid.Parse(ThumbnailId);
+
+            if (model.Status == BaseState.Inactive)
+            {
+                model.VideoId = string.IsNullOrWhiteSpace(VideoId) ? model.VideoId : Guid.Parse(VideoId);
+                model.ProjectId = string.IsNullOrWhiteSpace(VideoId) ? model.ProjectId : Guid.Parse(ProjectId);
+            }
         }
     }
 }

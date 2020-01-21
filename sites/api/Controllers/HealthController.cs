@@ -137,7 +137,7 @@ namespace api.Controllers
                 return false;
             }
 
-            await projectService_.DeleteProject(projectId);
+            await projectService_.ResetProject(projectId);
 
             return true;
         }

@@ -22,10 +22,18 @@ namespace TutorBits
 
                 }
 
+                //READ THIS PLEASE
+                //ADD ALL MODELS HERE. MIGRATION USES IT TO AUTO CONVERT CERTAIN PROPERTIES
+
                 public DbSet<Tutorial> Tutorials { get; set; }
                 public DbSet<TutorialRating> TutorialRatings { get; set; }
                 public DbSet<TutorialComment> TutorialComments { get; set; }
                 public DbSet<TutorialCommentRating> TutorialCommentRatings { get; set; }
+
+                public DbSet<Example> Examples { get; set; }
+                public DbSet<ExampleRating> ExampleRatings { get; set; }
+                public DbSet<ExampleComment> ExampleComments { get; set; }
+                public DbSet<ExampleCommentRating> ExampleCommentRatings { get; set; }
 
                 public DbSet<Account> Accounts { get; set; }
 
@@ -39,6 +47,10 @@ namespace TutorBits
                 public DbSet<AnswerRating> AnswerRatings { get; set; }
                 public DbSet<AnswerComment> AnswerComments { get; set; }
                 public DbSet<AnswerCommentRating> AnswerCommentRatings { get; set; }
+
+                public DbSet<Video> Videos { get; set; }
+                public DbSet<Thumbnail> Thumbnails { get; set; }
+                public DbSet<Project> Projects { get; set; }
 
                 protected override void OnModelCreating(ModelBuilder modelBuilder)
                 {
@@ -57,33 +69,15 @@ namespace TutorBits
                     //modelBuilder.Entity(typeof(Base)).Property("Status").HasConversion(converter); 
                     //Creates the base table ignoring other tables including attr and totable
                     var baseStateConverter = new EnumToStringConverter<BaseState>();
-                    var tutorialTopicConverter = new EnumToStringConverter<TutorialTopics>();
-                    var questionTopicConverter = new EnumToStringConverter<QuestionTopics>();
-                    var tutorialCategoryConverter = new EnumToStringConverter<TutorialCategory>();
+                    var programmingTopicConverter = new EnumToStringConverter<ProgrammingTopic>();
                     var commentTypeConverter = new EnumToStringConverter<CommentType>();
                     foreach (var publicPropertieBaseType in publicPropertieBaseTypes)
                     {
-                        if (publicPropertieBaseType.GetProperties().Any(p => p.Name == "TutorialTopic"))
+                        if (publicPropertieBaseType.GetProperties().Any(p => p.Name == "ProgrammingTopic"))
                         {
                             modelBuilder.Entity(publicPropertieBaseType)
-                                                    .Property("TutorialTopic")
-                                                    .HasConversion(tutorialTopicConverter)
-                                                    .HasMaxLength(64);
-                        }
-
-                        if (publicPropertieBaseType.GetProperties().Any(p => p.Name == "QuestionTopic"))
-                        {
-                            modelBuilder.Entity(publicPropertieBaseType)
-                                                    .Property("QuestionTopic")
-                                                    .HasConversion(questionTopicConverter)
-                                                    .HasMaxLength(64);
-                        }
-
-                        if (publicPropertieBaseType.GetProperties().Any(p => p.Name == "TutorialCategory"))
-                        {
-                            modelBuilder.Entity(publicPropertieBaseType)
-                                                    .Property("TutorialCategory")
-                                                    .HasConversion(tutorialCategoryConverter)
+                                                    .Property("ProgrammingTopic")
+                                                    .HasConversion(programmingTopicConverter)
                                                     .HasMaxLength(64);
                         }
 

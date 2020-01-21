@@ -55,9 +55,9 @@ namespace TutorBits.Video
                 .GetValue<string>(Constants.Configuration.Sections.Paths.TranscodeOutputBucketKey);
         }
 
-        public string GetVideoPath(string projectId)
+        public string GetVideoPath(string videoId)
         {
-            return fileDataLayer_.SanitizePath(Path.Combine(projectService_.GetProjectPath(projectId), VideoDir));
+            return fileDataLayer_.SanitizePath(Path.Combine(projectService_.GetProjectPath(videoId), VideoDir));
         }
 
         public string GetVideoFilePath(string directory)
@@ -65,44 +65,44 @@ namespace TutorBits.Video
             return fileDataLayer_.SanitizePath(Path.Combine(directory, VideoFileName));
         }
 
-        public string GetTranscodeStateFilePath(Guid projectId)
+        public string GetTranscodeStateFilePath(Guid videoId)
         {
-            var videoDirectory = GetVideoPath(projectId.ToString());
+            var videoDirectory = GetVideoPath(videoId.ToString());
             var videoTranscodingPath = Path.Combine(videoDirectory, TranscodeStateFileName);
 
             return fileDataLayer_.SanitizePath(videoTranscodingPath);
         }
 
-        public async Task<string> StartTranscoding(Guid projectId)
+        public async Task<string> StartTranscoding(Guid videoId)
         {
-            var videoDirectory = GetVideoPath(projectId.ToString());
+            var videoDirectory = GetVideoPath(videoId.ToString());
             var webmPath = GetVideoFilePath(videoDirectory);
             var mp4Path = Path.ChangeExtension(webmPath, ".mp4");
 
             try
             {
-                await CancelTranscoding(projectId); //Cancel if running already
+                await CancelTranscoding(videoId); //Cancel if running already
             }
             catch (Exception) { }
 
-            await CreateTranscodingStateFile(projectId, new TranscodingStateFile()
+            await CreateTranscodingStateFile(videoId, new TranscodingStateFile()
             {
-                ProjectId = projectId,
+                VideoId = videoId,
                 State = TranscodingState.Transcoding,
                 TranscodingOutputPath = mp4Path,
                 NormalizeOutputPath = mp4Path,
                 Start = DateTimeOffset.Now
             });
 
-            await DeletePreviousTranscode(projectId);
+            await DeletePreviousTranscode(videoId);
             var transactionJobId = await lambdaLayer_.ConvertWebmToMp4Transcoder(webmPath, mp4Path);
 
             return transactionJobId;
         }
 
-        public async Task CancelTranscoding(Guid projectId)
+        public async Task CancelTranscoding(Guid videoId)
         {
-            var transcodingFileData = await ReadTranscodingStateFile(projectId);
+            var transcodingFileData = await ReadTranscodingStateFile(videoId);
 
             switch (transcodingFileData.State) //End states just bail dont consider cancel
             {
@@ -114,12 +114,12 @@ namespace TutorBits.Video
             }
 
             transcodingFileData.State = TranscodingState.Cancelled;
-            await UpdateTranscodingStateFile(projectId, transcodingFileData);
+            await UpdateTranscodingStateFile(videoId, transcodingFileData);
         }
 
-        public async Task<TranscodingState> CheckTranscodingStatus(Guid projectId)
+        public async Task<TranscodingState> CheckTranscodingStatus(Guid videoId)
         {
-            var transcodingFileData = await ReadTranscodingStateFile(projectId);
+            var transcodingFileData = await ReadTranscodingStateFile(videoId);
 
             switch (transcodingFileData.State) //End states just bail dont consider timeout
             {
@@ -133,37 +133,37 @@ namespace TutorBits.Video
             if (DateTimeOffset.Now - transcodingFileData.Start > TranscodeTimeout_)
             {
                 transcodingFileData.State = TranscodingState.Timeout;
-                await UpdateTranscodingStateFile(projectId, transcodingFileData);
+                await UpdateTranscodingStateFile(videoId, transcodingFileData);
             }
 
             return transcodingFileData.State;
         }
 
-        public async Task<string> StartVideoRecording(Guid projectId)
+        public async Task<string> StartVideoRecording(Guid videoId)
         {
-            var videoPath = GetVideoPath(projectId.ToString());
+            var videoPath = GetVideoPath(videoId.ToString());
             var videoFilePath = GetVideoFilePath(videoPath);
             var uploadId = await fileDataLayer_.StartMultipartUpload(videoFilePath);
             return uploadId;
         }
 
-        public async Task<string> ContinueVideoRecording(Guid projectId, string uploadId, int part, Stream videoPart, bool last)
+        public async Task<string> ContinueVideoRecording(Guid videoId, string uploadId, int part, Stream videoPart, bool last)
         {
-            var videoPath = GetVideoPath(projectId.ToString());
+            var videoPath = GetVideoPath(videoId.ToString());
             var videoFilePath = GetVideoFilePath(videoPath);
             return await fileDataLayer_.UploadPart(videoFilePath, uploadId, part, videoPart, last);
         }
 
-        public async Task<string> FinishVideoRecording(Guid projectId, string uploadId, ICollection<VideoPart> parts)
+        public async Task<string> FinishVideoRecording(Guid videoId, string uploadId, ICollection<VideoPart> parts)
         {
-            var videoPath = GetVideoPath(projectId.ToString());
+            var videoPath = GetVideoPath(videoId.ToString());
             var videoFilePath = GetVideoFilePath(videoPath);
             return await fileDataLayer_.StopMultipartUpload(videoFilePath, uploadId, parts);
         }
 
-        public async Task CreateTranscodingStateFile(Guid projectId, TranscodingStateFile data)
+        public async Task CreateTranscodingStateFile(Guid videoId, TranscodingStateFile data)
         {
-            var transcodingStateFilePath = GetTranscodeStateFilePath(projectId);
+            var transcodingStateFilePath = GetTranscodeStateFilePath(videoId);
 
             using (var dataStream = new MemoryStream())
             {
@@ -173,15 +173,15 @@ namespace TutorBits.Video
             }
         }
 
-        public async Task<TranscodingStateFile> ReadTranscodingStateFile(Guid projectId)
+        public async Task<TranscodingStateFile> ReadTranscodingStateFile(Guid videoId)
         {
-            var transcodingStateFilePath = GetTranscodeStateFilePath(projectId);
+            var transcodingStateFilePath = GetTranscodeStateFilePath(videoId);
             return Utils.Common.JsonUtils.Deserialize<TranscodingStateFile>(await fileDataLayer_.ReadFile(transcodingStateFilePath));
         }
 
-        public async Task UpdateTranscodingStateFile(Guid projectId, TranscodingStateFile data)
+        public async Task UpdateTranscodingStateFile(Guid videoId, TranscodingStateFile data)
         {
-            var transcodingStateFilePath = GetTranscodeStateFilePath(projectId);
+            var transcodingStateFilePath = GetTranscodeStateFilePath(videoId);
 
             if (!(await fileDataLayer_.FileExists(transcodingStateFilePath)))
             {
@@ -196,9 +196,9 @@ namespace TutorBits.Video
             }
         }
 
-        public async Task DeletePreviousTranscode(Guid projectId)
+        public async Task DeletePreviousTranscode(Guid videoId)
         {
-            var videoDirectory = GetVideoPath(projectId.ToString());
+            var videoDirectory = GetVideoPath(videoId.ToString());
             var videoPath = Path.ChangeExtension(GetVideoFilePath(videoDirectory), ".mp4");
 
             if (await fileDataLayer_.FileExists(videoPath, TranscodeOutputBucket))

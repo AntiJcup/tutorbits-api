@@ -21,7 +21,7 @@ namespace api.Models.Views
         {
             Id = baseModel.Id.ToString();
             Title = baseModel.Title;
-            Topic = baseModel.QuestionTopic.ToString();
+            Topic = baseModel.ProgrammingTopic.ToString();
             Description = baseModel.Description;
             Status = baseModel.Status.ToString();
             Owner = baseModel.Owner;

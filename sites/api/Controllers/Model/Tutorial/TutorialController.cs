@@ -30,7 +30,9 @@ namespace api.Controllers.Model
             {
                 return new List<Expression<Func<Tutorial, object>>>{
                     p => p.OwnerAccount,
-                    p => p.Ratings
+                    p => p.Ratings,
+                    p => p.Thumbnail,
+                    p => p.Project,
                 };
             }
         }
@@ -71,29 +73,16 @@ namespace api.Controllers.Model
                 return BadRequest();
             }
 
-            var project = await projectService_.GetProject(tutorialId);
-            if (project == null)
-            {
-                return BadRequest();
-            }
-
-            //Finalize project
-            var previewId = Guid.NewGuid().ToString();
-            var previewDictionary = await previewService_.GeneratePreview(project, (int)project.Duration, previewId, false);
-            await previewService_.PackagePreviewZIP(tutorialId, previewId);
-            await previewService_.PackagePreviewJSON(tutorialId, previewDictionary);
-
             //Update tutorial model
-            model.DurationMS = project.Duration;
             model.Status = BaseState.Active;
             await dbDataAccessService_.UpdateBaseModel(model);
             return Ok();
         }
 
         [HttpGet]
-        public IActionResult GetTutorialTopics()
+        public IActionResult GetProgrammingTopics()
         {
-            return new JsonResult(Enum.GetNames(typeof(TutorialTopics)));
+            return new JsonResult(Enum.GetNames(typeof(ProgrammingTopic)));
         }
 
         [HttpGet]
@@ -106,11 +95,21 @@ namespace api.Controllers.Model
         protected override async Task EnrichViewModel(TutorialViewModel viewModel, Tutorial entity)
         {
             await base.EnrichViewModel(viewModel, entity);
-            viewModel.ThumbnailUrl = ProjectUrlGenerator.GenerateProjectThumbnailUrl(Guid.Parse(viewModel.Id), configuration_);
+
+            if (entity.Thumbnail != null)
+            {
+                viewModel.ThumbnailUrl = ProjectUrlGenerator.GenerateProjectThumbnailUrl(entity.Thumbnail.Id, configuration_);
+            }
 
             if (entity.Ratings != null)
             {
-                viewModel.Score = BaseRatingController<TutorialRating, CreateTutorialRatingModel, UpdateTutorialRatingModel, TutorialRatingViewModel>.CalculateRatingScore(entity.Ratings);
+                viewModel.Score = BaseRatingController<TutorialRating, CreateTutorialRatingModel, UpdateTutorialRatingModel, TutorialRatingViewModel>
+                    .CalculateRatingScore(entity.Ratings);
+            }
+
+            if (entity.Project != null)
+            {
+                viewModel.DurationMS = entity.Project.DurationMS;
             }
         }
     }

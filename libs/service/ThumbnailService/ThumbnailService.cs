@@ -32,10 +32,12 @@ namespace TutorBits.Thumbnail
                 .GetValue<string>(Constants.Configuration.Sections.Paths.ThumbnailsDirKey);
         }
 
-        public string GetThumbnailsDirectory(string projectId)
+        public string GetThumbnailsDirectory(string thumbnailId)
         {
             var workingDirectory = dataLayer_.GetWorkingDirectory();
-            return dataLayer_.SanitizePath(string.IsNullOrWhiteSpace(workingDirectory) ? Path.Combine(ThumbnailsDir, projectId) : Path.Combine(workingDirectory, ThumbnailsDir, projectId));
+            return dataLayer_.SanitizePath(string.IsNullOrWhiteSpace(workingDirectory) ?
+                Path.Combine(ThumbnailsDir, thumbnailId) :
+                Path.Combine(workingDirectory, ThumbnailsDir, thumbnailId));
         }
 
         public string GetThumbnailFilePath(string directory)
@@ -43,9 +45,9 @@ namespace TutorBits.Thumbnail
             return dataLayer_.SanitizePath(Path.Combine(directory, ThumbnailFileName));
         }
 
-        public async Task CreateTutorialThumbnail(Guid tutorialId, Stream thumbnail)
+        public async Task UploadThumbnail(Guid thumbnailId, Stream thumbnail)
         {
-            var thumbnailsDirectoryPath = GetThumbnailsDirectory(tutorialId.ToString());
+            var thumbnailsDirectoryPath = GetThumbnailsDirectory(thumbnailId.ToString());
             var thumbnailFilePath = GetThumbnailFilePath(thumbnailsDirectoryPath);
 
             await dataLayer_.CreateDirectory(thumbnailsDirectoryPath);

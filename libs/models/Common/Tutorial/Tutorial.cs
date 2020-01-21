@@ -13,14 +13,25 @@ namespace TutorBits.Models.Common
         [Index]
         public string Title { get; set; }
 
-        public TutorialTopics TutorialTopic { get; set; }
+        public ProgrammingTopic ProgrammingTopic { get; set; }
 
         [MaxLength(1028)]
         public string Description { get; set; }
 
-        public UInt64 DurationMS { get; set; }
+        public Guid? ProjectId { get; set; }
 
-        public TutorialCategory TutorialCategory { get; set; }
+        public Guid? VideoId { get; set; }
+
+        public Guid? ThumbnailId { get; set; }
+
+        [ForeignKey("ProjectId")]
+        public virtual Project Project { get; set; }
+
+        [ForeignKey("VideoId")]
+        public virtual Video Video { get; set; }
+
+        [ForeignKey("ThumbnailId")]
+        public virtual Thumbnail Thumbnail { get; set; }
 
         [InverseProperty("Target")]
         public virtual ICollection<TutorialRating> Ratings { get; set; }

@@ -43,13 +43,13 @@ namespace Utils.Common
             return string.Format("{0}/{1}", host, string.Format(path, projectId.ToString(), previewId));
         }
 
-        public static string GenerateProjectThumbnailUrl(Guid projectId, IConfiguration configuration)
+        public static string GenerateProjectThumbnailUrl(Guid thumbnailId, IConfiguration configuration)
         {
             var host = configuration.GetSection(Constants.Configuration.Sections.UrlsKey)
                                                 .GetValue<string>(Constants.Configuration.Sections.Urls.ProjectHostKey);
             var path = configuration.GetSection(Constants.Configuration.Sections.UrlsKey)
                                                 .GetValue<string>(Constants.Configuration.Sections.Urls.ProjectThumbnailPathKey);
-            return string.Format("{0}/{1}", host, string.Format(path, projectId.ToString()));
+            return string.Format("{0}/{1}", host, string.Format(path, thumbnailId.ToString()));
         }
 
         public static string GenerateProjectDownloadUrl(Guid projectId, IConfiguration configuration)
