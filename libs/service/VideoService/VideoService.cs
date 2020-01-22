@@ -32,6 +32,7 @@ namespace TutorBits.Video
         public readonly string VideoFileName;
         public readonly string TranscodeStateFileName;
         public readonly string TranscodeOutputBucket;
+        public readonly string TargetBucket;
 
         public VideoService(IConfiguration configuration, FileDataLayerInterface fileDataLayer, LambdaLayerInterface lambdaLayer, ProjectService projectService)
         {
@@ -51,13 +52,14 @@ namespace TutorBits.Video
             TranscodeStateFileName = configuration.GetSection(Constants.Configuration.Sections.PathsKey)
                 .GetValue<string>(Constants.Configuration.Sections.Paths.TranscodeStateFileNameKey);
 
-            TranscodeOutputBucket = configuration.GetSection(Constants.Configuration.Sections.PathsKey)
-                .GetValue<string>(Constants.Configuration.Sections.Paths.TranscodeOutputBucketKey);
+            TargetBucket = configuration.GetSection(Constants.Configuration.Sections.PathsKey)
+                .GetValue<string>(Constants.Configuration.Sections.Paths.BucketKey);
         }
 
         public string GetVideoPath(string videoId)
         {
-            return fileDataLayer_.SanitizePath(Path.Combine(projectService_.GetProjectPath(videoId), VideoDir));
+            var workingDirectory = fileDataLayer_.GetWorkingDirectory();
+            return fileDataLayer_.SanitizePath(string.IsNullOrWhiteSpace(workingDirectory) ? Path.Combine(VideoDir, videoId) : Path.Combine(workingDirectory, VideoDir, videoId));
         }
 
         public string GetVideoFilePath(string directory)
@@ -91,7 +93,8 @@ namespace TutorBits.Video
                 State = TranscodingState.Transcoding,
                 TranscodingOutputPath = mp4Path,
                 NormalizeOutputPath = mp4Path,
-                Start = DateTimeOffset.Now
+                Start = DateTimeOffset.Now,
+                TargetBucket = TargetBucket
             });
 
             await DeletePreviousTranscode(videoId);

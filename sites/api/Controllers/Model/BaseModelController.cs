@@ -57,6 +57,10 @@ namespace api.Controllers.Model
         {
             var keys = await GetKeysFromRequest();
             var entity = await dbDataAccessService_.GetBaseModel<TModel>(keys, GetIncludes);
+            if (entity == null)
+            {
+                return NotFound();
+            }
             var viewModel = new TViewModel();
             viewModel.Convert(entity);
             await EnrichViewModel(viewModel, entity);
@@ -78,6 +82,10 @@ namespace api.Controllers.Model
             }
 
             var entity = await dbDataAccessService_.GetBaseModel<TModel>(GetIncludes, id);
+            if (entity == null)
+            {
+                return NotFound();
+            }
             var viewModel = new TViewModel();
             viewModel.Convert(entity);
             await EnrichViewModel(viewModel, entity);
@@ -276,7 +284,7 @@ namespace api.Controllers.Model
 
             await dbDataAccessService_.DeleteBaseModel<TModel>(oldModel);
             await OnDeleted(oldModel);
-            
+
             return Ok();
         }
 

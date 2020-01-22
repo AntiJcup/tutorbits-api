@@ -182,11 +182,11 @@ namespace api.Controllers.Model
 
         [ActionName("video")]
         [HttpGet]
-        public IActionResult GetVideoUrl([FromQuery]Guid projectId)
+        public IActionResult GetVideoUrl([FromQuery]Guid videoId)
         {
             try
             {
-                return new JsonResult(ProjectUrlGenerator.GenerateProjectVideoUrl(projectId, configuration_));
+                return new JsonResult(ProjectUrlGenerator.GenerateProjectVideoUrl(videoId, configuration_));
             }
             catch (Exception e)
             {

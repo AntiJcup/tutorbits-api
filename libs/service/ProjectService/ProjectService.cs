@@ -142,7 +142,7 @@ namespace TutorBits.Project
             }
         }
 
-        public async Task ResetProject(Guid id)
+        public async Task DeleteProject(Guid id)
         {
             var projectDirectoryPath = GetProjectPath(id.ToString());
 

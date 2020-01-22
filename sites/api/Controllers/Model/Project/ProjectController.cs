@@ -102,7 +102,9 @@ namespace api.Controllers.Model
                     return BadRequest();
                 }
 
-                await projectService_.ResetProject(project.Id);
+                var originalProject = await projectService_.GetProject(project.Id);
+                await projectService_.DeleteProject(project.Id);
+                await projectService_.CreateTraceProject(originalProject);
 
                 return Ok();
             }

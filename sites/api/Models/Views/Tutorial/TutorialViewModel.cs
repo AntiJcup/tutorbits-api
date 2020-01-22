@@ -15,6 +15,12 @@ namespace api.Models.Views
 
         public string Status { get; set; }
 
+        public string ProjectId { get; set; }
+
+        public string VideoId { get; set; }
+
+        public string ThumbnailId { get; set; }
+
         public UInt64 DurationMS { get; set; } //TODO Enrich!
 
         public string ThumbnailUrl { get; set; } //Enriched
@@ -29,6 +35,9 @@ namespace api.Models.Views
             Description = baseModel.Description;
             Status = baseModel.Status.ToString();
             Owner = baseModel.Owner;
+            ProjectId = baseModel.ProjectId?.ToString();
+            VideoId = baseModel.VideoId?.ToString();
+            ThumbnailId = baseModel.ThumbnailId?.ToString();
         }
     }
 }

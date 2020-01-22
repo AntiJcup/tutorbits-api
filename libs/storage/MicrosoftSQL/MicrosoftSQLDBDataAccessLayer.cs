@@ -44,6 +44,10 @@ namespace TutorBits
                     {
                         var property = Expression.Property(param, modelKey.Properties[0].PropertyInfo);
                         dynamic val = keys[keyIndex++];
+                        if (property.Type == typeof(Guid) && val.GetType() == typeof(string))
+                        {
+                            val = Guid.Parse(val as string);
+                        }
                         if (previousExpression == null)
                         {
                             previousExpression = Expression.Equal(property, Expression.Constant(val));

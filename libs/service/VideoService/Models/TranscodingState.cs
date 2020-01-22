@@ -23,6 +23,8 @@ namespace TutorBits.Video
 
         public string NormalizeOutputPath { get; set; }
 
+        public string TargetBucket { get; set; }
+
         public DateTimeOffset Start { get; set; }
     }
 }
