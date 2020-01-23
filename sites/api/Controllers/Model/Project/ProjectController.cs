@@ -66,8 +66,6 @@ namespace api.Controllers.Model
                 return BadRequest();
             }
 
-            model.DurationMS = project.Duration;
-            await dbDataAccessService_.UpdateBaseModel(model);
 
             //Finalize project
             var previewId = Guid.NewGuid().ToString();
@@ -76,6 +74,7 @@ namespace api.Controllers.Model
             await previewService_.PackagePreviewJSON(projectId, previewDictionary);
 
             //Update model
+            model.DurationMS = project.Duration;
             model.Status = BaseState.Active;
             await dbDataAccessService_.UpdateBaseModel(model);
             return Ok();
