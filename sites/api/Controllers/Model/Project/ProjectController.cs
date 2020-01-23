@@ -66,6 +66,9 @@ namespace api.Controllers.Model
                 return BadRequest();
             }
 
+            model.DurationMS = project.Duration;
+            await dbDataAccessService_.UpdateBaseModel(model);
+
             //Finalize project
             var previewId = Guid.NewGuid().ToString();
             var previewDictionary = await previewService_.GeneratePreview(project, (int)project.Duration, previewId, false);
@@ -150,10 +153,7 @@ namespace api.Controllers.Model
                     return BadRequest();
                 }
                 Console.WriteLine(transactionLog.ToString());
-                var traceProject = await projectService_.GetProject(projectId);
-                var transactionLogFullPath = await projectService_.AddTraceTransactionLog(projectId, transactionLog, traceProject);
-                project.DurationMS = traceProject.Duration;
-                await dbDataAccessService_.UpdateBaseModel(project);
+                var transactionLogFullPath = await projectService_.AddTraceTransactionLog(projectId, transactionLog);
 
                 return new JsonResult(ProjectUrlGenerator.GenerateTransactionLogUrl(Path.GetFileName(transactionLogFullPath), projectId, configuration_));
             }
