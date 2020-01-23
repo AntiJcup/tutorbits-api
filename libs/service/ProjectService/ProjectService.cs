@@ -169,12 +169,15 @@ namespace TutorBits.Project
             return projectResourceFilePath;
         }
 
-        public async Task<string> AddTraceTransactionLog(Guid projectId, TraceTransactionLog transactionLog)
+        public async Task<string> AddTraceTransactionLog(Guid projectId, TraceTransactionLog transactionLog, TraceProject project = null)
         {
-            var project = await GetProject(projectId);
             if (project == null)
             {
-                return null;
+                project = await GetProject(projectId);
+                if (project == null)
+                {
+                    return null;
+                }
             }
 
             var latestTransaction = transactionLog.Transactions.OrderByDescending(t => t.TimeOffsetMs).FirstOrDefault();

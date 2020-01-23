@@ -150,7 +150,10 @@ namespace api.Controllers.Model
                     return BadRequest();
                 }
                 Console.WriteLine(transactionLog.ToString());
-                var transactionLogFullPath = await projectService_.AddTraceTransactionLog(projectId, transactionLog);
+                var traceProject = await projectService_.GetProject(projectId);
+                var transactionLogFullPath = await projectService_.AddTraceTransactionLog(projectId, transactionLog, traceProject);
+                project.DurationMS = traceProject.Duration;
+                await dbDataAccessService_.UpdateBaseModel(project);
 
                 return new JsonResult(ProjectUrlGenerator.GenerateTransactionLogUrl(Path.GetFileName(transactionLogFullPath), projectId, configuration_));
             }
