@@ -2,7 +2,8 @@ const s3Util = require('./s3-util'),
 	childProcessPromise = require('./child-process-promise'),
 	path = require('path'),
 	os = require('os'),
-	fs = require('fs');
+	fs = require('fs'),
+	bucket = process.env.BUCKET;
 const { promisify } = require('util');
 
 const openFileAsync = promisify(fs.open);
@@ -34,7 +35,7 @@ async function getVideoLength(file) {
 	const fd = await openFileAsync(file, 'r');
 	const stat = await fstatAsync(fd);
 	var buff = new Buffer(stat["size"]);
-	const readFileRes = await readFileAsync(fd, buff, 0, stats["size"], 0);
+	const readFileRes = await readFileAsync(fd, buff, 0, stat["size"], 0);
 	fs.closeSync(fd);
 
 	var start = readFileRes.buffer.indexOf(new Buffer('mvhd')) + 17;
@@ -69,7 +70,7 @@ exports.handler = function (eventObject, context) {
 				{ env: process.env, cwd: workdir }
 			);
 			const videoLength = await getVideoLength(outputFile);
-			await s3Util.uploadFileToS3(transcode_json.TargetBucket, resultKey, outputFile, 'video/mp4');
+			await s3Util.uploadFileToS3(bucket, resultKey, outputFile, 'video/mp4');
 			await updateTranscode(workdir, outDir, 3, videoLength);
 		} catch (e) {
 			console.error('error', e);
