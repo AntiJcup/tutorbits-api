@@ -62,6 +62,9 @@ namespace api.Controllers.Model
                 return BadRequest();
             }
 
+            var transcode = await videoService_.ReadTranscodingStateFile(videoId);
+            model.DurationMS = transcode.DurationMS;
+
             //Update model
             model.Status = BaseState.Active;
             await dbDataAccessService_.UpdateBaseModel(model);

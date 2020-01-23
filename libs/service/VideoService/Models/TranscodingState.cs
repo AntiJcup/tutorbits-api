@@ -26,5 +26,7 @@ namespace TutorBits.Video
         public string TargetBucket { get; set; }
 
         public DateTimeOffset Start { get; set; }
+
+        public UInt64 DurationMS { get; set; } = 0;
     }
 }

@@ -55,6 +55,7 @@ namespace TutorBits.Lambda.Local
             {
                 var transcode = JsonUtils.Deserialize<TranscodingStateFile>(fileStream);
                 transcode.State = TranscodingState.Finished;
+                transcode.DurationMS = await GetVideoLength(outMp4Path);
                 using (var writeStream = File.OpenWrite(transcode_state_file_path))
                 {
                     JsonUtils.Serialize(transcode, writeStream);
@@ -84,6 +85,29 @@ namespace TutorBits.Lambda.Local
         {
             //DO nothing we are local
             return true;
+        }
+
+        public async Task<UInt64> GetVideoLength(string videoPath)
+        {
+            var dataLayer = new WindowsFileDataLayerInterface();
+            using (var videoData = await dataLayer.ReadFile(videoPath))
+            {
+                var foundIndex = videoData.ScanUntilFound(new byte[] { 0x6D, 0x76, 0x68, 0x64 }); //mvhd
+                if (foundIndex == -1)
+                {
+                    return 0; //We dont know here
+                }
+                var start = foundIndex + 17;
+                videoData.Position = start;
+                using (var bin = new BinaryReader(videoData))
+                {
+                    var timeScale = bin.ReadUInt32();
+                    var duration = bin.ReadUInt32();
+                    var videoLength = duration / timeScale;
+                    return videoLength;
+                }
+            }
+
         }
     }
 }
