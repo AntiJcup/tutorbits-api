@@ -255,7 +255,7 @@ namespace api.Controllers.Model
                 return Forbid(); //Only the owner and admins can delete this data
             }
 
-            await dbDataAccessService_.DeleteBaseModel<TModel>(keys);
+            await dbDataAccessService_.DeleteBaseModelByIds<TModel>(false, keys);
             await OnDeleted(oldModel);
 
             return Ok();

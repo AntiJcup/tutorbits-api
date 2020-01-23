@@ -63,7 +63,7 @@ namespace TutorBits.DBDataAccess
             }
         }
 
-        public async Task DeleteBaseModel<TModel>(params object[] keys) where TModel : BaseModel, new()
+        public async Task DeleteBaseModelByIds<TModel>(bool removeFromDB = false, params object[] keys) where TModel : BaseModel, new()
         {
             var model = await dataLayer_.Get<TModel>(keys);
             if (model == null)

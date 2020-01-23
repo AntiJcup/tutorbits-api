@@ -77,7 +77,7 @@ namespace api.Controllers
                 return false;
             }
 
-            await dbDataAccessService_.DeleteBaseModel<Tutorial>(tutorial.Id, true);
+            await dbDataAccessService_.DeleteBaseModel<Tutorial>(lookedUpTutorial, true);
 
             return true;
         }
