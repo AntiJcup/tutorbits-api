@@ -9,7 +9,7 @@ namespace TutorBits.Models.Common
         [InverseProperty("Thumbnail")]
         public virtual ICollection<Tutorial> Tutorials { get; set; }
 
-        [InverseProperty("Project")]
+        [InverseProperty("Thumbnail")]
         public virtual ICollection<Example> Examples { get; set; }
     }
 }
