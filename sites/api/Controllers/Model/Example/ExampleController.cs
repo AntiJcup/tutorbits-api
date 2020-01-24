@@ -32,6 +32,7 @@ namespace api.Controllers.Model
                     p => p.OwnerAccount,
                     p => p.Ratings,
                     p => p.Thumbnail,
+                    p => p.Project,
                 };
             }
         }
@@ -75,6 +76,11 @@ namespace api.Controllers.Model
             if (!model.ProjectId.HasValue || !model.ThumbnailId.HasValue)
             {
                 return BadRequest("incomplete");
+            }
+
+            if (model.Project.Status != BaseState.Active || model.Thumbnail.Status != BaseState.Active)
+            {
+                return BadRequest("unpublished dependencies");
             }
 
             //Update Example model

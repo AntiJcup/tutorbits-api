@@ -33,6 +33,7 @@ namespace api.Controllers.Model
                     p => p.Ratings,
                     p => p.Thumbnail,
                     p => p.Project,
+                    p => p.Video,
                 };
             }
         }
@@ -57,7 +58,7 @@ namespace api.Controllers.Model
                 return BadRequest(ModelState);
             }
 
-            var model = await dbDataAccessService_.GetBaseModel<Tutorial>(null, tutorialId);
+            var model = await dbDataAccessService_.GetBaseModel<Tutorial>(GetIncludes, tutorialId);
             if (model == null)
             {
                 return NotFound(); //Update cant be called on items that dont exist
@@ -76,6 +77,11 @@ namespace api.Controllers.Model
             if (!model.VideoId.HasValue || !model.ProjectId.HasValue || !model.ThumbnailId.HasValue)
             {
                 return BadRequest("incomplete");
+            }
+
+            if (model.Project.Status != BaseState.Active || model.Video.Status != BaseState.Active || model.Thumbnail.Status != BaseState.Active)
+            {
+                return BadRequest("unpublished dependencies");
             }
 
             //Update tutorial model
