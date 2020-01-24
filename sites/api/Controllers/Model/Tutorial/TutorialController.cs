@@ -70,12 +70,12 @@ namespace api.Controllers.Model
 
             if (model.Status != BaseState.Inactive)
             {
-                return BadRequest();
+                return BadRequest("Unable to edit");
             }
 
             if (!model.VideoId.HasValue || !model.ProjectId.HasValue || !model.ThumbnailId.HasValue)
             {
-                return BadRequest("Tutorial is incomplete");
+                return BadRequest("incomplete");
             }
 
             //Update tutorial model

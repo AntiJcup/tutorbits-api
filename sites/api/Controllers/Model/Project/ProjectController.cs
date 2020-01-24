@@ -57,15 +57,14 @@ namespace api.Controllers.Model
 
             if (model.Status != BaseState.Inactive)
             {
-                return BadRequest();
+                return BadRequest("Unable to edit");
             }
 
             var project = await projectService_.GetProject(projectId);
             if (project == null)
             {
-                return BadRequest();
+                return BadRequest("Tracer project missing");
             }
-
 
             //Finalize project
             var previewId = Guid.NewGuid().ToString();

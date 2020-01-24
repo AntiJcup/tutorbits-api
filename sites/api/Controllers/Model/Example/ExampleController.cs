@@ -69,20 +69,13 @@ namespace api.Controllers.Model
 
             if (model.Status != BaseState.Inactive)
             {
-                return BadRequest();
+                return BadRequest("Unable to edit");
             }
 
-            var project = await projectService_.GetProject(ExampleId);
-            if (project == null)
+            if (!model.ProjectId.HasValue || !model.ThumbnailId.HasValue)
             {
-                return BadRequest();
+                return BadRequest("incomplete");
             }
-
-            //Finalize project
-            var previewId = Guid.NewGuid().ToString();
-            var previewDictionary = await previewService_.GeneratePreview(project, (int)project.Duration, previewId, false);
-            await previewService_.PackagePreviewZIP(ExampleId, previewId);
-            await previewService_.PackagePreviewJSON(ExampleId, previewDictionary);
 
             //Update Example model
             model.Status = BaseState.Active;

@@ -59,7 +59,7 @@ namespace api.Controllers.Model
 
             if (model.Status != BaseState.Inactive)
             {
-                return BadRequest();
+                return BadRequest("Unable to edit");
             }
 
             var transcode = await videoService_.ReadTranscodingStateFile(videoId);
