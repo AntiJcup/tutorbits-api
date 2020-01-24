@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using api.Models.Requests;
 using api.Models.Views;
@@ -23,6 +25,17 @@ namespace api.Controllers.Model
     {
         private readonly ProjectService projectService_;
         private readonly PreviewService previewService_;
+
+        protected override ICollection<Expression<Func<Project, object>>> DeleteIncludes
+        {
+            get
+            {
+                return new List<Expression<Func<Project, object>>>{
+                    p => p.Tutorials,
+                    p => p.Examples,
+                };
+            }
+        }
 
         public ProjectController(IConfiguration configuration,
                             DBDataAccessService dbDataAccessService,
@@ -352,6 +365,11 @@ namespace api.Controllers.Model
             };
 
             await projectService_.CreateTraceProject(project);
+        }
+
+        protected virtual async Task<bool> CanDelete(Project entity)
+        {
+            return !(entity.Tutorials.Any(e => e.Status == BaseState.Active) || entity.Examples.Any(e => e.Status == BaseState.Active));
         }
     }
 }

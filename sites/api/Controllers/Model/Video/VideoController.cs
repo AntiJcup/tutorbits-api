@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using api.Controllers;
 using api.Controllers.Model;
@@ -27,6 +28,16 @@ namespace api.Controllers.Model
     public class VideoController : BaseModelController<Video, CreateVideoModel, UpdateVideoModel, VideoViewModel>
     {
         private readonly VideoService videoService_;
+
+        protected override ICollection<Expression<Func<Video, object>>> DeleteIncludes
+        {
+            get
+            {
+                return new List<Expression<Func<Video, object>>>{
+                    p => p.Tutorials
+                };
+            }
+        }
 
         public VideoController(IConfiguration configuration,
                             DBDataAccessService dbDataAccessService,
@@ -197,6 +208,11 @@ namespace api.Controllers.Model
             }
 
             return BadRequest();
+        }
+
+        protected virtual async Task<bool> CanDelete(Video entity)
+        {
+            return !(entity.Tutorials.Any(e => e.Status == BaseState.Active));
         }
     }
 }

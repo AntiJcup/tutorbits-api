@@ -42,6 +42,16 @@ namespace api.Controllers.Model
             }
         }
 
+        protected virtual ICollection<Expression<Func<TModel, object>>> DeleteIncludes
+        {
+            get
+            {
+                return new List<Expression<Func<TModel, object>>>
+                {
+                };
+            }
+        }
+
         public BaseModelController(
             IConfiguration configuration,
             DBDataAccessService dbDataAccessService,
@@ -212,7 +222,7 @@ namespace api.Controllers.Model
             return new JsonResult(viewModel);
         }
 
-        [Authorize]
+        [Authorize(Policy = "IsAdmin")]
         [HttpPost]
         public virtual async Task<IActionResult> UpdateStatusById([FromQuery] Guid id, [FromQuery] BaseState status)
         {
@@ -244,7 +254,7 @@ namespace api.Controllers.Model
         public virtual async Task<IActionResult> Delete()
         {
             var keys = await GetKeysFromRequest();
-            var oldModel = await dbDataAccessService_.GetBaseModel<TModel>(keys);
+            var oldModel = await dbDataAccessService_.GetBaseModel<TModel>(keys, DeleteIncludes);
 
             if (oldModel == null)
             {
@@ -254,6 +264,11 @@ namespace api.Controllers.Model
             if (!HasAccessToModel(oldModel))
             {
                 return Forbid(); //Only the owner and admins can delete this data
+            }
+
+            if (!(await CanDelete(oldModel)))
+            {
+                return BadRequest("unable");
             }
 
             await dbDataAccessService_.DeleteBaseModelByIds<TModel>(false, keys);
@@ -271,7 +286,7 @@ namespace api.Controllers.Model
                 return BadRequest(ModelState);
             }
 
-            var oldModel = await dbDataAccessService_.GetBaseModel<TModel>(null, id);
+            var oldModel = await dbDataAccessService_.GetBaseModel<TModel>(DeleteIncludes, id);
 
             if (oldModel == null)
             {
@@ -281,6 +296,11 @@ namespace api.Controllers.Model
             if (!HasAccessToModel(oldModel))
             {
                 return Forbid(); //Only the owner and admins can delete this data
+            }
+
+            if (!(await CanDelete(oldModel)))
+            {
+                return BadRequest("unable");
             }
 
             await dbDataAccessService_.DeleteBaseModel<TModel>(oldModel);
@@ -380,6 +400,11 @@ namespace api.Controllers.Model
         protected virtual async Task OnUpdated(TUpdateModel updateModel, TModel entity)
         {
             //Override when you need to something special on model delete
+        }
+
+        protected virtual async Task<bool> CanDelete(TModel entity)
+        {
+            return true;
         }
     }
 }

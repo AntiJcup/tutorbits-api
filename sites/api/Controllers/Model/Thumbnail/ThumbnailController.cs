@@ -1,4 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using api.Controllers.Model;
 using api.Models.Requests;
 using api.Models.Views;
@@ -19,6 +23,17 @@ namespace tutorbits_api.Controllers
     public class ThumbnailController : BaseModelController<Thumbnail, CreateThumbnailModel, UpdateThumbnailModel, ThumbnailViewModel>
     {
         private readonly ThumbnailService thumbnailService_;
+
+        protected override ICollection<Expression<Func<Thumbnail, object>>> DeleteIncludes
+        {
+            get
+            {
+                return new List<Expression<Func<Thumbnail, object>>>{
+                    p => p.Tutorials,
+                    p => p.Examples,
+                };
+            }
+        }
 
         public ThumbnailController(IConfiguration configuration,
                             DBDataAccessService dbDataAccessService,
@@ -60,6 +75,11 @@ namespace tutorbits_api.Controllers
                     model.Status = BaseState.Active;
                     break;
             }
+        }
+
+        protected virtual async Task<bool> CanDelete(Thumbnail entity)
+        {
+            return !(entity.Tutorials.Any(e => e.Status == BaseState.Active) || entity.Examples.Any(e => e.Status == BaseState.Active));
         }
     }
 }
