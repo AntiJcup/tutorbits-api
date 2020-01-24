@@ -245,6 +245,7 @@ namespace api.Controllers.Model
             return BadRequest();
         }
 
+        #region Urls
         [ActionName("project")]
         [HttpGet]
         public IActionResult GetProjectUrl([FromQuery]Guid projectId)
@@ -334,6 +335,7 @@ namespace api.Controllers.Model
 
             return BadRequest();
         }
+        #endregion Urls
 
         protected override async Task EnrichViewModel(ProjectViewModel viewModel, Project entity)
         {

@@ -73,6 +73,11 @@ namespace api.Controllers.Model
                 return BadRequest();
             }
 
+            if (!model.VideoId.HasValue || !model.ProjectId.HasValue || !model.ThumbnailId.HasValue)
+            {
+                return BadRequest("Tutorial is incomplete");
+            }
+
             //Update tutorial model
             model.Status = BaseState.Active;
             await dbDataAccessService_.UpdateBaseModel(model);
