@@ -129,7 +129,8 @@ namespace api.Controllers.Model
             var entities = await dbDataAccessService_.GetAllOwnedModel<TModel>(
                 UserName,
                 skip,
-                take);
+                take,
+                GetIncludes);
             var viewModels = new List<TViewModel>();
 
             foreach (var entity in entities)
