@@ -8,6 +8,8 @@ namespace TutorBits.Models.Common
     {
         public UInt64 DurationMS { get; set; }
 
+        public ProjectType ProjectType { get; set; }
+
         [InverseProperty("Project")]
         public virtual ICollection<Tutorial> Tutorials { get; set; }
 

@@ -9,11 +9,15 @@ namespace api.Models.Requests
 {
     public class CreateProjectModel : BaseCreateModel<Project>
     {
+        [Required]
+        public string ProjectType { get; set; }
+
         public override Project Create()
         {
             return new Project()
             {
-                DurationMS = 0
+                DurationMS = 0,
+                ProjectType = (ProjectType)Enum.Parse(typeof(ProjectType), ProjectType)
             };
         }
     }

@@ -371,5 +371,11 @@ namespace api.Controllers.Model
         {
             return !(entity.Tutorials.Any(e => e.Status == BaseState.Active) || entity.Examples.Any(e => e.Status == BaseState.Active));
         }
+
+        [HttpGet]
+        public IActionResult GetProjectTypes()
+        {
+            return new JsonResult(Enum.GetNames(typeof(ProjectType)));
+        }
     }
 }

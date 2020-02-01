@@ -70,7 +70,7 @@ namespace TutorBits
                     //Creates the base table ignoring other tables including attr and totable
                     var baseStateConverter = new EnumToStringConverter<BaseState>();
                     var programmingTopicConverter = new EnumToStringConverter<ProgrammingTopic>();
-                    var commentTypeConverter = new EnumToStringConverter<CommentType>();
+                    var projectTypeConverter = new EnumToStringConverter<ProjectType>();
                     foreach (var publicPropertieBaseType in publicPropertieBaseTypes)
                     {
                         if (publicPropertieBaseType.GetProperties().Any(p => p.Name == "ProgrammingTopic"))
@@ -81,11 +81,11 @@ namespace TutorBits
                                                     .HasMaxLength(64);
                         }
 
-                        if (publicPropertieBaseType.GetProperties().Any(p => p.Name == "CommentType"))
+                        if (publicPropertieBaseType.GetProperties().Any(p => p.Name == "ProjectType"))
                         {
                             modelBuilder.Entity(publicPropertieBaseType)
-                                                    .Property("CommentType")
-                                                    .HasConversion(commentTypeConverter)
+                                                    .Property("ProjectType")
+                                                    .HasConversion(projectTypeConverter)
                                                     .HasMaxLength(64);
                         }
 
