@@ -15,9 +15,13 @@ namespace api.Models.Views
 
         public string Status { get; set; }
 
+        public string ProjectId { get; set; }
+
         public string ThumbnailUrl { get; set; } //Enriched
 
         public int Score { get; set; } = 1; //Enriched
+
+        public string ProjectType { get; set; } //Enriched
 
         public override void Convert(Example baseModel)
         {
@@ -27,6 +31,7 @@ namespace api.Models.Views
             Description = baseModel.Description;
             Status = baseModel.Status.ToString();
             Owner = baseModel.Owner;
+            ProjectId = baseModel.ProjectId.ToString();
         }
     }
 }

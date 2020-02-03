@@ -13,12 +13,15 @@ namespace api.Models.Views
 
         public string Url { get; set; } //Enriched
 
+        public string Type { get; set; }
+
         public override void Convert(Project baseModel)
         {
             Id = baseModel.Id.ToString();
             Status = baseModel.Status.ToString();
             Owner = baseModel.Owner;
             DurationMS = baseModel.DurationMS;
+            Type = baseModel.ProjectType.ToString();
         }
     }
 }

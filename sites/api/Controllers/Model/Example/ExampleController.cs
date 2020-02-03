@@ -57,7 +57,7 @@ namespace api.Controllers.Model
                 return BadRequest(ModelState);
             }
 
-            var model = await dbDataAccessService_.GetBaseModel<Example>(null, ExampleId);
+            var model = await dbDataAccessService_.GetBaseModel<Example>(GetIncludes, ExampleId);
             if (model == null)
             {
                 return NotFound(); //Update cant be called on items that dont exist
@@ -113,6 +113,11 @@ namespace api.Controllers.Model
             if (entity.Ratings != null)
             {
                 viewModel.Score = BaseRatingController<ExampleRating, CreateExampleRatingModel, UpdateExampleRatingModel, ExampleRatingViewModel>.CalculateRatingScore(entity.Ratings);
+            }
+
+            if (entity.Project != null)
+            {
+                viewModel.ProjectType = entity.Project.ProjectType.ToString();
             }
         }
     }

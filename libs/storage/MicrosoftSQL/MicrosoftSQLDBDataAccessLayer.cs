@@ -133,7 +133,7 @@ namespace TutorBits
                     {
                         foreach (var include in includes)
                         {
-                            query = dbSet.Include(include);
+                            query = query.Include(include);
                         }
                     }
 
