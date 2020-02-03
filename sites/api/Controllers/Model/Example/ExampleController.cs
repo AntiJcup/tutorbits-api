@@ -105,7 +105,10 @@ namespace api.Controllers.Model
         protected override async Task EnrichViewModel(ExampleViewModel viewModel, Example entity)
         {
             await base.EnrichViewModel(viewModel, entity);
-            viewModel.ThumbnailUrl = ProjectUrlGenerator.GenerateProjectThumbnailUrl(Guid.Parse(viewModel.Id), configuration_);
+            if (entity.Thumbnail != null)
+            {
+                viewModel.ThumbnailUrl = ProjectUrlGenerator.GenerateProjectThumbnailUrl(entity.Thumbnail.Id, configuration_);
+            }
 
             if (entity.Ratings != null)
             {

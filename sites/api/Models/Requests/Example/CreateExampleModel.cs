@@ -20,13 +20,19 @@ namespace api.Models.Requests
         [MaxLength(1028)]
         public string Description { get; set; }
 
+        public string ThumbnailId { get; set; }
+
+        public string ProjectId { get; set; }
+
         public override Example Create()
         {
             return new Example()
             {
                 Title = Title,
                 ProgrammingTopic = (ProgrammingTopic)Enum.Parse(typeof(ProgrammingTopic), Topic),
-                Description = Description
+                Description = Description,
+                ThumbnailId = string.IsNullOrWhiteSpace(ThumbnailId) ? (Guid?)null : Guid.Parse(ThumbnailId),
+                ProjectId = string.IsNullOrWhiteSpace(ProjectId) ? (Guid?)null : Guid.Parse(ProjectId),
             };
         }
     }
