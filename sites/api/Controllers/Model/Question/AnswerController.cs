@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -16,9 +17,20 @@ namespace api.Controllers.Model
     [ApiController]
     public class AnswerController : BaseCommentController<Answer, CreateAnswerModel, UpdateAnswerModel, AnswerViewModel>
     {
+        protected override ICollection<Expression<Func<Answer, object>>> GetIncludes
+        {
+            get
+            {
+                return new List<Expression<Func<Answer, object>>>{
+                    p => p.OwnerAccount,
+                    p => p.Ratings,
+                };
+            }
+        }
+
         public AnswerController(IConfiguration configuration,
-                                    DBDataAccessService dbDataAccessService,
-                                    AccountAccessService accountAccessService)
+                                DBDataAccessService dbDataAccessService,
+                                AccountAccessService accountAccessService)
             : base(configuration, dbDataAccessService, accountAccessService)
         {
         }

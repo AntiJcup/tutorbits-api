@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
@@ -20,6 +21,17 @@ namespace api.Controllers.Model
     {
         private readonly PreviewService previewService_;
         private readonly ProjectService projectService_;
+
+        protected override ICollection<Expression<Func<Question, object>>> GetIncludes
+        {
+            get
+            {
+                return new List<Expression<Func<Question, object>>>{
+                    p => p.OwnerAccount,
+                    p => p.Ratings,
+                };
+            }
+        }
 
         public QuestionController(IConfiguration configuration,
                                     DBDataAccessService dbDataAccessService,
