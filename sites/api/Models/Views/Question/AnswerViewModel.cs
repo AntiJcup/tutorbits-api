@@ -1,3 +1,4 @@
+using System;
 using TutorBits.Models.Common;
 
 namespace api.Models.Views
@@ -10,8 +11,6 @@ namespace api.Models.Views
 
         public string Body { get; set; }
 
-        public string Type { get; set; }
-
         public string Status { get; set; }
 
         public override void Convert(Answer baseModel)
@@ -21,6 +20,10 @@ namespace api.Models.Views
             Body = baseModel.Body;
             Status = baseModel.Status.ToString();
             Owner = baseModel.Owner;
+            OwnerId = baseModel.OwnerAccountId.ToString();
+            DateCreated = baseModel.DateCreated.ToUniversalTime().Subtract(
+                new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                ).TotalMilliseconds;
         }
     }
 }

@@ -22,6 +22,9 @@ namespace api.Models.Views
             NickName = baseModel.NickName;
             Email = baseModel.Email;
             AccountCreated = baseModel.DateCreated;
+            DateCreated = baseModel.DateCreated.ToUniversalTime().Subtract(
+                new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                ).TotalMilliseconds;
         }
     }
 }

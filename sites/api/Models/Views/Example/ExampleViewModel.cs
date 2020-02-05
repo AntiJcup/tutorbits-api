@@ -31,7 +31,11 @@ namespace api.Models.Views
             Description = baseModel.Description;
             Status = baseModel.Status.ToString();
             Owner = baseModel.Owner;
+            OwnerId = baseModel.OwnerAccountId.ToString();
             ProjectId = baseModel.ProjectId.ToString();
+            DateCreated = baseModel.DateCreated.ToUniversalTime().Subtract(
+                new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                ).TotalMilliseconds;
         }
     }
 }

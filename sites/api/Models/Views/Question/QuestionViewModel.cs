@@ -15,8 +15,6 @@ namespace api.Models.Views
 
         public string Status { get; set; }
 
-        public UInt64 DurationMS { get; set; }
-
         public override void Convert(Question baseModel)
         {
             Id = baseModel.Id.ToString();
@@ -25,6 +23,10 @@ namespace api.Models.Views
             Description = baseModel.Description;
             Status = baseModel.Status.ToString();
             Owner = baseModel.Owner;
+            OwnerId = baseModel.OwnerAccountId.ToString();
+            DateCreated = baseModel.DateCreated.ToUniversalTime().Subtract(
+                new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                ).TotalMilliseconds;
         }
     }
 }

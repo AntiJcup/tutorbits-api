@@ -14,7 +14,7 @@ namespace api.Models.Requests
         public string Title { get; set; }
 
         [Required]
-        public string Language { get; set; }
+        public string Topic { get; set; }
 
         [Required]
         [MaxLength(2056)]
@@ -25,7 +25,7 @@ namespace api.Models.Requests
             return new Question()
             {
                 Title = Title,
-                ProgrammingTopic = (ProgrammingTopic)Enum.Parse(typeof(ProgrammingTopic), Language),
+                ProgrammingTopic = (ProgrammingTopic)Enum.Parse(typeof(ProgrammingTopic), Topic),
                 Description = Description,
             };
         }

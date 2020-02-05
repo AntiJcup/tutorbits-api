@@ -1,3 +1,4 @@
+using System;
 using TutorBits.Models.Common;
 
 namespace api.Models.Views
@@ -16,6 +17,10 @@ namespace api.Models.Views
             Score = baseModel.Score;
             Status = baseModel.Status.ToString();
             Owner = baseModel.Owner;
+            OwnerId = baseModel.OwnerAccountId.ToString();
+            DateCreated = baseModel.DateCreated.ToUniversalTime().Subtract(
+                new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+                ).TotalMilliseconds;
         }
     }
 }
