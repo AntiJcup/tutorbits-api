@@ -1,4 +1,8 @@
-﻿using api.Models.Requests;
+﻿using System;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
+using api.Models.Requests;
 using api.Models.Views;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -17,6 +21,15 @@ namespace api.Controllers.Model
                                     AccountAccessService accountAccessService)
             : base(configuration, dbDataAccessService, accountAccessService)
         {
+        }
+
+        protected override async Task<bool> CanCreate(CreateAnswerModel createModel)
+        {
+            var existingModel = (await dbDataAccessService_.GetAllBaseModel(
+                (Expression<Func<Answer, Boolean>>)(m => m.Owner == UserName && m.TargetId == createModel.TargetId)))
+                .FirstOrDefault();
+
+            return existingModel == null;
         }
     }
 }

@@ -88,25 +88,13 @@ namespace api.Controllers.Model
             }
         }
 
-        //Overrides create to prevent duplicates
-        [Authorize]
-        [HttpPost]
-        public override async Task<IActionResult> Create([FromBody] TCreateModel createModel)
+        protected override async Task<bool> CanCreate(TCreateModel createModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var existingModel = (await dbDataAccessService_.GetAllBaseModel(
                 (Expression<Func<TModel, Boolean>>)(m => m.Owner == UserName && m.TargetId == createModel.TargetId)))
                 .FirstOrDefault();
-            if (existingModel == null)
-            {
-                return await base.Create(createModel);
-            }
 
-            return BadRequest("Rating already exists");
+            return existingModel == null;
         }
 
         public static int CalculateRatingScore(ICollection<TModel> ratings)

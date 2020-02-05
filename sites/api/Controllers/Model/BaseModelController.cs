@@ -176,6 +176,11 @@ namespace api.Controllers.Model
                 return BadRequest(ModelState);
             }
 
+            if (!(await CanCreate(createModel)))
+            {
+                return BadRequest("Can't create");
+            }
+
             var model = createModel.Create();
             await EnrichModel(model, Action.Create);
             var entity = await dbDataAccessService_.CreateBaseModel(model);
@@ -403,6 +408,11 @@ namespace api.Controllers.Model
         }
 
         protected virtual async Task<bool> CanDelete(TModel entity)
+        {
+            return true;
+        }
+
+        protected virtual async Task<bool> CanCreate(TCreateModel createModel)
         {
             return true;
         }
