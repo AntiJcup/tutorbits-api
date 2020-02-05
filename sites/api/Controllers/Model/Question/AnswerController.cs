@@ -43,5 +43,16 @@ namespace api.Controllers.Model
 
             return existingModel == null;
         }
+
+        protected override async Task EnrichViewModel(AnswerViewModel viewModel, Answer entity)
+        {
+            await base.EnrichViewModel(viewModel, entity);
+
+            if (entity.Ratings != null)
+            {
+                viewModel.Score = BaseRatingController<AnswerRating, CreateAnswerRatingModel, UpdateAnswerRatingModel, AnswerRatingViewModel>
+                    .CalculateRatingScore(entity.Ratings);
+            }
+        }
     }
 }

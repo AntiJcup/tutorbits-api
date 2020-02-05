@@ -15,6 +15,8 @@ namespace api.Models.Views
 
         public string Status { get; set; }
 
+        public int Score { get; set; } = 1; //Enriched
+
         public override void Convert(Question baseModel)
         {
             Id = baseModel.Id.ToString();
