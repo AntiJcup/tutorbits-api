@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using api.Models.Requests;
 using api.Models.Views;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using TutorBits.AccountAccess;
@@ -42,6 +43,37 @@ namespace api.Controllers.Model
         {
             projectService_ = projectService;
             previewService_ = previewService;
+        }
+
+        [Authorize]
+        [HttpPost]
+        public virtual async Task<IActionResult> Publish([FromQuery] Guid questionId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var model = await dbDataAccessService_.GetBaseModel<Question>(GetIncludes, questionId);
+            if (model == null)
+            {
+                return NotFound(); //Update cant be called on items that dont exist
+            }
+
+            if (!HasAccessToModel(model))
+            {
+                return Forbid(); //Only the owner and admins can modify this data
+            }
+
+            if (model.Status != BaseState.Inactive)
+            {
+                return BadRequest("Unable to edit");
+            }
+
+            //Update Example model
+            model.Status = BaseState.Active;
+            await dbDataAccessService_.UpdateBaseModel(model);
+            return Ok();
         }
 
         [HttpGet]

@@ -50,14 +50,14 @@ namespace api.Controllers.Model
 
         [Authorize]
         [HttpPost]
-        public virtual async Task<IActionResult> Publish([FromQuery] Guid ExampleId)
+        public virtual async Task<IActionResult> Publish([FromQuery] Guid exampleId)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var model = await dbDataAccessService_.GetBaseModel<Example>(GetIncludes, ExampleId);
+            var model = await dbDataAccessService_.GetBaseModel<Example>(GetIncludes, exampleId);
             if (model == null)
             {
                 return NotFound(); //Update cant be called on items that dont exist

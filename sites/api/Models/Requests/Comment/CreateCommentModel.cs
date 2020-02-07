@@ -17,6 +17,7 @@ namespace api.Models.Requests
         public string Title { get; set; }
 
         [MaxLength(1028)]
+        [MinLength(3)]
         public string Body { get; set; }
 
         protected TCommentType BaseCreate()
