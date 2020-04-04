@@ -19,7 +19,6 @@ namespace tutorbits_api.Controllers
 
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize(Policy = "IsAdmin")]
     public class AccountController : BaseModelController<Account, CreateAccountModel, UpdateAccountModel, AccountViewModel>
     {
         private readonly AuthAccessService authService_;
