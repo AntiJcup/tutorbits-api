@@ -54,6 +54,9 @@ namespace TutorBits.Video
 
             TargetBucket = configuration.GetSection(Constants.Configuration.Sections.PathsKey)
                 .GetValue<string>(Constants.Configuration.Sections.Paths.BucketKey);
+
+            TranscodeOutputBucket = configuration.GetSection(Constants.Configuration.Sections.PathsKey)
+                .GetValue<string>(Constants.Configuration.Sections.Paths.TranscodeOutputBucketKey);
         }
 
         public string GetVideoPath(string videoId)
