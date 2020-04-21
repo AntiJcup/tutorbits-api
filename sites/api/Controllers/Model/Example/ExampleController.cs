@@ -31,6 +31,7 @@ namespace api.Controllers.Model
                 return new List<Expression<Func<Example, object>>>{
                     p => p.OwnerAccount,
                     p => p.Ratings,
+                    p => p.Comments,
                     p => p.Thumbnail,
                     p => p.Project,
                 };
@@ -113,6 +114,11 @@ namespace api.Controllers.Model
             if (entity.Ratings != null)
             {
                 viewModel.Score = BaseRatingController<ExampleRating, CreateExampleRatingModel, UpdateExampleRatingModel, ExampleRatingViewModel>.CalculateRatingScore(entity.Ratings);
+            }
+
+            if (entity.Comments != null)
+            {
+                viewModel.CommentCount = entity.Comments.Count();
             }
 
             if (entity.Project != null)

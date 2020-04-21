@@ -21,11 +21,13 @@ namespace api.Models.Views
 
         public string ThumbnailId { get; set; }
 
-        public UInt64 DurationMS { get; set; } //TODO Enrich!
+        public UInt64 DurationMS { get; set; } //Enriched
 
         public string ThumbnailUrl { get; set; } //Enriched
 
         public int Score { get; set; } = 1; //Enriched
+
+        public int CommentCount { get; set; } = 0; //Enriched
 
         public override void Convert(Tutorial baseModel)
         {

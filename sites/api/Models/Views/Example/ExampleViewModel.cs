@@ -23,6 +23,8 @@ namespace api.Models.Views
 
         public string ProjectType { get; set; } //Enriched
 
+        public int CommentCount { get; set; } = 0; //Enriched
+
         public override void Convert(Example baseModel)
         {
             Id = baseModel.Id.ToString();

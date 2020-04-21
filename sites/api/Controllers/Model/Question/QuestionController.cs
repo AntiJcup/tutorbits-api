@@ -30,6 +30,7 @@ namespace api.Controllers.Model
                 return new List<Expression<Func<Question, object>>>{
                     p => p.OwnerAccount,
                     p => p.Ratings,
+                    p => p.Answers
                 };
             }
         }
@@ -97,6 +98,11 @@ namespace api.Controllers.Model
             {
                 viewModel.Score = BaseRatingController<QuestionRating, CreateQuestionRatingModel, UpdateQuestionRatingModel, QuestionRatingViewModel>
                     .CalculateRatingScore(entity.Ratings);
+            }
+
+            if (entity.Answers != null)
+            {
+                viewModel.AnswerCount = entity.Answers.Count();
             }
         }
     }
