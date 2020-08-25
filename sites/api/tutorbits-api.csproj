@@ -8,8 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Amazon.AspNetCore.Identity.Cognito" Version="1.0.2" />
-    <PackageReference Include="Amazon.Extensions.CognitoAuthentication" Version="1.0.3" />
+    <PackageReference Include="Amazon.AspNetCore.Identity.Cognito" Version="1.0.2" /> <!--Can upgrade-->
+    <PackageReference Include="Amazon.Extensions.CognitoAuthentication" Version="1.0.3" /> <!--Cant upgrade depends on 2.0 standard-->
     <PackageReference Include="AWSSDK.CognitoIdentityProvider" Version="3.3.103.16" />
     <PackageReference Include="AWSSDK.ElasticTranscoder" Version="3.3.100.97" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.100.1" />

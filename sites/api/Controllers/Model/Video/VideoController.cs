@@ -85,7 +85,7 @@ namespace api.Controllers.Model
         [Authorize]
         [ActionName("start")]
         [HttpPost]
-        public async Task<IActionResult> StartRecordingVideo([FromQuery]Guid videoId)
+        public async Task<IActionResult> StartRecordingVideo([FromQuery] Guid videoId)
         {
             try
             {
@@ -119,7 +119,7 @@ namespace api.Controllers.Model
         [Authorize]
         [ActionName("continue")]
         [HttpPost]
-        public async Task<IActionResult> ContinueRecordingVideo([FromQuery]Guid videoId, [FromQuery]string recordingId, [FromQuery]int part, [FromQuery]bool last)
+        public async Task<IActionResult> ContinueRecordingVideo([FromQuery] Guid videoId, [FromQuery] string recordingId, [FromQuery] int part, [FromQuery] bool last)
         {
             try
             {
@@ -141,7 +141,7 @@ namespace api.Controllers.Model
         [Authorize]
         [ActionName("stop")]
         [HttpPost]
-        public async Task<IActionResult> FinishRecordingVideo([FromQuery]Guid videoId, [FromQuery]string recordingId, [FromBody]ICollection<VideoPart> parts)
+        public async Task<IActionResult> FinishRecordingVideo([FromQuery] Guid videoId, [FromQuery] string recordingId, [FromBody] ICollection<VideoPart> parts)
         {
             try
             {
@@ -161,7 +161,7 @@ namespace api.Controllers.Model
         [Authorize]
         [ActionName("status")]
         [HttpGet]
-        public async Task<IActionResult> CheckTranscodeStatus([FromQuery]Guid videoId)
+        public async Task<IActionResult> CheckTranscodeStatus([FromQuery] Guid videoId)
         {
             try
             {
@@ -179,7 +179,7 @@ namespace api.Controllers.Model
         [Authorize]
         [ActionName("cancel")]
         [HttpGet]
-        public async Task<IActionResult> CancelTranscoding([FromQuery]Guid videoId)
+        public async Task<IActionResult> CancelTranscoding([FromQuery] Guid videoId)
         {
             try
             {
@@ -196,7 +196,7 @@ namespace api.Controllers.Model
 
         [ActionName("video")]
         [HttpGet]
-        public IActionResult GetVideoUrl([FromQuery]Guid videoId)
+        public IActionResult GetVideoUrl([FromQuery] Guid videoId)
         {
             try
             {
@@ -210,9 +210,9 @@ namespace api.Controllers.Model
             return BadRequest();
         }
 
-        protected virtual async Task<bool> CanDelete(Video entity)
+        protected override async Task<bool> CanDelete(Video entity)
         {
-            return !(entity.Tutorials.Any(e => e.Status == BaseState.Active));
+            return await Task.FromResult(!(entity.Tutorials.Any(e => e.Status == BaseState.Active)));
         }
     }
 }

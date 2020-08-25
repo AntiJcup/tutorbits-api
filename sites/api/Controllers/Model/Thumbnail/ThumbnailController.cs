@@ -77,9 +77,9 @@ namespace tutorbits_api.Controllers
             }
         }
 
-        protected virtual async Task<bool> CanDelete(Thumbnail entity)
+        protected override async Task<bool> CanDelete(Thumbnail entity)
         {
-            return !(entity.Tutorials.Any(e => e.Status == BaseState.Active) || entity.Examples.Any(e => e.Status == BaseState.Active));
+            return await Task.FromResult(!(entity.Tutorials.Any(e => e.Status == BaseState.Active) || entity.Examples.Any(e => e.Status == BaseState.Active)));
         }
     }
 }

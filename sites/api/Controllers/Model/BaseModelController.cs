@@ -333,7 +333,7 @@ namespace api.Controllers.Model
                 throw new Exception("Not enough keys");
             }
 
-            return keys;
+            return await Task.FromResult((ICollection<object>)keys);
         }
 
         protected virtual async Task<ICollection<object>> GetKeysFromModel(TModel model)
@@ -359,7 +359,7 @@ namespace api.Controllers.Model
                 throw new Exception("Not enough keys");
             }
 
-            return keys;
+            return await Task.FromResult((ICollection<object>)keys);
         }
 
         protected virtual async Task<string> GenerateModelStateErrorMessage()
@@ -373,7 +373,7 @@ namespace api.Controllers.Model
                 }
             }
 
-            return builder.ToString();
+            return await Task.FromResult(builder.ToString());
         }
 
         protected virtual async Task EnrichModel(TModel model, Action action)
@@ -390,31 +390,35 @@ namespace api.Controllers.Model
         protected virtual async Task EnrichViewModel(TViewModel viewModel, TModel entity)
         {
             viewModel.Owner = entity.OwnerAccount == null ? null : entity.OwnerAccount.NickName;
+            await Task.CompletedTask;
         }
 
         protected virtual async Task OnCreated(TCreateModel createModel, TModel entity)
         {
             //Override when you need to something special on model create
+            await Task.CompletedTask;
         }
 
         protected virtual async Task OnDeleted(TModel entity)
         {
             //Override when you need to something special on model delete
+            await Task.CompletedTask;
         }
 
         protected virtual async Task OnUpdated(TUpdateModel updateModel, TModel entity)
         {
             //Override when you need to something special on model delete
+            await Task.CompletedTask;
         }
 
         protected virtual async Task<bool> CanDelete(TModel entity)
         {
-            return true;
+            return await Task.FromResult(true);
         }
 
         protected virtual async Task<bool> CanCreate(TCreateModel createModel)
         {
-            return true;
+            return await Task.FromResult(true);
         }
     }
 }

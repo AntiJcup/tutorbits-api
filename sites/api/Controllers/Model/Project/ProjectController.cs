@@ -367,9 +367,9 @@ namespace api.Controllers.Model
             await projectService_.CreateTraceProject(project);
         }
 
-        protected virtual async Task<bool> CanDelete(Project entity)
+        protected override async Task<bool> CanDelete(Project entity)
         {
-            return !(entity.Tutorials.Any(e => e.Status == BaseState.Active) || entity.Examples.Any(e => e.Status == BaseState.Active));
+            return await Task.FromResult(!(entity.Tutorials.Any(e => e.Status == BaseState.Active) || entity.Examples.Any(e => e.Status == BaseState.Active)));
         }
 
         [HttpGet]

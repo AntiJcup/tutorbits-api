@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using api.Models.Requests;
-using api.Models.Updates;
 using api.Models.Views;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
