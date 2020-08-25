@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using TutorBits.FileDataAccess;
@@ -39,6 +38,7 @@ namespace TutorBits
             {
                 path = RootPath(path);
                 Directory.CreateDirectory(path);
+                await Task.CompletedTask;
             }
 
             public async Task CreateFile(string path, Stream stream, string bucket = null)
@@ -55,30 +55,32 @@ namespace TutorBits
             {
                 path = RootPath(path);
                 Directory.Delete(path, true);
+                await Task.CompletedTask;
             }
 
             public async Task DeleteFile(string path, string bucket = null)
             {
                 path = RootPath(path);
                 File.Delete(path);
+                await Task.CompletedTask;
             }
 
             public async Task<bool> DirectoryExists(string path, string bucket = null)
             {
                 path = RootPath(path);
-                return Directory.Exists(path);
+                return await Task.FromResult(Directory.Exists(path));
             }
 
             public async Task<bool> FileExists(string path, string bucket = null)
             {
                 path = RootPath(path);
-                return File.Exists(path);
+                return await Task.FromResult(File.Exists(path));
             }
 
             public async Task<ICollection<string>> GetAllFiles(string parentPath, string bucket = null)
             {
                 parentPath = RootPath(parentPath);
-                return Directory.GetFileSystemEntries(parentPath, "*", SearchOption.AllDirectories);
+                return await Task.FromResult(Directory.GetFileSystemEntries(parentPath, "*", SearchOption.AllDirectories));
             }
 
             public async Task<Stream> ReadFile(string path, string bucket = null)
@@ -175,7 +177,7 @@ namespace TutorBits
 
             public async Task<string> ConvertToNativePath(string path, string bucket = null)
             {
-                return RootPath(path.Replace('/', '\\'));
+                return await Task.FromResult(RootPath(path.Replace('/', '\\')));
             }
 
             public async Task<bool> IsDirectory(string path, string bucket = null)
@@ -186,6 +188,7 @@ namespace TutorBits
             public async Task CopyFile(string sourcePath, string destinationPath, string sourceBucket = null, string destinationBucket = null)
             {
                 File.Copy(sourcePath, destinationPath);
+                await Task.CompletedTask;
             }
 
             public async Task CopyDirectory(string sourcePath, string destinationPath, string sourceBucket = null, string destinationBucket = null)
@@ -206,6 +209,8 @@ namespace TutorBits
                     var cleanedSourceFile = SanitizePath(sourceFile);
                     File.Copy(cleanedSourceFile, destinationFile, true);
                 }
+
+                await Task.CompletedTask;
             }
 
             public string SanitizePath(string path)

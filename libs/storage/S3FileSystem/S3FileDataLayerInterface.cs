@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using TutorBits.FileDataAccess;
-
 using Amazon.S3;
 using Amazon.S3.Model;
 using Microsoft.Extensions.Configuration;
 using System.Linq;
-using System.Threading;
 using TutorBits.Models.Common;
 
 namespace TutorBits
@@ -228,11 +225,12 @@ namespace TutorBits
             public async Task CreatePathForFile(string filePath, string bucket = null)
             {
                 //Not necessary for s3
+                await Task.CompletedTask;
             }
 
             public async Task<string> ConvertToNativePath(string path, string bucket = null)
             {
-                return path.Replace('\\', '/');
+                return await Task.FromResult(path.Replace('\\', '/'));
             }
 
             public string GetWorkingDirectory()
@@ -242,7 +240,7 @@ namespace TutorBits
 
             public async Task<bool> IsDirectory(string path, string bucket = null)
             {
-                return path.EndsWith("/");
+                return await Task.FromResult(path.EndsWith("/"));
             }
 
             public async Task CopyFile(string sourcePath, string destinationPath, string sourceBucket = null, string destinationBucket = null)

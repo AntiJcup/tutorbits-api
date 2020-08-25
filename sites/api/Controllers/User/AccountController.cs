@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using api.Controllers.Model;
 using api.Models.Requests;
@@ -10,8 +9,6 @@ using Microsoft.Extensions.Configuration;
 using TutorBits.AccountAccess;
 using TutorBits.AuthAccess;
 using TutorBits.DBDataAccess;
-using TutorBits.FileDataAccess;
-using TutorBits.LambdaAccess;
 using TutorBits.Models.Common;
 
 namespace tutorbits_api.Controllers

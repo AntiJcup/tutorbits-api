@@ -1,20 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.IO;
 using System.Reflection;
 using Amazon.S3;
 using Amazon.S3.Model;
 using System.Diagnostics;
-using Utils.Common;
 using Amazon.Lambda.Core;
 using Newtonsoft.Json;
 using LambdaModels;
-using Amazon;
-using System.Security.AccessControl;
-using System.Security.Principal;
-using System.Runtime.InteropServices;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]

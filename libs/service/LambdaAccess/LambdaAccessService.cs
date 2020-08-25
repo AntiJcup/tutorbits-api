@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.Configuration;
 using System.Threading.Tasks;
-using System.IO;
 
 namespace TutorBits.LambdaAccess
 {

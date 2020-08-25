@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using Google.Protobuf;
-using Tracer;
-using System.Linq;
-using Microsoft.Extensions.Configuration;
-using System.Text;
-using TutorBits.Models.Common;
-using System.IO.Compression;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Configuration;
 
 namespace TutorBits.FileDataAccess
 {

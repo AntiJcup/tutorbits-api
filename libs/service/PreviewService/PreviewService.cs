@@ -282,10 +282,19 @@ namespace TutorBits.Preview
             await dataLayer_.CopyDirectory(sourceJSHelperPath, destinationJSHelperPath, PreviewHelpersBucket);
         }
 
+        public async Task IncludePYPreviewHelper(string previewPath)
+        {
+            var sourcePYHelperPath = dataLayer_.SanitizePath(Path.Combine(PreviewHelpersPath, "py"));
+            var destinationPYHelperPath = dataLayer_.SanitizePath(Path.Combine(dataLayer_.GetWorkingDirectory(), previewPath, "preview-helpers/py"));
+            await dataLayer_.CreateDirectory(destinationPYHelperPath);
+            await dataLayer_.CopyDirectory(sourcePYHelperPath, destinationPYHelperPath, PreviewHelpersBucket);
+        }
+
         public async Task IncludePreviewHelpers(TraceProject project, string previewId)
         {
             var previewPath = GetPreviewPath(project.Id, previewId);
             await IncludeJSPreviewHelper(previewPath);
+            await IncludePYPreviewHelper(previewPath);
         }
 
         public async Task PackagePreviewZIP(string previewPath, string outputZipPath)

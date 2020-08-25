@@ -84,7 +84,7 @@ namespace TutorBits.Lambda.Local
         public async Task<bool> HealthCheck()
         {
             //DO nothing we are local
-            return true;
+            return await Task.FromResult(true);
         }
 
         public async Task<UInt64> GetVideoLength(string videoPath)

@@ -1,19 +1,13 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 using Amazon.Lambda;
 using LambdaModels;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TutorBits.LambdaAccess;
-using Utils.Common;
 using Newtonsoft.Json;
 using Amazon.ElasticTranscoder;
 using Amazon.ElasticTranscoder.Model;
-using System.Threading;
 using Amazon.Lambda.Model;
 
 namespace TutorBits.Lambda.AWSLambda

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TutorBits.AuthAccess;
@@ -25,11 +24,11 @@ namespace LocalAuth
 
         public async Task<User> GetUser(string accessToken)
         {
-            return new User()
+            return await Task.FromResult(new User()
             {
                 Name = "Local",
                 Email = "jbrummel7@gmail.com"
-            };
+            });
         }
     }
 }
