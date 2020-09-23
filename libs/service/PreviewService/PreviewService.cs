@@ -358,6 +358,8 @@ namespace TutorBits.Preview
         {
             JObject output = new JObject();
 
+            output["/project/"] = ""; //Make sure project always exists
+
             foreach (var file in previewFiles)
             {
                 var filePath = file.Key;
